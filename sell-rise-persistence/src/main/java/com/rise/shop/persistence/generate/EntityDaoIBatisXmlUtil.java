@@ -7,13 +7,15 @@ import com.rise.shop.persistence.utils.ReflectUtils;
 import java.lang.reflect.Field;
 
 /**
- * 根据定义的bean（BasePersistenceBean的子类） 自动生成ibatis的xml工具(main方法打印)
- * 参数命名规则需要符合 java规范如userName 自动生成的对应db属性命名为 USER_NAME
- * 表名为类的简写名 如 PopUser
- * <p/>
+ * 根据定义的bean（BasePersistenceBean的子类） 自动生成ibatis的xml工具(可以main方法打印)
  * Created by wangdi on 15-7-17.
  */
 public class EntityDaoIBatisXmlUtil {
+
+    public static final String attention = " * 根据定义的bean（BasePersistenceBean的子类） 自动生成ibatis的xml工具(可以main方法打印)\n" +
+            " * 参数命名规则需要符合 java规范如userName 自动生成的对应db属性命名为 USER_NAME\n" +
+            " * 表名为类的简写名 如 PopUser\n" +
+            " * namespace可自行定义 默认为类全路径驼峰格式 如comJdUser\n";
 
     public static <Domain extends BasePersistenceBean, DomainQuery> String makeXml(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
         StringBuilder sb = new StringBuilder();
@@ -29,6 +31,7 @@ public class EntityDaoIBatisXmlUtil {
         sb.append(getSqlInsert(domainClass));
         sb.append(getSqlUpdate(domainClass));
         sb.append(getDelete(domainClass));
+        sb.append("\n");
         return sb.toString();
     }
 
@@ -72,7 +75,7 @@ public class EntityDaoIBatisXmlUtil {
 
     private static <Domain extends BasePersistenceBean> String getResultMapColumn(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
-        Field[] fields = ReflectUtils.getFieldsByClass(domainClass);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
             sb.append("<result column=\"");
             sb.append(EntityNamesUtils.getSQLFieldName(field.getName()));
@@ -96,7 +99,7 @@ public class EntityDaoIBatisXmlUtil {
 
     private static <Domain extends BasePersistenceBean> String getDynamicWhereCloumn(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
-        Field[] fields = ReflectUtils.getFieldsByClass(domainClass);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
             sb.append("<isNotEmpty prepend=\" AND \" property=\"");
             sb.append(field.getName());
@@ -110,7 +113,7 @@ public class EntityDaoIBatisXmlUtil {
     private static <Domain extends BasePersistenceBean> String getSqlBaseColumnList(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
         sb.append("<sql id=\"Base_Column_List\">");
-        Field[] fields = ReflectUtils.getFieldsByClass(domainClass);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
             sb.append(" " + EntityNamesUtils.getSQLFieldName(field.getName()) + ",");
         }
@@ -193,7 +196,7 @@ public class EntityDaoIBatisXmlUtil {
         sb.append(" INSERT INTO " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
         sb.append(" (<include refid=\"Base_Column_List\"/>)");
         sb.append(" VALUES (");
-        Field[] fields = ReflectUtils.getFieldsByClass(domainClass);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
             if ("created".equals(field.getName()) || "modified".equals(field.getName())) {
                 sb.append(" now(),");
@@ -223,7 +226,7 @@ public class EntityDaoIBatisXmlUtil {
 
     private static <Domain extends BasePersistenceBean> String getDynamicWhereUpdateCloumn(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
-        Field[] fields = ReflectUtils.getFieldsByClass(domainClass);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
             if ("id".equals(field.getName()) || "created".equals(field.getName()) || "modified".equals(field.getName())) {
                 continue;

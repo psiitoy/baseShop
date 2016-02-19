@@ -7,13 +7,14 @@ import com.rise.shop.persistence.utils.ReflectUtils;
 import java.lang.reflect.Field;
 
 /**
- * 根据定义的bean（BasePersistenceBean的子类） 自动生成ibatis的xml工具(main方法打印)
- * 参数命名规则需要符合 java规范如userName 自动生成的对应db属性命名为 USER_NAME
- * 表名为类的简写名 如 PopUser
- * <p/>
+ * 根据定义的bean（BasePersistenceBean的子类） 自动生成Sql的工具(可以main方法打印)
  * Created by wangdi on 15-7-17.
  */
 public class EntityDaoTableSqlUtil {
+
+    public static final String attention = " * 根据定义的bean（BasePersistenceBean的子类） 自动生成Sql的工具(可以main方法打印)\n" +
+            " * 所有注释以及字段默认值和大小、约束需自行设置\n" +
+            " * 主键默认为id\n";
 
     public static <Domain extends BasePersistenceBean, DomainQuery> String makeSql(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
@@ -40,7 +41,7 @@ public class EntityDaoTableSqlUtil {
 
     private static <Domain extends BasePersistenceBean> String getColumnSql(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
-        Field[] fields = ReflectUtils.getFieldsByClass(domainClass);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
             sb.append("\t\t `");
             sb.append(EntityNamesUtils.getSQLFieldName(field.getName()));
@@ -54,7 +55,11 @@ public class EntityDaoTableSqlUtil {
     }
 
     private static String getPrimaryKey() {
-        return " PRIMARY KEY (`ID`)";
+        StringBuilder sb = new StringBuilder();
+        sb.append("\t\t `");
+        sb.append("PRIMARY KEY (`ID`)");
+        sb.append("\n");
+        return sb.toString();
     }
 
     private static String getDefaultDbTypeByJavaType(Class<?> clz) {

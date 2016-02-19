@@ -181,20 +181,6 @@ public class ReflectUtils {
         return null;
     }
 
-
-    /**
-     * 获取class中的所有字段
-     *
-     * @param clazz
-     * @return
-     */
-    public static Field[] getFieldsByClass(Class<?> clazz) {
-        Field[] fields = clazz.getDeclaredFields();
-        Field[] superFields = clazz.getSuperclass().getDeclaredFields();
-        fields = (Field[]) ArrayUtils.addAll(fields, superFields);
-        return fields;
-    }
-
     /**
      * 空值重新赋值为空字符串
      *
@@ -233,6 +219,26 @@ public class ReflectUtils {
     }
 
     /**
+     * 获取Class中的所有字段 包含所有父类
+     *
+     * @param clz
+     * @return
+     */
+    public static Field[] getAllClassAndSuperClassFields(Class<? extends Object> clz) {
+        Field[] fields = clz.getDeclaredFields();
+        for (Class<?> clazz = clz; clazz != Object.class; clazz = clazz.getSuperclass()) {
+            try {
+                Field[] superFields = clazz.getSuperclass().getDeclaredFields();
+                fields = (Field[]) ArrayUtils.addAll(fields, superFields);
+            } catch (Exception e) {
+                //这里甚么都不要做！并且这里的异常必须这样写，不能抛出去。
+                //如果这里的异常打印或者往外抛，则就不会执行clazz = clazz.getSuperclass(),最后就不会进入到父类中了
+            }
+        }
+        return fields;
+    }
+
+    /**
      * 空值重新赋值为随机值
      *
      * @param t
@@ -242,9 +248,7 @@ public class ReflectUtils {
      */
     public static <T> T setFieldNullToRandomValue(T t) throws Exception {
         Class<? extends Object> clazz = t.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        Field[] superFields = clazz.getSuperclass().getDeclaredFields();
-        fields = (Field[]) ArrayUtils.addAll(fields, superFields);
+        Field[] fields = getAllClassAndSuperClassFields(clazz);
         for (Field field : fields) {
             Object setValue = null;
             if (isArrayList(field.getType())) {
