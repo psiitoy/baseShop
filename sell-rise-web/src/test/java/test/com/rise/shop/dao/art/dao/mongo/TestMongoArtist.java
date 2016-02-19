@@ -5,10 +5,7 @@ import com.rise.shop.domain.art.mongo.Artist;
 import com.rise.shop.domain.query.ArtistQuery;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
-import com.rise.shop.persistence.query.BaseQuery;
-import com.rise.shop.persistence.query.ColumnOrder;
 import com.rise.shop.persistence.query.OrderByDescEnum;
-import com.rise.shop.persistence.query.Query;
 import com.rise.shop.service.art.ArtistService;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
@@ -57,9 +54,10 @@ public class TestMongoArtist extends AbstractJUnit4SpringContextTests {
     public void testFindByPage() throws Exception {
         PaginatedList<Artist> list;
         try {
-            Query query = new ArtistQuery();
+            ArtistQuery query = new ArtistQuery();
             query.setPageSize(10);
             query.setPageNo(1);
+            query.addOrderBy(OrderByDescEnum.DESC, "name");
             list = artistService.findByPage(query);
             System.out.println("###" + list.size() + "#" + list);
         } catch (Exception e) {

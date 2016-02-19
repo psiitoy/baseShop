@@ -6,6 +6,8 @@ import com.rise.shop.persistence.dao.mongo.utils.MongoDBManager;
 import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
+import com.rise.shop.persistence.query.ColumnOrder;
+import com.rise.shop.persistence.query.OrderByBaseQuery;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.utils.CopyPropertyUtils;
 import org.slf4j.Logger;
@@ -137,11 +139,26 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
         }
         //设置当前页
         paginatedList.setIndex(query.getPageNo());
-        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize());
+        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize(), getMongoBaseQueryOrderBy(query));
         for (DBObject o : list) {
             paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
         }
         return paginatedList;
+    }
+
+    private Map<String, Integer> getMongoBaseQueryOrderBy(Query query) {
+        if (query instanceof OrderByBaseQuery) {
+            OrderByBaseQuery orderByBaseQuery = (OrderByBaseQuery) query;
+            Map<String, Integer> orderMap = new HashMap<String, Integer>();
+            for (ColumnOrder columnOrder : orderByBaseQuery.getOrderByList()) {
+                for (String oName : columnOrder.getColumnNames()) {
+                    orderMap.put(oName, columnOrder.getOrderEnum().getMongoOrder());
+                }
+            }
+            return orderMap;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -155,7 +172,7 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
         PaginatedList<T> paginatedList = new PaginatedArrayList<T>();
         int count = (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap));
         paginatedList.setTotalItem(count);
-        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap), 0, 100);
+        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap), 0, 100, null);
         for (DBObject o : list) {
             paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
         }

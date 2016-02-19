@@ -281,9 +281,15 @@ public class MongoDBManager {
             return null;
     }
 
-    public List<DBObject> findByPage(String collection, Map<String, Object> map, int index, int pageSize) throws Exception {
+    public List<DBObject> findByPage(String collection, Map<String, Object> map, int index, int pageSize, Map<String, Integer> orderByMap) throws Exception {
         DBCollection coll = getCollection(collection);
-        DBCursor c = coll.find(map2Obj(map)).skip(index).limit(pageSize);
+        DBObject orderBy = new BasicDBObject();
+        if (orderByMap != null) {
+            for (Map.Entry<String, Integer> entry : orderByMap.entrySet()) {
+                orderBy.put(entry.getKey(), entry.getValue());
+            }
+        }
+        DBCursor c = coll.find(map2Obj(map)).skip(index).limit(pageSize).sort(orderBy);
         if (c != null)
             return c.toArray();
         else
