@@ -171,6 +171,9 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
      *
      */
     public T insert(T t) throws Exception {
+        if (t.getId() == null || t.getId() == 0) {
+            t.setId(System.currentTimeMillis());
+        }
         insert(nameSpace + POSTFIX_INSERT, t);
         return t;
     }
