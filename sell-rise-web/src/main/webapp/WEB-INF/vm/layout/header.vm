@@ -1,0 +1,89 @@
+#if(!$!session.getAttribute("isLogin"))
+##简单描述
+<div class="jumbotron">
+    <div class="container">
+        #set($nowhour = $extDateTools.getDate().getHours())
+        #if($nowhour<=12&&$nowhour>6)
+            <h1>HI，早上好</h1>
+        #elseif($nowhour<=19&&$nowhour>12)
+            <h1>HI，下午好</h1>
+        #else
+            <h1>HI，晚上好</h1>
+        #end
+        <p>这里是凤凰艺术管理后台</p>
+
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">更多详情 &raquo;</a></p>
+    </div>
+</div>
+#else
+##分栏目
+<div class="container">
+    <br/>
+##隐藏属性
+    <input type="hidden" id="sessionAuthCode" value="$!{session.getAttribute("sessionAuthCode")}"/>
+    <input type="hidden" id="domainname" value="$!{session.getAttribute("domainname")}"/>
+    <input type="hidden" id="zhname" value="$!{session.getAttribute("zhname")}"/>
+
+    <div class="row">
+        <ul class="nav nav-pills" role="tablist">
+            <li id="li-list" role="presentation" class="active"><a href="/$!{session.getAttribute("domainname")}/index">列表</a>
+            </li>
+            #if($!{session.getAttribute("domainname")})
+                <li id="li-add" role="presentation"><a href="/$!{session.getAttribute("domainname")}/add">添加</a>
+                </li>#end
+            <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span id="span-dropdown-name" domainname="">#if($!session.getAttribute("zhname"))
+                        $!{session.getAttribute("zhname")} #else 请选择#end</span> <span class="caret"></span>
+                </a>
+                <ul id="ul-dropdown-menu" class="dropdown-menu" role="menu">
+                    <li><a href="/artist/index">艺术家</a></li>
+                    <li><a href="/artistWork/index">作品</a></li>
+                    <li><a href="/curator/index">策展人</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/organization/index">组织机构</a></li>
+                    <li class="divider"></li>
+                ##                    <li><a href="/exhibition/index">展览</a></li>
+                    <li><a href="/exhibition/index">展览</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/user/index">用户</a></li>
+                </ul>
+            </li>
+            <li>
+                <form id="header-form-search" class="form-search" action="/$!{session.getAttribute("domainname")}/list"
+                      method="post">
+                    <div class="form-group">
+                        #foreach($metaInfo in $queryDomains)
+                            <input type="text" class="form-search $metaInfo.validator" name="$metaInfo.fieldName"
+                                   value="$!{metaInfo.value}"
+                                   placeholder="按$!{metaInfo.name}搜索"/>
+                        #end
+                        <button type="submit" class='glyphicon glyphicon-search btn'></button>
+                    </div>
+                </form>
+            </li>
+        </ul>
+    </div>
+    <br/>
+
+    <!-- Example row of columns -->
+##    <div class="row">
+##        <div class="col-md-4">
+##            <h2>艺术家操作</h2>
+##
+##            <p>这里查询订单做出库操作等</p>
+##
+##            <p><a class="btn btn-success" href="/artist/index" role="button">列表 &raquo;</a>
+##                <a class="btn btn-info" href="/artist/add" role="button">添加 &raquo;</a></p>
+##        </div>
+##        <div class="col-md-4">
+##            <h2>商品操作</h2>
+##
+##            <p>这里增加商品调库存价格等</p>
+##
+##            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+##        </div>
+##    </div>
+##    <hr>
+</div> <!-- /container -->
+#end

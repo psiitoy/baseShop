@@ -1,0 +1,86 @@
+<form id="form-add" role="form" action="$!saveUrl" method="post" class="form-group"
+      onsubmit="return beforeSubmitCheck()" autocomplete="off">
+    #foreach($field in $domain)
+        #if($!{field.id}==true)
+            <input type="hidden" name="$!{field.fieldName}" value="$!{field.value}"/>
+        #else
+            #if(($!isAdd||$field.editable==true)&&$field.save==true)
+                <div id="div-value-$!{field.fieldName}" hidden="hidden">$!{field.value}</div>
+                <div name="div-domain" fieldname="$!{field.fieldName}" type="$!{field.type}" genericType="$!{field.genericType}" reffield="$field.reffield">
+                    <label for="name">$field.name</label>
+                    #if($field.type=="ratio")
+                        <div class="radio">
+                            #foreach($enumType in $enumTools.getEnumByFieldName($field.fieldName))
+                                <label>
+                                    <input type="radio" name="$field.fieldName" value="$!enumType.type" checked>
+                                    $!{enumType.value}
+                                </label>
+                            #end
+                        </div>
+                    #elseif($field.type=="img")
+                        <div class="form-group">
+                            <input type="file" class="form-inline" style="display: inline-block;"
+                                   id="$field.fieldName"/>
+                            <input type="text"  class="form-inline" id="imageremark_$field.fieldName"/>
+                            <span file-link-id='$field.fieldName' name="addInputFileBtn"
+                                  class="btn glyphicon glyphicon-plus"
+                                  title="点击添加"></span>
+
+                            <p id="help-block" class="help-block"></p>
+                        </div>
+                    #elseif($field.type=="timestamp")
+                        <div class="form-group">
+                            <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy/MM/dd"
+                                 data-link-field="$field.fieldName" data-link-format="yyyy-mm-dd">
+                                <input id="timeshow-$field.fieldName" class="form-control" size="16" type="text"
+                                       timepicker="true"
+                                       value=""
+                                       readonly>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                <span class="input-group-addon"><span
+                                        class="glyphicon glyphicon-calendar"></span></span>
+                            </div>
+                            <input class="digits" type="hidden" dt="true" id="$field.fieldName"
+                                   name="$field.fieldName"
+                                   value=""/><br/>
+                        </div>
+                    #elseif($field.type=="search.id"&&$field.refid == true)
+                        <div class="form-group">
+                            <input id="$field.fieldName" type="text"
+                                   class="form-control" genericType="$field.genericType"
+                                   placeholder="根据名称生成$field.name" readonly/>
+                        </div>
+                    #elseif($field.type=="search.name"&&$field.reffield!="")
+                        <div class="form-group">
+                            <span class="glyphicon glyphicon-search" title="输入搜索"></span>
+                            <input link="$field.fieldName" type="text" class="form-inline"
+                                   search="$field.reffield"
+                                   fieldName="$field.fieldName" placeholder="输入关键词搜索$field.name"/>
+                                <span linkfor="$field.fieldName" name="addInputBtn" zhname="$field.name"
+                                      class="btn glyphicon glyphicon-hand-up"
+                                      title="点击确认"></span>
+                            <span class="small alert alert-warning">根据关键字搜索后添加</span>
+                        </div>
+                    #elseif($field.genericType=="java.util.List<java.lang.String>"||$field.genericType==
+                        "java.util.List<java.lang.Long>")
+                        <div class="form-group">
+                            <input link="$field.fieldName" list="true" type="text" class="form-inline"
+                                   fieldName="$field.fieldName"
+                                   placeholder="请输入$field.name"/>
+                                <span linkfor="$field.fieldName" name="addInputBtn"
+                                      class="btn glyphicon glyphicon-plus"
+                                      title="点击添加"></span>
+                        </div>
+                    #else
+                        <div class="form-group">
+                            <input type="text" class="form-control ${field.validator}" name="$field.fieldName"
+                                   placeholder="请输入$field.name"/>
+                        </div>
+                    #end
+                </div>
+            #end
+        #end
+    #end
+    <button type="submit" class="btn btn-success" id="add-submit">提交</button>
+</form>
+<script src="#springUrl('')/static/js/sellrise/pages/add.js"></script>

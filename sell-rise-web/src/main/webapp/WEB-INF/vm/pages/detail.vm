@@ -1,0 +1,32 @@
+#set($layout = "layout/empty.vm" )
+<table class="table">
+    <caption class="lead">详情</caption>
+    <thead>
+    <tr>
+        <th></th>
+        <th>name</th>
+        <th>value</th>
+    </tr>
+    </thead>
+    <tbody id="tbody-detail">
+        #foreach($field in $domain)
+        <tr name="$field.fieldName" type="$field.type" value="${field.value}" detail="true" class="success">
+            <td></td>
+            <td>$field.name</td>
+            <td>#if($field.type=="img")
+                #foreach($image in $!{field.value})
+                    <a name='show-img' imageId="$image" title='点击放大' href=''><img class='img-circle'
+                                                                                           src=''/></a>
+                #end
+            #elseif($field.type=="timestamp")
+                <span>$!{extDateTools.formatLong($field.value)}</span>
+            #elseif($field.type=="ratio")
+                $enumTools.getEnumValueByFieldNameAndType($field.fieldName,$!field.value)
+            #else
+                <span>$!{field.value}</span>
+            #end</td>
+        </tr>
+        #end
+    </tbody>
+</table>
+<script src="#springUrl('')/static/js/sellrise/pages/detail.js"></script>

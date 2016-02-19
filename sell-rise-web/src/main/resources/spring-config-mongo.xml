@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+       default-autowire="byName">
+
+    <bean id="mongoDBManager" class="com.rise.shop.persistence.dao.mongo.utils.MongoDBManager" init-method="init" destroy-method="destory">
+        <property name="address" value="localhost:27017"/>
+        <property name="username" value=""/>
+        <property name="password" value=""/>
+        <property name="database" value="art"/>
+        <property name="connectionsPerHost" value="30"/>
+        <property name="threadsAllowedToBlockForConnectionMultiplier" value="100"/>
+        <property name="mongoCollectionsIndexesInfoMap" ref="mongoCollectionsIndexesInfoMap"/>
+    </bean>
+
+    <util:map id="mongoCollectionsIndexesInfoMap">
+        <!--<entry key="order_trace_info">-->
+        <!--<list>-->
+        <!--&lt;!&ndash;单索引 1升序 -1降序&ndash;&gt;-->
+        <!--<value>{"orderId":-1,"unique":true}</value>-->
+        <!--<value>{"created":-1,"unique":false}</value>-->
+        <!--<value>{"venderId":1,"unique":false}</value>-->
+        <!--&lt;!&ndash;符合索引&ndash;&gt;-->
+        <!--&lt;!&ndash;<value>{"orderId":1,"createTime":1,"unique":true,"background":false}</value>&ndash;&gt;-->
+        <!--</list>-->
+        <!--</entry>-->
+    </util:map>
+
+    <bean id="artistWorkDao" class="com.rise.shop.dao.art.impl.ArtistWorkDaoImpl">
+        <property name="collectionName" value="artistWork"/>
+    </bean>
+
+    <bean id="curatorDao" class="com.rise.shop.dao.art.impl.CuratorDaoImpl">
+        <property name="collectionName" value="curator"/>
+    </bean>
+
+    <bean id="organizationDao" class="com.rise.shop.dao.art.impl.OrganizationDaoImpl">
+        <property name="collectionName" value="organization"/>
+    </bean>
+
+    <bean id="imageInfoDao" class="com.rise.shop.dao.art.impl.ImageInfoDaoImpl">
+        <property name="collectionName" value="imageInfo"/>
+    </bean>
+
+    <bean id="exhibitionDao" class="com.rise.shop.dao.art.impl.ExhibitionDaoImpl">
+        <property name="collectionName" value="exhibition"/>
+    </bean>
+
+</beans>

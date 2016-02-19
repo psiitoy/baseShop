@@ -1,0 +1,14 @@
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="#springUrl('')/static/js/bootstrap.min.js"></script>
+<script src="#springUrl('')/static/js/bootstrap-paginator.min.js"></script>
+<script src="#springUrl('')/static/js/bootstrap-datetimepicker.min.js"></script>
+<script src="#springUrl('')/static/js/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="#springUrl('')/static/js/sellrise/usage/sellrise.ajax.js"></script>
+<script src="#springUrl('')/static/js/sellrise/usage/sellrise.validator.js"></script>
+<script src="#springUrl('')/static/js/sellrise/usage/sellrise.pagebar.js"></script>
+<script src="#springUrl('')/static/js/sellrise/usage/sellrise.calender.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="#springUrl('')/static/js/ie10-viewport-bug-workaround.js"></script>
+#if($jsblock)$jsblock#end

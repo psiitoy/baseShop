@@ -1,0 +1,66 @@
+#set($layout = "layout/empty.vm" )
+#define($cssblock)
+<link rel="stylesheet" type="text/css" href="#springUrl('')/static/css/jquery.terminal.css"/>
+<style type="text/css">
+    #shell {
+        background-color: #222222;
+        margin: 10px 10px;
+    }
+
+    .terminal, .cmd {
+        background-color: #222222;
+        color: #FFFFFF;
+    }
+</style>
+#end
+#define($jsblock)
+<script type="text/javascript" src="#springUrl('')/static/js/jquery.mousewheel-min.js"></script>
+<script type="text/javascript" src="#springUrl('')/static/js/jquery.terminal-min.js"></script>
+<script type="text/javascript">
+    jQuery(function ($, undefined) {
+        var backgroud = '#222222';
+        var warn = 'red';
+        var normal = 'green';
+        $('#shell').terminal(function (command, term) {
+            if (command !== '') {
+                if (command == 'help') {
+                    term.echo("[[b;" + normal + ";" + backgroud + "]available command: ]");
+                    term.echo("[[b;" + normal + ";" + backgroud + "]\tget, set, setnx, setex, ttl, del, hget, hset, hsetnx, hdel ]");
+                    term.echo("[[b;" + normal + ";" + backgroud + "]more commands are comming soon... ]");
+                    return;
+                }
+                try {
+                    var pathes = command.trim().split(" ");
+                    var path = pathes.join("/");
+                    $.ajax({
+                        url: "#springUrl('')/" + warn + "is/" + path,
+                        dataType: 'text',
+                        statusCode: {
+                            404: function () {
+                                term.echo("[[b;" + warn + ";" + backgroud + "]command not found]");
+                            },
+                            500: function (data) {
+                                term.echo("[[b;" + warn + ";" + backgroud + "]" + data + "]");
+                            }
+                        },
+                        success: function (data) {
+                            data = data == '' ? '\'\'' : data;
+                            term.echo("[[b;" + normal + ";" + backgroud + "]" + data + "]");
+                        }
+                    });
+                } catch (e) {
+                    term.error(new String(e));
+                }
+            } else {
+                term.echo("[[b;" + normal + ";" + backgroud + "]you can input \'help\' to find available command ]");
+            }
+        }, {
+            greetings: 'Redis shell',
+            name: 'redis',
+            height: 600,
+            prompt: 'redis> '});
+    });
+</script>
+#end
+<title>#springMessage('index.title')</title>
+<div id="shell"></div>

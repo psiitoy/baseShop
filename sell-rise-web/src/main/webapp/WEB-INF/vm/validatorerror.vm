@@ -1,0 +1,4 @@
+请检查表单提交参数，若无法鉴别请联系管理员
+#if($!msg)
+<div class="alert-success">异常信息: $!{msg}</div>
+#end

@@ -1,0 +1,49 @@
+body {
+    padding-top: 50px;
+    /*background-attachment: fixed;*/
+    /*background-color: #777;*/
+    /*background-size: cover;*/
+    /*background-repeat: no-repeat;*/
+}
+
+table img {
+    width: 30px;
+    height: 30px;
+    /*-webkit-border-radius: 100px;*/
+    /*-moz-border-radius: 100px;*/
+    /*border-radius: 100px;*/
+}
+
+.main {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.table input {
+    width: 68px;
+}
+
+input.t {
+    border: 1px solid #fff;
+}
+
+input.s {
+    border: 1px solid #369;
+}
+
+.do_edit_table_tbody_ {
+    display: none;
+    border: 1px solid #fff;
+}
+
+.do_edit_table_tbody input[name="hideinput"] {
+    display: none;
+    border: 1px solid #369;
+    display: none;
+}
+
+form label.error {
+    padding-left: 16px;
+    margin-left: 2px;
+    color: red;
+}

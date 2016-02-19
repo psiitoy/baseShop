@@ -1,0 +1,2 @@
+#parse('pages/add.vm')
+<script src="#springUrl('')/static/js/sellrise/pages/edit.js"></script>

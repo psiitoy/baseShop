@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+##引入head
+    #parse('layout/loadbefore.vm')
+
+<body style="background-color: transparent">
+<div id="loginbar">#parse('layout/loginbar.vm')</div>
+<div id="content">
+    <div class="container">$screen_content</div>
+</div>
+<div id="footer">#parse('layout/footer.vm')</div>
+
+##js后引入
+    #parse('layout/loadafter.vm')
+</body>
+</html>

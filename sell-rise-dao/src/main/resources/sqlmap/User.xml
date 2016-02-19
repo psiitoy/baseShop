@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ComRiseShopDomainArtMysqlUser">
+    <typeAlias alias="User" type="com.rise.shop.domain.art.mysql.User"/>
+    <typeAlias alias="UserQuery" type="com.rise.shop.domain.query.UserQuery"/>
+    <!-- 返回结果集类型 -->
+    <resultMap id="UserResultMap" class="User">
+        <result column="EMAIL" property="email"/>
+        <result column="PWD" property="pwd"/>
+        <result column="STATE" property="state"/>
+        <result column="AUTH_CODE" property="authCode"/>
+        <result column="ID" property="id"/>
+        <result column="CREATED" property="created"/>
+        <result column="MODIFIED" property="modified"/>
+    </resultMap>
+    <!--[查询条件] -->
+    <sql id="queryCondition">
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend=" AND " property="email">EMAIL=#email#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="pwd">PWD=#pwd#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="state">STATE=#state#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="authCode">AUTH_CODE=#authCode#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="id">ID=#id#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="created">CREATED=#created#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="modified">MODIFIED=#modified#</isNotEmpty>
+        </dynamic>
+    </sql>
+    <sql id="Base_Column_List"> EMAIL, PWD, STATE, AUTH_CODE, ID, CREATED, MODIFIED</sql>
+    <!--根据主键查单条-->
+    <select id="Get" parameterClass="long" resultMap="UserResultMap">SELECT
+        <include refid="Base_Column_List"/>
+        FROM user WHERE id=#id:BIGINT#
+    </select>
+    <!--根据条件查单条-->
+    <select id="Find" parameterClass="User" resultMap="UserResultMap">SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        <isParameterPresent>
+            <include refid="queryCondition"/>
+        </isParameterPresent>
+    </select>
+    <!--根据条件查条数-->
+    <select id="FindByPage_count" parameterClass="UserQuery" resultClass="int">SELECT count(1) FROM user
+        <isParameterPresent>
+            <include refid="queryCondition"/>
+        </isParameterPresent>
+    </select>
+    <!--根据条件分页查询-->
+    <select id="FindByPage" parameterClass="UserQuery" resultMap="UserResultMap">SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        <isParameterPresent>
+            <include refid="queryCondition"/>
+        </isParameterPresent>
+        ORDER BY CREATED DESC limit #index# ,#pageSize#
+    </select>
+    <!--插入-->
+    <insert id="Insert" parameterClass="User">INSERT INTO user (<include refid="Base_Column_List"/>) VALUES ( #email#, #pwd#, #state#, #authCode#, #id#, now(), now())
+    </insert>
+    <!--更新-->
+    <update id="Update" parameterClass="User">UPDATE user SET MODIFIED=now()
+        <isNotEmpty property="email">,EMAIL=#email#</isNotEmpty>
+        <isNotEmpty property="pwd">,PWD=#pwd#</isNotEmpty>
+        <isNotEmpty property="state">,STATE=#state#</isNotEmpty>
+        <isNotEmpty property="authCode">,AUTH_CODE=#authCode#</isNotEmpty>
+        WHERE id=#id:BIGINT#
+    </update>
+    <!--删除-->
+    <delete id="Delete" parameterClass="User"> DELETE FROM user WHERE id=#id:BIGINT#</delete>
+</sqlMap>

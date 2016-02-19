@@ -1,0 +1,46 @@
+<table id="table-domain" class="table" currentPage="$!list.index" totalPages="$!list.totalPage">
+    <caption></caption>
+    <thead>
+    <tr id='thead_tr'>
+        #foreach($domain in $domains)
+            #if($domain.summary == true)
+                <th field="$domain.fieldName" type="$domain.type">$domain.name</th>
+            #end
+        #end
+        <th name="editBtnTh">编辑</th>
+        <th name="detailBtnTh">详情</th>
+        <th name="delBtnTh">删除</th>
+    </tr>
+    </thead>
+    <tbody id='tbody'>
+        #foreach($obj in $list)
+        <tr id="tr_$obj.id">
+            #foreach($fieldinfo in $fieldDetailTools.bean2FieldMetaInfoList($obj,true))
+                #if($fieldinfo.summary)
+                    <td>
+                        #if($fieldinfo.type=="timestamp")
+                            $!{extDateTools.formatLong($fieldinfo.value)}
+                        #elseif($!fieldinfo.type=="ratio")
+                            $enumTools.getEnumValueByFieldNameAndType($fieldinfo.fieldName,$!fieldinfo.value)
+                        #elseif($!fieldinfo.type=="img")
+                            #foreach($image in $!{fieldinfo.value})
+                                <a name='show-img' imageId="$image" title='点击放大' href=''><img class='img-circle'
+                                                                                                           src=''/></a>
+                            #end
+                        #else
+                            $!{fieldinfo.value}
+                        #end
+                    </td>
+                #end
+            #end
+            <td name="editBtnTd"><a class='glyphicon glyphicon-pencil btn' title='修改'
+                   href='/$!{session.getAttribute("domainname")}/edit/$obj.id'></a></td>
+            <td name="detailBtnTd"><a class='glyphicon glyphicon-eye-open btn' title='详情'
+                   href='/$!{session.getAttribute("domainname")}/detail/$obj.id' target='_blank'></a></td>
+            <td name="delBtnTd"><a class='glyphicon glyphicon-trash btn' title='删除' href='javascript:void(0)'
+                   onclick='deleteDomainObj($obj.id)'></a></td>
+        </tr>
+        #end
+    </tbody>
+</table>
+<script src="#springUrl('')/static/js/sellrise/pages/list.js"></script>
