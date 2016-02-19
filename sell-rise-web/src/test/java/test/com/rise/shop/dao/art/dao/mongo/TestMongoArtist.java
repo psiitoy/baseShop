@@ -2,6 +2,7 @@ package test.com.rise.shop.dao.art.dao.mongo;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rise.shop.domain.art.mongo.Artist;
+import com.rise.shop.domain.query.ArtistQuery;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.BaseQuery;
@@ -56,7 +57,7 @@ public class TestMongoArtist extends AbstractJUnit4SpringContextTests {
     public void testFindByPage() throws Exception {
         PaginatedList<Artist> list;
         try {
-            Query query = new BaseQuery();
+            Query query = new ArtistQuery();
             query.setPageSize(10);
             query.setPageNo(1);
             list = artistService.findByPage(query);

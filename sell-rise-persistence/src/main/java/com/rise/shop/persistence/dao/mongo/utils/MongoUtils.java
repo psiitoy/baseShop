@@ -110,7 +110,7 @@ public class MongoUtils {
         fields = (Field[]) ArrayUtils.addAll(fields, superFields);
         for (Field field : fields) {
             String fieldName = field.getName();
-            if ("index".equalsIgnoreCase(fieldName) || "pageSize".equalsIgnoreCase(fieldName) || "pageNo".equalsIgnoreCase(fieldName)) {
+            if ("index".equalsIgnoreCase(fieldName) || "pageSize".equalsIgnoreCase(fieldName) || "pageNo".equalsIgnoreCase(fieldName) || "orderByList".equalsIgnoreCase(fieldName)) {
                 continue;
             }
             String methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
