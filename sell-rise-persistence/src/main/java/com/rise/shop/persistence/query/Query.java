@@ -29,4 +29,5 @@ public interface Query {
     public Integer getPageNo();
 
     public void setPageNo(Integer pageNo);
+
 }

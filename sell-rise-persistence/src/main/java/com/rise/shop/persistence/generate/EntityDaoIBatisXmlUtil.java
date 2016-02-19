@@ -1,6 +1,7 @@
 package com.rise.shop.persistence.generate;
 
 import com.rise.shop.persistence.beans.BasePersistenceBean;
+import com.rise.shop.persistence.query.OrderByBaseQuery;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
 import com.rise.shop.persistence.utils.ReflectUtils;
 
@@ -88,19 +89,36 @@ public class EntityDaoIBatisXmlUtil {
 
     private static <Domain extends BasePersistenceBean, DomainQuery> String getSqlQuery(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
         StringBuilder sb = new StringBuilder();
+        sb.append("<!--[domain所有条件] -->");
+        sb.append("<sql id=\"allCondition\">");
+        sb.append("<dynamic prepend=\"WHERE\">");
+        sb.append(getDynamicWhereCloumn(domainClass));
+        sb.append("</dynamic>");
+        sb.append("</sql>");
         sb.append("<!--[查询条件] -->");
         sb.append("<sql id=\"queryCondition\">");
         sb.append("<dynamic prepend=\"WHERE\">");
-        sb.append(getDynamicWhereCloumn(domainClass));
+        sb.append(getDynamicWhereCloumn(domainQueryClass));
         sb.append("</dynamic>");
         sb.append("</sql>");
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getDynamicWhereCloumn(Class<Domain> domainClass) {
+    private static <DomainQuery> String getDynamicWhereCloumn(Class<DomainQuery> domainQueryClass) {
         StringBuilder sb = new StringBuilder();
-        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainQueryClass);
+        Field[] pageFields = ReflectUtils.getAllClassAndSuperClassFields(OrderByBaseQuery.class);
         for (Field field : fields) {
+            boolean isPageFields = false;
+            for (Field pf : pageFields) {
+                if (pf.getName().equals(field.getName())) {
+                    isPageFields = true;
+                    break;
+                }
+            }
+            if (isPageFields) {
+                continue;
+            }
             sb.append("<isNotEmpty prepend=\" AND \" property=\"");
             sb.append(field.getName());
             sb.append("\">");
@@ -148,7 +166,7 @@ public class EntityDaoIBatisXmlUtil {
         sb.append("<include refid=\"Base_Column_List\"/>");
         sb.append(" FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
         sb.append("<isParameterPresent>");
-        sb.append("<include refid=\"queryCondition\"/>");
+        sb.append("<include refid=\"allCondition\"/>");
         sb.append("</isParameterPresent>");
         sb.append("</select>");
         return sb.toString();
@@ -157,12 +175,12 @@ public class EntityDaoIBatisXmlUtil {
     private static <Domain extends BasePersistenceBean> String getSqlCount(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--根据条件查条数-->");
-        sb.append("<select id=\"FindByPage_count\" parameterClass=\"");
-        sb.append(domainClass.getSimpleName() + "Query");
+        sb.append("<select id=\"Count\" parameterClass=\"");
+        sb.append(domainClass.getSimpleName());
         sb.append("\" resultClass=\"int\">");
         sb.append(" SELECT count(1) FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
         sb.append("<isParameterPresent>");
-        sb.append("<include refid=\"queryCondition\"/>");
+        sb.append("<include refid=\"allCondition\"/>");
         sb.append("</isParameterPresent>");
         sb.append("</select>");
         return sb.toString();
@@ -182,7 +200,12 @@ public class EntityDaoIBatisXmlUtil {
         sb.append("<isParameterPresent>");
         sb.append("<include refid=\"queryCondition\"/>");
         sb.append("</isParameterPresent>");
-        sb.append(" ORDER BY CREATED DESC limit #index# ,#pageSize#");
+        //增加 orderBy
+        sb.append("<isParameterPresent>");
+        sb.append("<isNotEmpty prepend=\"ORDER BY \" property=\"orderBy\"> ");
+        sb.append("$orderBy$");
+        sb.append("</isNotEmpty></isParameterPresent>");
+        sb.append("limit #index# ,#pageSize#");
         sb.append("</select>");
         return sb.toString();
     }

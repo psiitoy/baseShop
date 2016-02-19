@@ -1,39 +1,19 @@
 package com.rise.shop.domain.query;
 
-import com.rise.shop.domain.art.mysql.User;
-import com.rise.shop.persistence.query.Query;
+import com.rise.shop.persistence.query.OrderByBaseQuery;
 
 /**
  * Created by wangdi on 15-1-18.
  */
-public class UserQuery extends User implements Query {
-    private Integer index;
-    private Integer pageSize;
-    private Integer pageNo;
+public class UserQuery extends OrderByBaseQuery {
 
-    public Integer getIndex() {
-        return index;
+    private String email;
+
+    public String getEmail() {
+        return email;
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    @Override
-    public Integer getPageNo() {
-        return pageNo;
-    }
-
-    @Override
-    public void setPageNo(Integer pageNo) {
-        this.pageNo = pageNo;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

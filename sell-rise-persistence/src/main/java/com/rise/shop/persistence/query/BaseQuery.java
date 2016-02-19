@@ -34,4 +34,5 @@ public class BaseQuery implements Query {
     public void setPageNo(Integer pageNo) {
         this.pageNo = pageNo;
     }
+
 }

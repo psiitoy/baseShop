@@ -53,8 +53,8 @@ public abstract class EntityServiceImpl<T extends BasePersistenceBean> implement
     }
 
     @Override
-    public int count(Query query) throws Exception {
-        return entityDao.count(query);
+    public int count(T t) throws Exception {
+        return entityDao.count(t);
     }
 
     @Override

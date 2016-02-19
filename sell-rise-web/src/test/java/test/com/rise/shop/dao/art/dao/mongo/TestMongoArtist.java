@@ -2,10 +2,11 @@ package test.com.rise.shop.dao.art.dao.mongo;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rise.shop.domain.art.mongo.Artist;
-import com.rise.shop.domain.query.ArtistQuery;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.BaseQuery;
+import com.rise.shop.persistence.query.ColumnOrder;
+import com.rise.shop.persistence.query.OrderByDescEnum;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.service.art.ArtistService;
 import org.junit.Test;
@@ -53,11 +54,11 @@ public class TestMongoArtist extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void testFindByPage() throws Exception {
-        PaginatedList<Artist> list = new PaginatedArrayList();
+        PaginatedList<Artist> list;
         try {
             Query query = new BaseQuery();
-            query.setIndex(1);
             query.setPageSize(10);
+            query.setPageNo(1);
             list = artistService.findByPage(query);
             System.out.println("###" + list.size() + "#" + list);
         } catch (Exception e) {
@@ -67,7 +68,7 @@ public class TestMongoArtist extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void testCount() throws Exception {
-        ArtistQuery query = new ArtistQuery();
+        Artist query = new Artist();
         System.out.println("####" + artistService.count(query));
     }
 

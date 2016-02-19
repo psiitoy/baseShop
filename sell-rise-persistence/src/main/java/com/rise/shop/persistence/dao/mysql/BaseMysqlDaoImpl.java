@@ -5,6 +5,7 @@ import com.rise.shop.persistence.dao.BaseDao;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
+import com.rise.shop.persistence.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DataAccessException;
@@ -30,6 +31,8 @@ import java.util.Map;
 public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao implements BaseMysqlDao<T> {//implements EntityDao<T> {
 
     protected static final String POSTFIX_FIND = ".Find";
+
+    protected static final String POSTFIX_COUNT = ".Count";
 
     protected static final String POSTFIX_FIND_BY_PAGE = ".FindByPage";
 
@@ -112,7 +115,7 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
     }
 
     /**
-     * 根据条件查询对象（有分页）
+     * 根据条件查询对象（有分页）TODO
      *
      * @param sqlID
      * @param query 包含所有字段查询条件
@@ -120,7 +123,7 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
      * @throws Exception
      */
     public PaginatedList<T> findByPage(String sqlID, Query query) throws Exception {
-        return this.executeQueryForList(sqlID + POSTFIX_FIND_BY_PAGE, query);
+        return this.executeQueryForList(sqlID, query);
     }
 
     /**
@@ -139,7 +142,7 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
         PaginatedList paginatedList = new PaginatedArrayList();
         try {
             // 得到数据记录总数
-            Integer countNumber = (Integer) queryForObject(selStmName + "_count", query);
+            Integer countNumber = count(CopyPropertyUtils.copyPropertiesAndInstance(query, entityClass));
             if (countNumber != null) {
                 // 设置当前查询的记录总数
                 paginatedList.setTotalItem(countNumber.intValue());
@@ -193,8 +196,8 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
         return update(nameSpace + POSTFIX_UPDATE, t);
     }
 
-    public int count(Query query) throws Exception {
-        Integer countNumber = (Integer) queryForObject(nameSpace + POSTFIX_FIND_BY_PAGE + "_count", query);
+    public int count(T t) throws Exception {
+        Integer countNumber = (Integer) queryForObject(nameSpace + POSTFIX_COUNT, t);
         if (countNumber == null) {
             return 0;
         } else {

@@ -62,7 +62,7 @@ public interface EntityService<T extends BasePersistenceBean> {
      */
     public PaginatedList findByPage(Query query) throws Exception;
 
-    public int count(Query query) throws Exception;
+    public int count(T t) throws Exception;
 
     /**
      * 根据指定的条件分页查询记录 模糊查询

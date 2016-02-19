@@ -5,6 +5,8 @@ import com.rise.shop.domain.enumtype.AuthCodeTypeEnum;
 import com.rise.shop.domain.query.UserQuery;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
+import com.rise.shop.persistence.query.ColumnOrder;
+import com.rise.shop.persistence.query.OrderByDescEnum;
 import com.rise.shop.persistence.query.Query;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,14 +64,17 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
 
     @Test
     public void testCount() throws Exception {
-        System.out.println("##" + testCount(getQuery()));
+        System.out.println("##" + testCount(new User()));
     }
 
     @Test
     public void testQuery() throws Exception {
-        Query query = new UserQuery();
-        query.setPageNo(11);
+        UserQuery query = new UserQuery();
+//        query.setEmail("admin");
+        query.setPageNo(1);
         query.setPageSize(10);
-        System.out.println("#" + userEntityDao.findByPage(query).size());
+        query.addOrderBy(new ColumnOrder(OrderByDescEnum.DESC, "email"));
+        System.out.println("#" + userEntityDao.findByPage(query));
     }
+
 }

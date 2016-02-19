@@ -7,6 +7,7 @@ import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
+import com.rise.shop.persistence.utils.CopyPropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +125,7 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
             throw new RuntimeException("query的pageNo和pageSize必须赋值");
         }
         PaginatedList<T> paginatedList = new PaginatedArrayList<T>();
-        int count = count(query);
+        int count = count(CopyPropertyUtils.copyPropertiesAndInstance(query, entityClass));
         paginatedList.setPageSize(query.getPageSize());
         paginatedList.setTotalItem(count);
         if (query.getIndex() == null) {
@@ -162,8 +163,8 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
     }
 
     @Override
-    public int count(Query query) throws Exception {
-        return (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2Map(query));
+    public int count(T t) throws Exception {
+        return (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2Map(t));
     }
 
     public void setCollectionName(String collectionName) {

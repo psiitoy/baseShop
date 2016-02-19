@@ -13,8 +13,8 @@
         <result column="STATE" property="state"/>
         <result column="MODIFIED" property="modified"/>
     </resultMap>
-    <!--[查询条件] -->
-    <sql id="queryCondition">
+    <!--[domain所有条件] -->
+    <sql id="allCondition">
         <dynamic prepend="WHERE">
             <isNotEmpty prepend=" AND " property="id">ID=#id#</isNotEmpty>
             <isNotEmpty prepend=" AND " property="authCode">AUTH_CODE=#authCode#</isNotEmpty>
@@ -23,6 +23,12 @@
             <isNotEmpty prepend=" AND " property="email">EMAIL=#email#</isNotEmpty>
             <isNotEmpty prepend=" AND " property="state">STATE=#state#</isNotEmpty>
             <isNotEmpty prepend=" AND " property="modified">MODIFIED=#modified#</isNotEmpty>
+        </dynamic>
+    </sql>
+    <!--[查询条件] -->
+    <sql id="queryCondition">
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend=" AND " property="email"> EMAIL=#email#</isNotEmpty>
         </dynamic>
     </sql>
     <sql id="Base_Column_List"> ID, AUTH_CODE, PWD, CREATED, EMAIL, STATE, MODIFIED</sql>
@@ -36,13 +42,13 @@
         <include refid="Base_Column_List"/>
         FROM user
         <isParameterPresent>
-            <include refid="queryCondition"/>
+            <include refid="allCondition"/>
         </isParameterPresent>
     </select>
     <!--根据条件查条数-->
-    <select id="FindByPage_count" parameterClass="UserQuery" resultClass="int">SELECT count(1) FROM user
+    <select id="Count" parameterClass="User" resultClass="int">SELECT count(1) FROM user
         <isParameterPresent>
-            <include refid="queryCondition"/>
+            <include refid="allCondition"/>
         </isParameterPresent>
     </select>
     <!--根据条件分页查询-->
@@ -52,7 +58,10 @@
         <isParameterPresent>
             <include refid="queryCondition"/>
         </isParameterPresent>
-        ORDER BY CREATED DESC limit #index# ,#pageSize#
+        <isParameterPresent>
+            <isNotEmpty prepend="ORDER BY " property="orderBy">$orderBy$</isNotEmpty>
+        </isParameterPresent>
+        limit #index# ,#pageSize#
     </select>
     <!--插入-->
     <insert id="Insert" parameterClass="User">INSERT INTO user (<include refid="Base_Column_List"/>) VALUES ( #id#, #authCode#, #pwd#, now(), #email#, #state#, now())

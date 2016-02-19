@@ -35,6 +35,7 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
     private List<Long> tempIdList;
     //数据库中原来的数据
     private int beforeCount;
+    private Domain domain;
 
     @PostConstruct
     public void initBefore() {
@@ -43,7 +44,8 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
 
     public void execute() throws Exception {
         try {
-            beforeCount = testCount(getQuery());
+            domain = getDomain().newInstance();
+            beforeCount = testCount(domain);
             logger.info("[DB框架测试]系统中存在" + beforeCount + "条数据");
             logger.info("[DB框架测试]testCount 成功");
             testInsert(getDomain(), getQuery());
@@ -60,22 +62,23 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
         }
     }
 
-    public int testCount(Query query) throws Exception {
-        return getEntityDao().count(query);
+    public int testCount(Domain t) throws Exception {
+        return getEntityDao().count(t);
     }
 
     public void testInsert(Class<Domain> domainClass, Query query) throws Exception {
-        int count = testCount(query);
+        int count = testCount(domain);
         for (int i = 0; i < insertObjCount; i++) {
             Domain t = domainClass.newInstance();
             t = ReflectUtils.setFieldNullToRandomValue(t);
+            t.setId(System.currentTimeMillis());
             tempIdList.add(t.getId());
             getEntityDao().insert(t);
         }
         logger.info("[DB框架测试]插入" + insertObjCount + "条测试数据");
         int nowCount = (insertObjCount + count);
         logger.info("[DB框架测试]当前数据数量为" + nowCount);
-        Assert.isTrue(getEntityDao().count(query) == nowCount);
+        Assert.isTrue(getEntityDao().count(domain) == nowCount);
         Assert.isTrue(getEntityDao().findBy(domainClass.newInstance()).size() == nowCount);
         query.setPageNo(Query.FIRST_PAGE);
         query.setPageSize(maxPageSize);
@@ -94,7 +97,7 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
     }
 
     public int testQueryTotalPage(Query query) throws Exception {
-        int count = testCount(query);
+        int count = testCount(domain);
         query.setPageSize(pageSize);
         query.setIndex(null);
         query.setPageNo(Query.FIRST_PAGE);
@@ -106,7 +109,7 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
     }
 
     public void testQueryPageFirstAndLast(Query query) throws Exception {
-        int count = testCount(query);
+        int count = testCount(domain);
         int totalPage = testQueryTotalPage(query);
         //第一页 从index 0开始
         query.setPageSize(pageSize);
@@ -145,7 +148,7 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
         logger.info("[DB框架测试]删除" + tempIdList.size() + "条数据");
         query.setPageSize(maxPageSize);
         query.setPageNo(Query.FIRST_PAGE);
-        Assert.isTrue(getEntityDao().count(query) == beforeCount);
+        Assert.isTrue(getEntityDao().count(domain) == beforeCount);
         Assert.isTrue(getEntityDao().findByPage(query).size() == beforeCount);
         Assert.isTrue(getEntityDao().findBy(domainClass.newInstance()).size() == beforeCount);
         logger.info("[DB框架测试]删除后库中数据量为" + beforeCount);

@@ -1,9 +1,6 @@
 package test.com.rise.shop.dao.art.dao.es;
 
 import com.rise.shop.domain.art.mongo.Artist;
-import com.rise.shop.domain.art.mysql.User;
-import com.rise.shop.domain.query.UserQuery;
-import com.rise.shop.persistence.generate.GenerateSqlAndIbatisXmlTool;
 import com.rise.shop.service.repository.ArtistEsRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,11 +22,6 @@ public class TestEsArtist extends AbstractJUnit4SpringContextTests {
     public void emptyData() throws Exception {
         repository.deleteAll();
     }
-
-    public static void main(String[] args) {
-        System.out.println(GenerateSqlAndIbatisXmlTool.generate(User.class, UserQuery.class));
-    }
-
 
     @Test
     public void testSave1() throws Exception {
