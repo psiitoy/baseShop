@@ -5,6 +5,9 @@ package com.rise.shop.persistence.query;
  * Created by wangdi on 14-12-10.
  */
 public interface Query {
+    //首页从1开始(兼容0)
+    public static final int FIRST_PAGE = 1;
+
     /**
      * 页编号
      *

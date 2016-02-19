@@ -9,7 +9,6 @@ import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Required;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -90,8 +89,7 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
     public int update(T t) throws Exception {
 //        mongoDBManager.update(collectionName, MongoUtils.bean2Map(t), MongoUtils.bean2QueryId(t));
         t.setModified(Calendar.getInstance().getTime());
-        mongoDBManager.update(getRealCollectionName(), MongoUtils.bean2Map(t));
-        return 0;
+        return mongoDBManager.update(getRealCollectionName(), MongoUtils.bean2Map(t));
     }
 
     @Override
@@ -177,7 +175,7 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
         this.mongoDBManager = mongoDBManager;
     }
 
-//    @Required
+    //    @Required
     public void setTablePrefix(String tablePrefix) {
         this.tablePrefix = tablePrefix;
     }

@@ -4,6 +4,7 @@ package com.rise.shop.persistence.query;
  * Created by wangdi on 15-1-9.
  */
 public class BaseQuery implements Query {
+
     private Integer index;
     private Integer pageSize;
     private Integer pageNo;

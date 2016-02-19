@@ -1,4 +1,4 @@
-package test;
+package test.com.rise.shop.dao.art.dao.mongo;
 
 import com.rise.shop.domain.art.mongo.ImageInfo;
 import com.rise.shop.service.art.ImageInfoService;

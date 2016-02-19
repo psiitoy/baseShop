@@ -1,4 +1,4 @@
-package test;//import com.rise.shop.common.util.PaginatedArrayList;
+package test.com.rise.shop.dao.art.service;//import com.rise.shop.common.util.PaginatedArrayList;
 //import com.rise.shop.common.util.PaginatedList;
 //import com.rise.shop.domain.Ware;
 //import com.rise.shop.service.OrderService;

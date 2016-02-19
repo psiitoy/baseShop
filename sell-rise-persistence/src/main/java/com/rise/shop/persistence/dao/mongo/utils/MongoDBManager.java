@@ -211,7 +211,7 @@ public class MongoDBManager {
         getCollection(collection).updateMulti(obj1, obj2);
     }
 
-    public void update(String collection, final Map<String, Object> setFields) {
+    public int update(String collection, final Map<String, Object> setFields) {
 //        DBObject q = findByObjId(collection, setFields.get("_id").toString());
 //        DBObject o = map2Obj(setFields);
 //        getCollection(collection).update(q, o);
@@ -221,10 +221,14 @@ public class MongoDBManager {
             }});
             if (!q.isEmpty()) {
                 DBObject o = map2Obj(setFields);
-                getCollection(collection).update(q.get(0), MongoUtils.refreshMap(q.get(0), setFields));
+                WriteResult wr = getCollection(collection).update(q.get(0), MongoUtils.refreshMap(q.get(0), setFields));
+                return wr.getN();
+            } else {
+                return 0;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return -1;
         }
 
     }

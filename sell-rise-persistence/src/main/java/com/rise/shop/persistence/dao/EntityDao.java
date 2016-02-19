@@ -82,7 +82,7 @@ public interface EntityDao<T> {
     public PaginatedList<T> findByPage(String sqlID, Query query) throws Exception;
 
     /**
-     * count
+     * count (不需要传page信息 差所有满足条件的个数)
      *
      * @param query
      * @return

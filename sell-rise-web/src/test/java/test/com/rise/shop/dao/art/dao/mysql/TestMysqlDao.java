@@ -1,4 +1,4 @@
-package test;
+package test.com.rise.shop.dao.art.dao.mysql;
 
 import com.rise.shop.dao.art.UserDao;
 import com.rise.shop.domain.art.mysql.User;

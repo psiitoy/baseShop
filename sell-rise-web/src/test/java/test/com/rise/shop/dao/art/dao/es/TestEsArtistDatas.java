@@ -1,4 +1,4 @@
-package test;
+package test.com.rise.shop.dao.art.dao.es;
 
 import com.rise.shop.domain.art.mongo.Artist;
 import com.rise.shop.service.art.ArtistService;

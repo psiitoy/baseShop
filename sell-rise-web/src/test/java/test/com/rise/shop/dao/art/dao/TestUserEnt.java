@@ -1,4 +1,4 @@
-package test;
+package test.com.rise.shop.dao.art.dao;
 
 import com.rise.shop.domain.art.mysql.User;
 import com.rise.shop.domain.enumtype.AuthCodeTypeEnum;
@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/spring-config-dao.xml"})
-public class TestMysqlDaoUser extends EntityDaoBaseTest<User> {
+public class TestUserEnt extends EntityDaoBaseTest<User> {
 
     @Resource
     EntityDao<User> userEntityDao;
@@ -57,14 +57,19 @@ public class TestMysqlDaoUser extends EntityDaoBaseTest<User> {
 
     @Test
     public void testInsert2() throws Exception {
-        for (int i = 0; i < 100; i++) {
-            User user = new User();
-            user.setId(i + 100l);
-            user.setEmail("admin" + i);
-            user.setPwd("admin" + i);
-            user.setState(1);
-            user.setAuthCode(AuthCodeTypeEnum.AUTH_ALL.getType());
-            userEntityDao.insert(user);
-        }
+        testInsert(getDomain(), getQuery());
+    }
+
+    @Test
+    public void testCount() throws Exception {
+        System.out.println("##" + testCount(getQuery()));
+    }
+
+    @Test
+    public void testQuery() throws Exception {
+        Query query = new UserQuery();
+        query.setPageNo(11);
+        query.setPageSize(10);
+        System.out.println("#" + userEntityDao.findByPage(query).size());
     }
 }

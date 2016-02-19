@@ -1,4 +1,4 @@
-package test;
+package test.com.rise.shop.dao.art.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;

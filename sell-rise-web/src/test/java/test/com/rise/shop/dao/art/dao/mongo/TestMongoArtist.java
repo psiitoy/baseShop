@@ -1,4 +1,4 @@
-package test;
+package test.com.rise.shop.dao.art.dao.mongo;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rise.shop.domain.art.mongo.Artist;
