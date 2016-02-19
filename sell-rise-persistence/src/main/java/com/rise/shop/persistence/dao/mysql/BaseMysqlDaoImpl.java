@@ -43,20 +43,19 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
 
     protected static final String POSTFIX_DELETE = ".Delete";
 
-    //private SqlMapClient sqlMapClient;
-    /**
-     * DAO所管理的Entity类型.
-     */
-    private String nameSpace;
     /**
      * DAO所管理的Entity类型.
      */
     protected Class<T> entityClass;
+    /**
+     * 命名空间 (同EntityDaoIBatisXmlUtil 生成的xml配套 建议不要自行赋值)
+     */
+    private String nameSpace;
 
     public BaseMysqlDaoImpl() {
         try {
             entityClass = getSuperClassGenricType(getClass(), 0);
-            nameSpace = EntityNamesUtils.getMapperNamespace(entityClass.getName());
+            nameSpace = EntityNamesUtils.getHumpClassNames(entityClass.getName());
         } catch (Exception e) {
             logger.error("BaseMysqlDaoImpl error", e);
         }

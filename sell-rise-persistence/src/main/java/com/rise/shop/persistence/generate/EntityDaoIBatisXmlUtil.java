@@ -40,7 +40,7 @@ public class EntityDaoIBatisXmlUtil {
         sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<!DOCTYPE sqlMap PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\" \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
                 "<sqlMap namespace=\"");
-        sb.append(EntityNamesUtils.getMapperNamespace(domainClass.getName()));
+        sb.append(EntityNamesUtils.getHumpClassNames(domainClass.getName()));
         sb.append("\">");
         return sb.toString();
     }

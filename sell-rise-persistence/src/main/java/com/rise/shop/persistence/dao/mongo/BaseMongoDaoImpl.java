@@ -7,11 +7,10 @@ import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
-import com.rise.shop.persistence.utils.EntityNamesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
 
-import javax.annotation.Resource;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -22,19 +21,22 @@ import java.util.*;
 public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMongoDao<T> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected String tablePrefix;
     protected String collectionName;
-    @Resource
     protected MongoDBManager mongoDBManager;
-
     protected Class<T> entityClass;
 
     public BaseMongoDaoImpl() {
         try {
             entityClass = getSuperClassGenricType(getClass(), 0);
-            collectionName = EntityNamesUtils.getMapperNamespace(entityClass.getName());
+            collectionName = entityClass.getSimpleName();
         } catch (Exception e) {
             logger.error("BaseMongoDaoImpl error", e);
         }
+    }
+
+    private String getRealCollectionName() {
+        return tablePrefix + "_" + collectionName;
     }
 
     /*
@@ -61,7 +63,7 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
 
     @Override
     public T get(final long ID) throws Exception {
-        List<DBObject> list = mongoDBManager.find(collectionName, new HashMap<String, Object>() {{
+        List<DBObject> list = mongoDBManager.find(getRealCollectionName(), new HashMap<String, Object>() {{
             put("id", ID);
         }});
         if (list != null && list.size() == 1) {
@@ -80,7 +82,7 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
             t.setId(System.currentTimeMillis());
         }
         Map<String, Object> map = MongoUtils.bean2Map(t);
-        mongoDBManager.insert(collectionName, map);
+        mongoDBManager.insert(getRealCollectionName(), map);
         return t;
     }
 
@@ -88,19 +90,19 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
     public int update(T t) throws Exception {
 //        mongoDBManager.update(collectionName, MongoUtils.bean2Map(t), MongoUtils.bean2QueryId(t));
         t.setModified(Calendar.getInstance().getTime());
-        mongoDBManager.update(collectionName, MongoUtils.bean2Map(t));
+        mongoDBManager.update(getRealCollectionName(), MongoUtils.bean2Map(t));
         return 0;
     }
 
     @Override
     public int delete(T t) throws Exception {
-        mongoDBManager.delete(collectionName, MongoUtils.bean2Map(t));
+        mongoDBManager.delete(getRealCollectionName(), MongoUtils.bean2Map(t));
         return 0;
     }
 
     @Override
     public List<T> findBy(T t) throws Exception {
-        List<DBObject> list = mongoDBManager.find(collectionName, MongoUtils.bean2Map(t));
+        List<DBObject> list = mongoDBManager.find(getRealCollectionName(), MongoUtils.bean2Map(t));
         List<T> tlist = new ArrayList<T>();
         for (DBObject o : list) {
             tlist.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
@@ -136,7 +138,7 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
         }
         //设置当前页
         paginatedList.setIndex(query.getPageNo());
-        List<DBObject> list = mongoDBManager.findByPage(collectionName, MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize());
+        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize());
         for (DBObject o : list) {
             paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
         }
@@ -152,9 +154,9 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
     @Override
     public PaginatedList<T> findByPageLike(Map<String, String> queryMap) throws Exception {
         PaginatedList<T> paginatedList = new PaginatedArrayList<T>();
-        int count = (int) mongoDBManager.getCount(collectionName, MongoUtils.bean2LikeMap(queryMap));
+        int count = (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap));
         paginatedList.setTotalItem(count);
-        List<DBObject> list = mongoDBManager.findByPage(collectionName, MongoUtils.bean2LikeMap(queryMap), 0, 100);
+        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap), 0, 100);
         for (DBObject o : list) {
             paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
         }
@@ -163,10 +165,9 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
 
     @Override
     public int count(Query query) throws Exception {
-        return (int) mongoDBManager.getCount(collectionName, MongoUtils.bean2Map(query));
+        return (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2Map(query));
     }
 
-    //    @Required
     public void setCollectionName(String collectionName) {
         this.collectionName = collectionName;
     }
@@ -174,5 +175,10 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
 
     public void setMongoDBManager(MongoDBManager mongoDBManager) {
         this.mongoDBManager = mongoDBManager;
+    }
+
+//    @Required
+    public void setTablePrefix(String tablePrefix) {
+        this.tablePrefix = tablePrefix;
     }
 }

@@ -43,12 +43,12 @@ public class EntityNamesUtils {
     }
 
     /**
-     * 获取mapper namespace命名 如com.order.User 转换成comOrderUser
+     * 获取驼峰格式的类名 如com.order.User 转换成comOrderUser
      *
      * @param clzName
      * @return
      */
-    public static String getMapperNamespace(String clzName) {
+    public static String getHumpClassNames(String clzName) {
         StringBuilder namespaceName = new StringBuilder();
         String[] strs = clzName.split("\\.");
         for (String str : strs) {

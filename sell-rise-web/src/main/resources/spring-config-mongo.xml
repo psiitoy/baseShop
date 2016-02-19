@@ -27,24 +27,28 @@
         <!--</entry>-->
     </util:map>
 
+    <bean id="artistDao" class="com.rise.shop.dao.art.impl.ArtistDaoImpl">
+        <property name="tablePrefix" value="art"/>
+    </bean>
+
     <bean id="artistWorkDao" class="com.rise.shop.dao.art.impl.ArtistWorkDaoImpl">
-        <property name="collectionName" value="artistWork"/>
+        <property name="tablePrefix" value="art"/>
     </bean>
 
     <bean id="curatorDao" class="com.rise.shop.dao.art.impl.CuratorDaoImpl">
-        <property name="collectionName" value="curator"/>
+        <property name="tablePrefix" value="art"/>
     </bean>
 
     <bean id="organizationDao" class="com.rise.shop.dao.art.impl.OrganizationDaoImpl">
-        <property name="collectionName" value="organization"/>
+        <property name="tablePrefix" value="art"/>
     </bean>
 
     <bean id="imageInfoDao" class="com.rise.shop.dao.art.impl.ImageInfoDaoImpl">
-        <property name="collectionName" value="imageInfo"/>
+        <property name="tablePrefix" value="art"/>
     </bean>
 
     <bean id="exhibitionDao" class="com.rise.shop.dao.art.impl.ExhibitionDaoImpl">
-        <property name="collectionName" value="exhibition"/>
+        <property name="tablePrefix" value="art"/>
     </bean>
 
 </beans>

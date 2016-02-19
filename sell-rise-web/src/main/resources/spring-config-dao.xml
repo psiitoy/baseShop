@@ -18,7 +18,6 @@
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-
     <bean id="userEntityDao" class="com.rise.shop.dao.art.impl.UserDaoImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
