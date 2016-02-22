@@ -5,7 +5,7 @@ import com.rise.shop.domain.art.mongo.Artist;
 import com.rise.shop.domain.query.ArtistQuery;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
-import com.rise.shop.persistence.query.OrderByDescEnum;
+import com.rise.shop.persistence.query.domain.OrderByDescEnum;
 import com.rise.shop.service.art.ArtistService;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;

@@ -1,5 +1,6 @@
 package com.rise.shop.persistence.dao.mysql;
 
+import com.google.common.base.Preconditions;
 import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.dao.BaseDao;
 import com.rise.shop.persistence.page.PaginatedArrayList;
@@ -7,14 +8,12 @@ import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.dao.DataAccessException;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * 负责为单个Entity 提供CRUD操作的IBatis DAO基类.<br/> 子类只要在类定义时指定所管理Entity的Class,
@@ -130,14 +129,10 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
      * 带查询条件的分页
      */
     private PaginatedList<T> executeQueryForList(String selStmName, Query query) throws Exception {
-
-        if (StringUtils.isEmpty(selStmName) || (query == null)) {
-            return null;
-        }
-
-        if (query.getPageNo() == null || query.getPageSize() == null) {
-            throw new RuntimeException("query的pageNo和pageSize必须赋值");
-        }
+        Preconditions.checkNotNull(selStmName, "selStmName必须赋值");
+        Preconditions.checkNotNull(query, "query必须赋值");
+        Preconditions.checkNotNull(query.getPageNo(), "query的pageNo和pageSize必须赋值,pageNo从1起(0同1)");
+        Preconditions.checkNotNull(query.getPageSize(), "query的pageNo和pageSize必须赋值,pageNo从1起(0同1)");
 
         PaginatedList paginatedList = new PaginatedArrayList();
         try {
@@ -166,7 +161,6 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
         }
 
         return paginatedList;
-
     }
 
     /*

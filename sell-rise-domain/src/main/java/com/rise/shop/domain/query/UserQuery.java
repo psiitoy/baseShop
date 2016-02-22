@@ -1,11 +1,11 @@
 package com.rise.shop.domain.query;
 
-import com.rise.shop.persistence.query.OrderByBaseQuery;
+import com.rise.shop.persistence.query.DefaultBaseQuery;
 
 /**
  * Created by wangdi on 15-1-18.
  */
-public class UserQuery extends OrderByBaseQuery {
+public class UserQuery extends DefaultBaseQuery {
 
     private String email;
 

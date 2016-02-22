@@ -1,4 +1,4 @@
-package com.rise.shop.persistence.query;
+package com.rise.shop.persistence.query.domain;
 
 /**
  * 数据库排序

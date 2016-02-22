@@ -1,12 +1,12 @@
 package com.rise.shop.domain.query;
 
 import com.rise.shop.domain.ano.FieldMeta;
-import com.rise.shop.persistence.query.OrderByBaseQuery;
+import com.rise.shop.persistence.query.DefaultBaseQuery;
 
 /**
  * Created by wangdi on 15-1-9.
  */
-public class ArtistQuery extends OrderByBaseQuery {
+public class ArtistQuery extends DefaultBaseQuery {
     @FieldMeta(name = "姓名", order = 1)
     private String name;    //姓名
 

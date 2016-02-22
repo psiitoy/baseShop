@@ -1,6 +1,7 @@
 package com.rise.shop.persistence.query;
 
 /**
+ * 基本分页查询
  * Created by wangdi on 15-1-9.
  */
 public class BaseQuery implements Query {

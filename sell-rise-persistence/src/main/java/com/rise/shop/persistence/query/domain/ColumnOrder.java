@@ -1,4 +1,4 @@
-package com.rise.shop.persistence.query;
+package com.rise.shop.persistence.query.domain;
 
 import org.apache.commons.lang.StringUtils;
 

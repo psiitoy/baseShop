@@ -1,14 +1,17 @@
 package com.rise.shop.persistence.dao.mongo;
 
+import com.google.common.base.Preconditions;
 import com.mongodb.DBObject;
 import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.dao.mongo.utils.MongoDBManager;
 import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
-import com.rise.shop.persistence.query.ColumnOrder;
+import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.query.OrderByBaseQuery;
 import com.rise.shop.persistence.query.Query;
+import com.rise.shop.persistence.query.domain.ColumnDistance;
+import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.utils.CopyPropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,9 +126,9 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
 
     @Override
     public PaginatedList<T> findByPage(Query query) throws Exception {
-        if (query.getPageNo() == null || query.getPageSize() == null) {
-            throw new RuntimeException("query的pageNo和pageSize必须赋值");
-        }
+        Preconditions.checkNotNull(query, "query必须赋值");
+        Preconditions.checkNotNull(query.getPageNo(), "query的pageNo和pageSize必须赋值,pageNo从1起(0同1)");
+        Preconditions.checkNotNull(query.getPageSize(), "query的pageNo和pageSize必须赋值,pageNo从1起(0同1)");
         PaginatedList<T> paginatedList = new PaginatedArrayList<T>();
         int count = count(CopyPropertyUtils.copyPropertiesAndInstance(query, entityClass));
         paginatedList.setPageSize(query.getPageSize());
@@ -144,6 +147,19 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
             paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
         }
         return paginatedList;
+    }
+
+    //TODO
+    private Map<String, ColumnDistance> getMongoBaseQueryDistance(Query query) {
+        if (query instanceof DefaultBaseQuery) {
+            DefaultBaseQuery normalBaseQuery = (DefaultBaseQuery) query;
+            Map<String, ColumnDistance> distanceHashMap = new HashMap<String, ColumnDistance>();
+//            for (ColumnDistance columnDistance : normalBaseQuery.getColumnDistanceList()) {
+//            }
+            return distanceHashMap;
+        } else {
+            return null;
+        }
     }
 
     private Map<String, Integer> getMongoBaseQueryOrderBy(Query query) {

@@ -1,11 +1,14 @@
 package com.rise.shop.persistence.query;
 
+import com.rise.shop.persistence.query.domain.ColumnOrder;
+import com.rise.shop.persistence.query.domain.OrderByDescEnum;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 排序查找 继承分页
  * Created by wangdi on 15-1-9.
  */
 public class OrderByBaseQuery extends BaseQuery {

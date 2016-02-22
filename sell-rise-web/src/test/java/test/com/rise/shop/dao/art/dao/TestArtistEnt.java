@@ -4,6 +4,7 @@ import com.rise.shop.domain.art.mongo.Artist;
 import com.rise.shop.domain.query.ArtistQuery;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
+import com.rise.shop.persistence.query.BaseQuery;
 import com.rise.shop.persistence.query.Query;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by wangdi on 16-2-19.
@@ -51,5 +53,15 @@ public class TestArtistEnt extends EntityDaoBaseTest<Artist> {
         t.setName("艺术家" + now);
         t.setSex(1);
         artistDao.insert(t);
+    }
+
+    @Test
+    public void testByTime() throws Exception {
+        ArtistQuery baseQuery = new ArtistQuery();
+        baseQuery.setPageNo(1);
+        baseQuery.setPageSize(10);
+        baseQuery.setName("a");
+        List<Artist> list = artistDao.findByPage(baseQuery);
+        System.out.println("#" + list);
     }
 }
