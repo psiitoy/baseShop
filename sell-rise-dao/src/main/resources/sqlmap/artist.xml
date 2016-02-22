@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ComRiseShopDomainArtMongoArtist">
+    <typeAlias alias="Artist" type="com.rise.shop.domain.art.mongo.Artist"/>
+    <typeAlias alias="ArtistQuery" type="com.rise.shop.domain.query.ArtistQuery"/>
+    <!-- 返回结果集类型 -->
+    <resultMap id="ArtistResultMap" class="Artist">
+        <result column="SEX" property="sex"/>
+        <result column="BIRTH" property="birth"/>
+        <result column="VIDEO_URL" property="videoUrl"/>
+        <result column="NATIVE_PLACE" property="nativePlace"/>
+        <result column="DEATH" property="death"/>
+        <result column="NEWS_IMG" property="newsImg"/>
+        <result column="AWARD_NAMES" property="awardNames"/>
+        <result column="ART_TYPES" property="artTypes"/>
+        <result column="MODIFIED" property="modified"/>
+        <result column="ID" property="id"/>
+        <result column="ORG_IDS" property="orgIds"/>
+        <result column="ORG_NAMES" property="orgNames"/>
+        <result column="HEAD_IMG" property="headImg"/>
+        <result column="SCHOOL" property="school"/>
+        <result column="CREATED" property="created"/>
+        <result column="NAME" property="name"/>
+        <result column="AGE" property="age"/>
+        <result column="KEY_WORDS" property="keyWords"/>
+        <result column="ART_TIME" property="artTime"/>
+    </resultMap>
+    <!--[domain所有条件] -->
+    <sql id="allCondition">
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend=" AND " property="sex">SEX=#sex#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="birth">BIRTH=#birth#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="videoUrl">VIDEO_URL=#videoUrl#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="nativePlace">NATIVE_PLACE=#nativePlace#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="death">DEATH=#death#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="newsImg">NEWS_IMG=#newsImg#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="awardNames">AWARD_NAMES=#awardNames#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="artTypes">ART_TYPES=#artTypes#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="modified">MODIFIED=#modified#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="id">ID=#id#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="orgIds">ORG_IDS=#orgIds#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="orgNames">ORG_NAMES=#orgNames#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="headImg">HEAD_IMG=#headImg#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="school">SCHOOL=#school#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="created">CREATED=#created#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="name">NAME=#name#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="age">AGE=#age#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="keyWords">KEY_WORDS=#keyWords#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="artTime">ART_TIME=#artTime#</isNotEmpty>
+        </dynamic>
+    </sql>
+    <!--[查询条件] -->
+    <sql id="queryCondition">
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend=" AND " property="name"> NAME=#name#</isNotEmpty>
+        </dynamic>
+    </sql>
+    <sql id="Base_Column_List"> SEX, BIRTH, VIDEO_URL, NATIVE_PLACE, DEATH, NEWS_IMG, AWARD_NAMES, ART_TYPES, MODIFIED, ID, ORG_IDS, ORG_NAMES, HEAD_IMG, SCHOOL, CREATED, NAME, AGE, KEY_WORDS, ART_TIME</sql>
+    <!--根据主键查单条-->
+    <select id="Get" parameterClass="long" resultMap="ArtistResultMap">SELECT
+        <include refid="Base_Column_List"/>
+        FROM artist WHERE id=#id:BIGINT#
+    </select>
+    <!--根据条件查单条-->
+    <select id="Find" parameterClass="Artist" resultMap="ArtistResultMap">SELECT
+        <include refid="Base_Column_List"/>
+        FROM artist
+        <isParameterPresent>
+            <include refid="allCondition"/>
+        </isParameterPresent>
+    </select>
+    <!--根据条件查条数-->
+    <select id="Count" parameterClass="Artist" resultClass="int">SELECT count(1) FROM artist
+        <isParameterPresent>
+            <include refid="allCondition"/>
+        </isParameterPresent>
+    </select>
+    <!--根据条件分页查询-->
+    <select id="FindByPage" parameterClass="ArtistQuery" resultMap="ArtistResultMap">SELECT
+        <include refid="Base_Column_List"/>
+        FROM artist
+        <isParameterPresent>
+            <include refid="queryCondition"/>
+        </isParameterPresent>
+        <isParameterPresent>
+            <isNotEmpty prepend="ORDER BY " property="orderBy">$orderBy$</isNotEmpty>
+        </isParameterPresent>
+        limit #index# ,#pageSize#
+    </select>
+    <!--插入-->
+    <insert id="Insert" parameterClass="Artist">INSERT INTO artist (<include refid="Base_Column_List"/>) VALUES ( #sex#, #birth#, #videoUrl#, #nativePlace#, #death#, #newsImg#, #awardNames#, #artTypes#, now(), #id#,
+        #orgIds#, #orgNames#, #headImg#, #school#, now(), #name#, #age#, #keyWords#, #artTime#)
+    </insert>
+    <!--更新-->
+    <update id="Update" parameterClass="Artist">UPDATE artist SET MODIFIED=now()
+        <isNotEmpty property="sex">,SEX=#sex#</isNotEmpty>
+        <isNotEmpty property="birth">,BIRTH=#birth#</isNotEmpty>
+        <isNotEmpty property="videoUrl">,VIDEO_URL=#videoUrl#</isNotEmpty>
+        <isNotEmpty property="nativePlace">,NATIVE_PLACE=#nativePlace#</isNotEmpty>
+        <isNotEmpty property="death">,DEATH=#death#</isNotEmpty>
+        <isNotEmpty property="newsImg">,NEWS_IMG=#newsImg#</isNotEmpty>
+        <isNotEmpty property="awardNames">,AWARD_NAMES=#awardNames#</isNotEmpty>
+        <isNotEmpty property="artTypes">,ART_TYPES=#artTypes#</isNotEmpty>
+        <isNotEmpty property="orgIds">,ORG_IDS=#orgIds#</isNotEmpty>
+        <isNotEmpty property="orgNames">,ORG_NAMES=#orgNames#</isNotEmpty>
+        <isNotEmpty property="headImg">,HEAD_IMG=#headImg#</isNotEmpty>
+        <isNotEmpty property="school">,SCHOOL=#school#</isNotEmpty>
+        <isNotEmpty property="name">,NAME=#name#</isNotEmpty>
+        <isNotEmpty property="age">,AGE=#age#</isNotEmpty>
+        <isNotEmpty property="keyWords">,KEY_WORDS=#keyWords#</isNotEmpty>
+        <isNotEmpty property="artTime">,ART_TIME=#artTime#</isNotEmpty>
+        WHERE id=#id:BIGINT#
+    </update>
+    <!--删除-->
+    <delete id="Delete" parameterClass="Artist"> DELETE FROM artist WHERE id=#id:BIGINT#</delete>
+</sqlMap>

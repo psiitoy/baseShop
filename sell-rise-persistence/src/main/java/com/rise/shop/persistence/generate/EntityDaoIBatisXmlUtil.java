@@ -1,9 +1,10 @@
 package com.rise.shop.persistence.generate;
 
 import com.rise.shop.persistence.beans.BasePersistenceBean;
-import com.rise.shop.persistence.query.OrderByBaseQuery;
+import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
 import com.rise.shop.persistence.utils.ReflectUtils;
+import org.bson.types.ObjectId;
 
 import java.lang.reflect.Field;
 
@@ -78,6 +79,9 @@ public class EntityDaoIBatisXmlUtil {
         StringBuilder sb = new StringBuilder();
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
+            if (field.getType().isAssignableFrom(ObjectId.class)) {
+                continue;
+            }
             sb.append("<result column=\"");
             sb.append(EntityNamesUtils.getSQLFieldName(field.getName()));
             sb.append("\" property=\"");
@@ -107,8 +111,11 @@ public class EntityDaoIBatisXmlUtil {
     private static <DomainQuery> String getDynamicWhereCloumn(Class<DomainQuery> domainQueryClass) {
         StringBuilder sb = new StringBuilder();
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainQueryClass);
-        Field[] pageFields = ReflectUtils.getAllClassAndSuperClassFields(OrderByBaseQuery.class);
+        Field[] pageFields = ReflectUtils.getAllClassAndSuperClassFields(DefaultBaseQuery.class);
         for (Field field : fields) {
+            if (field.getType().isAssignableFrom(ObjectId.class)) {
+                continue;
+            }
             boolean isPageFields = false;
             for (Field pf : pageFields) {
                 if (pf.getName().equals(field.getName())) {
@@ -133,6 +140,9 @@ public class EntityDaoIBatisXmlUtil {
         sb.append("<sql id=\"Base_Column_List\">");
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
+            if (field.getType().isAssignableFrom(ObjectId.class)) {
+                continue;
+            }
             sb.append(" " + EntityNamesUtils.getSQLFieldName(field.getName()) + ",");
         }
         sb.deleteCharAt(sb.lastIndexOf(","));
@@ -221,6 +231,9 @@ public class EntityDaoIBatisXmlUtil {
         sb.append(" VALUES (");
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
+            if (field.getType().isAssignableFrom(ObjectId.class)) {
+                continue;
+            }
             if ("created".equals(field.getName()) || "modified".equals(field.getName())) {
                 sb.append(" now(),");
             } else {
@@ -250,8 +263,19 @@ public class EntityDaoIBatisXmlUtil {
     private static <Domain extends BasePersistenceBean> String getDynamicWhereUpdateCloumn(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
+        Field[] basePersistenceFields = ReflectUtils.getAllClassAndSuperClassFields(BasePersistenceBean.class);
         for (Field field : fields) {
-            if ("id".equals(field.getName()) || "created".equals(field.getName()) || "modified".equals(field.getName())) {
+            if (field.getType().isAssignableFrom(ObjectId.class)) {
+                continue;
+            }
+            boolean isBase = false;
+            for (Field bf : basePersistenceFields) {
+                if (bf.getName().equalsIgnoreCase(field.getName())) {
+                    isBase = true;
+                    break;
+                }
+            }
+            if (isBase) {
                 continue;
             }
             sb.append("<isNotEmpty property=\"");

@@ -3,6 +3,7 @@ package com.rise.shop.persistence.generate;
 import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
 import com.rise.shop.persistence.utils.ReflectUtils;
+import org.bson.types.ObjectId;
 
 import java.lang.reflect.Field;
 
@@ -43,6 +44,9 @@ public class EntityDaoTableSqlUtil {
         StringBuilder sb = new StringBuilder();
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
+            if (field.getType().isAssignableFrom(ObjectId.class)) {
+                continue;
+            }
             sb.append("\t\t `");
             sb.append(EntityNamesUtils.getSQLFieldName(field.getName()));
             sb.append("` ");
@@ -74,6 +78,8 @@ public class EntityDaoTableSqlUtil {
             dbType = " VARCHAR(200) DEFAULT NULL COMMENT '' ,";
         } else if (ReflectUtils.isDate(clz)) {
             dbType = " DATETIME DEFAULT NULL COMMENT '' ,";
+        } else if (ReflectUtils.isArrayList(clz)) {
+            dbType = " VARCHAR(2048) DEFAULT NULL COMMENT '' ,";
         } else {
             throw new RuntimeException("建表对象包含未知类型 [" + clz + "]");
         }

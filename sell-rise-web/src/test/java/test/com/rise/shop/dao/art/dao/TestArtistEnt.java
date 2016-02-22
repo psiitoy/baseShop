@@ -4,8 +4,9 @@ import com.rise.shop.domain.art.mongo.Artist;
 import com.rise.shop.domain.query.ArtistQuery;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
-import com.rise.shop.persistence.query.BaseQuery;
 import com.rise.shop.persistence.query.Query;
+import com.rise.shop.persistence.query.domain.ColumnDistance;
+import com.rise.shop.persistence.utils.CommonTimeUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,6 +42,11 @@ public class TestArtistEnt extends EntityDaoBaseTest<Artist> {
     }
 
     @Test
+    public void testGenerate() throws Exception {
+        System.out.println(generateSqlAndXml());
+    }
+
+    @Test
     public void testExecute() throws Exception {
         execute();
     }
@@ -60,8 +66,12 @@ public class TestArtistEnt extends EntityDaoBaseTest<Artist> {
         ArtistQuery baseQuery = new ArtistQuery();
         baseQuery.setPageNo(1);
         baseQuery.setPageSize(10);
-        baseQuery.setName("a");
+//        baseQuery.setName("艺术家5");
+//        baseQuery.addColumnDistance(new ColumnDistance("id", 1, 8));
+        baseQuery.addColumnDistance(new ColumnDistance("modified", CommonTimeUtils.getDateFromStr("2016-2-22 16:00:00"), CommonTimeUtils.getDateFromStr("2016-2-22 17:49:22")));
         List<Artist> list = artistDao.findByPage(baseQuery);
         System.out.println("#" + list);
+        System.out.println("#" + list.size());
     }
+
 }

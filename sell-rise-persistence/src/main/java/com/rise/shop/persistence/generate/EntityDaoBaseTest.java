@@ -154,4 +154,8 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
         logger.info("[DB框架测试]删除后库中数据量为" + beforeCount);
     }
 
+    public String generateSqlAndXml(){
+        return GenerateSqlAndIbatisXmlTool.generate(getDomain(),getQuery().getClass());
+    }
+
 }

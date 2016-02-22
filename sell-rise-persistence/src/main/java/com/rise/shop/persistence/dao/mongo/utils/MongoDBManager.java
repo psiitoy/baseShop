@@ -1,6 +1,7 @@
 package com.rise.shop.persistence.dao.mongo.utils;
 
 import com.mongodb.*;
+import com.rise.shop.persistence.query.domain.ColumnDistance;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
@@ -282,7 +283,7 @@ public class MongoDBManager {
             return null;
     }
 
-    public List<DBObject> findByPage(String collection, Map<String, Object> map, int index, int pageSize, Map<String, Integer> orderByMap) throws Exception {
+    public List<DBObject> findByPage(String collection, Map<String, Object> map, int index, int pageSize, Map<String, Integer> orderByMap, List<ColumnDistance> columnDistances) throws Exception {
         DBCollection coll = getCollection(collection);
         DBObject orderBy = new BasicDBObject();
         if (orderByMap != null) {
@@ -290,11 +291,42 @@ public class MongoDBManager {
                 orderBy.put(entry.getKey(), entry.getValue());
             }
         }
-        DBCursor c = coll.find(map2Obj(map)).skip(index).limit(pageSize).sort(orderBy);
+        QueryBuilder queryBuilder = constructQueryBuilder(map, columnDistances);
+        DBCursor c = coll.find(queryBuilder.get()).skip(index).limit(pageSize).sort(orderBy);
         if (c != null)
             return c.toArray();
         else
             return null;
+    }
+
+    /**
+     * 增加区间查询
+     *
+     * @param map
+     * @param columnDistances
+     */
+
+    private QueryBuilder constructQueryBuilder(Map<String, Object> map, List<ColumnDistance> columnDistances) {
+        if (map.containsKey("class") && map.get("class") instanceof Class)
+            map.remove("class");
+
+        QueryBuilder queryBuilder = QueryBuilder.start();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            queryBuilder.and(entry.getKey()).is(entry.getValue());
+        }
+        for (ColumnDistance columnDistance : columnDistances) {
+            if (columnDistance.isColumnFromContain()) {
+                queryBuilder.and(columnDistance.getFieldName()).greaterThanEquals(columnDistance.getColumnFrom());
+            } else {
+                queryBuilder.and(columnDistance.getFieldName()).greaterThan(columnDistance.getColumnFrom());
+            }
+            if (columnDistance.isColumnToContain()) {
+                queryBuilder.and(columnDistance.getFieldName()).lessThanEquals(columnDistance.getColumnTo());
+            } else {
+                queryBuilder.and(columnDistance.getFieldName()).lessThan(columnDistance.getColumnTo());
+            }
+        }
+        return queryBuilder;
     }
 
     public DBObject map2Obj(Map<String, Object> map) {

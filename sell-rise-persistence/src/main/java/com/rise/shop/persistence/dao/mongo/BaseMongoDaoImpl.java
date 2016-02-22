@@ -142,7 +142,8 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
         }
         //设置当前页
         paginatedList.setIndex(query.getPageNo());
-        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize(), getMongoBaseQueryOrderBy(query));
+        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize(), getMongoBaseQueryOrderBy(query), getMongoBaseQueryDistance(query
+        ));
         for (DBObject o : list) {
             paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
         }
@@ -150,13 +151,10 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
     }
 
     //TODO
-    private Map<String, ColumnDistance> getMongoBaseQueryDistance(Query query) {
+    private List<ColumnDistance> getMongoBaseQueryDistance(Query query) {
         if (query instanceof DefaultBaseQuery) {
             DefaultBaseQuery normalBaseQuery = (DefaultBaseQuery) query;
-            Map<String, ColumnDistance> distanceHashMap = new HashMap<String, ColumnDistance>();
-//            for (ColumnDistance columnDistance : normalBaseQuery.getColumnDistanceList()) {
-//            }
-            return distanceHashMap;
+            return normalBaseQuery.getColumnDistanceList();
         } else {
             return null;
         }
@@ -188,7 +186,7 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
         PaginatedList<T> paginatedList = new PaginatedArrayList<T>();
         int count = (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap));
         paginatedList.setTotalItem(count);
-        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap), 0, 100, null);
+        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap), 0, 100, null, null);
         for (DBObject o : list) {
             paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
         }

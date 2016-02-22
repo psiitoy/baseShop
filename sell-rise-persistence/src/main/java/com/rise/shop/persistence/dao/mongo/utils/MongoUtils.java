@@ -2,7 +2,8 @@ package com.rise.shop.persistence.dao.mongo.utils;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import org.apache.commons.lang.ArrayUtils;
+import com.rise.shop.persistence.query.DefaultBaseQuery;
+import com.rise.shop.persistence.utils.ReflectUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,9 +37,7 @@ public class MongoUtils {
     public static DBObject bean2DB(Object obj) throws Exception {
         DBObject dbObject = new BasicDBObject();
         Class<? extends Object> clazz = obj.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        Field[] superFields = clazz.getSuperclass().getDeclaredFields();
-        fields = (Field[]) ArrayUtils.addAll(fields, superFields);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(clazz);
         for (Field field : fields) {
             String fieldName = field.getName();
             String methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
@@ -75,9 +74,7 @@ public class MongoUtils {
     public static Object DB2Bean(DBObject dbObject, String className) throws Exception {
         Class clazz = Class.forName(className);
         Object obj = clazz.newInstance();
-        Field[] fields = clazz.getDeclaredFields();
-        Field[] superFields = clazz.getSuperclass().getDeclaredFields();
-        fields = (Field[]) ArrayUtils.addAll(fields, superFields);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(clazz);
         for (Field field : fields) {
             String fieldName = field.getName();
             String methodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
@@ -105,12 +102,18 @@ public class MongoUtils {
             return map;
         }
         Class<? extends Object> clazz = obj.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        Field[] superFields = clazz.getSuperclass().getDeclaredFields();
-        fields = (Field[]) ArrayUtils.addAll(fields, superFields);
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(clazz);
+        Field[] uselessFields = ReflectUtils.getAllClassAndSuperClassFields(DefaultBaseQuery.class);
         for (Field field : fields) {
             String fieldName = field.getName();
-            if ("index".equalsIgnoreCase(fieldName) || "pageSize".equalsIgnoreCase(fieldName) || "pageNo".equalsIgnoreCase(fieldName) || "orderByList".equalsIgnoreCase(fieldName)) {
+            boolean isBase = false;
+            for (Field uf : uselessFields) {
+                if (fieldName.equalsIgnoreCase(uf.getName())) {
+                    isBase = true;
+                    break;
+                }
+            }
+            if (isBase) {
                 continue;
             }
             String methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());

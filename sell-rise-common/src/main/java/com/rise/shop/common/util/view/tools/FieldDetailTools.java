@@ -3,7 +3,7 @@ package com.rise.shop.common.util.view.tools;
 import com.rise.shop.domain.ano.FieldMeta;
 import com.rise.shop.domain.ano.info.FieldMetaInfo;
 import com.rise.shop.domain.art.mongo.Artist;
-import org.apache.commons.lang.ArrayUtils;
+import com.rise.shop.persistence.utils.ReflectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +31,7 @@ public class FieldDetailTools {
         List<FieldMetaInfo> list = new ArrayList<FieldMetaInfo>();
         try {
             Class<? extends Object> clazz = obj.getClass();
-            Field[] fields = clazz.getDeclaredFields();
-            Field[] superFields = clazz.getSuperclass().getDeclaredFields();
-            fields = (Field[]) ArrayUtils.addAll(fields, superFields);
+            Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(clazz);
             for (Field field : fields) {
                 String fieldName = field.getName();
                 String genericType = field.getGenericType().toString();
