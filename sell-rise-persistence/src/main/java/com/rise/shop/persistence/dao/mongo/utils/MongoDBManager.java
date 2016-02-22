@@ -3,8 +3,9 @@ package com.rise.shop.persistence.dao.mongo.utils;
 import com.mongodb.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.Map;
  * Created by wangdi on 15-1-9.
  */
 public class MongoDBManager {
-    private static Logger log = Logger.getLogger(MongoDBManager.class);
+    public final static Logger log = LoggerFactory.getLogger(MongoDBManager.class);
 
     private static Mongo mg = null;
     private static DB db = null;

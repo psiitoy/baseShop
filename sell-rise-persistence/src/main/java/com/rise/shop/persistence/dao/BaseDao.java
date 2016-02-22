@@ -2,8 +2,8 @@ package com.rise.shop.persistence.dao;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 
@@ -15,7 +15,7 @@ import java.util.Set;
  * Created by wangdi on 14-12-9.
  */
 public class BaseDao extends SqlMapClientTemplate {
-    public final static Logger log = LogManager.getLogger(BaseDao.class);
+    public final static Logger log = LoggerFactory.getLogger(BaseDao.class);
 
     /**
      * 主要用来避免1+n的查询。如在查询学生列表时，要得到学生的班主任信息。<br/>
