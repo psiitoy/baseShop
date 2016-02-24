@@ -15,7 +15,8 @@
         <module>sell-rise-service</module>
         <module>sell-rise-admin</module>
         <module>sell-rise-common</module>
-        <module>sell-rise-persistence</module>
+        <module>sell-rise-base-persistence</module>
+        <module>sell-rise-base-view</module>
     </modules>
 
     <properties>
