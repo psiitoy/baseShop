@@ -3,6 +3,7 @@ package com.rise.shop.persistence.dao.mongo.utils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.rise.shop.persistence.query.DefaultBaseQuery;
+import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
 import com.rise.shop.persistence.utils.ReflectUtils;
 
 import java.lang.reflect.Field;
@@ -106,6 +107,12 @@ public class MongoUtils {
         Field[] uselessFields = ReflectUtils.getAllClassAndSuperClassFields(DefaultBaseQuery.class);
         for (Field field : fields) {
             String fieldName = field.getName();
+            //去除区间查询i条件
+            IntervalSuffixEnum intervalSuffixEnum = IntervalSuffixEnum.getIntervalSuffixEnumByFieldName(fieldName);
+            if (intervalSuffixEnum != null) {
+                continue;
+            }
+
             boolean isBase = false;
             for (Field uf : uselessFields) {
                 if (fieldName.equalsIgnoreCase(uf.getName())) {

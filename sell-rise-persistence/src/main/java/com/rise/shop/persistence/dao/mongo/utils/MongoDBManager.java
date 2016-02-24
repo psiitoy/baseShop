@@ -1,13 +1,16 @@
 package com.rise.shop.persistence.dao.mongo.utils;
 
 import com.mongodb.*;
-import com.rise.shop.persistence.query.domain.ColumnDistance;
+import com.rise.shop.persistence.query.Query;
+import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
+import com.rise.shop.persistence.utils.ReflectUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -283,7 +286,7 @@ public class MongoDBManager {
             return null;
     }
 
-    public List<DBObject> findByPage(String collection, Map<String, Object> map, int index, int pageSize, Map<String, Integer> orderByMap, List<ColumnDistance> columnDistances) throws Exception {
+    public List<DBObject> findByPage(String collection, Map<String, Object> map, int index, int pageSize, Map<String, Integer> orderByMap, Query query) throws Exception {
         DBCollection coll = getCollection(collection);
         DBObject orderBy = new BasicDBObject();
         if (orderByMap != null) {
@@ -291,7 +294,7 @@ public class MongoDBManager {
                 orderBy.put(entry.getKey(), entry.getValue());
             }
         }
-        QueryBuilder queryBuilder = constructQueryBuilder(map, columnDistances);
+        QueryBuilder queryBuilder = constructQueryBuilder(map, query);
         DBCursor c = coll.find(queryBuilder.get()).skip(index).limit(pageSize).sort(orderBy);
         if (c != null)
             return c.toArray();
@@ -303,10 +306,10 @@ public class MongoDBManager {
      * 增加区间查询
      *
      * @param map
-     * @param columnDistances
+     * @param query
      */
 
-    private QueryBuilder constructQueryBuilder(Map<String, Object> map, List<ColumnDistance> columnDistances) {
+    private QueryBuilder constructQueryBuilder(Map<String, Object> map, Query query) throws Exception {
         if (map.containsKey("class") && map.get("class") instanceof Class)
             map.remove("class");
 
@@ -314,16 +317,31 @@ public class MongoDBManager {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             queryBuilder.and(entry.getKey()).is(entry.getValue());
         }
-        for (ColumnDistance columnDistance : columnDistances) {
-            if (columnDistance.isColumnFromContain()) {
-                queryBuilder.and(columnDistance.getFieldName()).greaterThanEquals(columnDistance.getColumnFrom());
-            } else {
-                queryBuilder.and(columnDistance.getFieldName()).greaterThan(columnDistance.getColumnFrom());
+
+        //获取区间查询
+        Field[] queryFields = ReflectUtils.getAllClassAndSuperClassFields(query.getClass());
+        for (Field field : queryFields) {
+            Object fieldValue = ReflectUtils.getFieldValue(query, field.getName());
+            if (fieldValue == null) {
+                continue;
             }
-            if (columnDistance.isColumnToContain()) {
-                queryBuilder.and(columnDistance.getFieldName()).lessThanEquals(columnDistance.getColumnTo());
-            } else {
-                queryBuilder.and(columnDistance.getFieldName()).lessThan(columnDistance.getColumnTo());
+            IntervalSuffixEnum intervalSuffixEnum = IntervalSuffixEnum.getIntervalSuffixEnumByFieldName(field.getName());
+            if (intervalSuffixEnum != null) {
+                String fieldName = IntervalSuffixEnum.getRealFieldNameWithoutSuffix(field.getName());
+                switch (intervalSuffixEnum) {
+                    case GREATER_THAN:
+                        queryBuilder.and(fieldName).greaterThan(fieldValue);
+                        break;
+                    case GREATER_THAN_EQUALS:
+                        queryBuilder.and(fieldName).greaterThanEquals(fieldValue);
+                        break;
+                    case LESS_THAN:
+                        queryBuilder.and(fieldName).lessThan(fieldValue);
+                        break;
+                    case LESS_THAN_EQUALS:
+                        queryBuilder.and(fieldName).lessThanEquals(fieldValue);
+                        break;
+                }
             }
         }
         return queryBuilder;

@@ -7,10 +7,8 @@ import com.rise.shop.persistence.dao.mongo.utils.MongoDBManager;
 import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
-import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.query.OrderByBaseQuery;
 import com.rise.shop.persistence.query.Query;
-import com.rise.shop.persistence.query.domain.ColumnDistance;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.utils.CopyPropertyUtils;
 import org.slf4j.Logger;
@@ -142,22 +140,11 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
         }
         //设置当前页
         paginatedList.setIndex(query.getPageNo());
-        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize(), getMongoBaseQueryOrderBy(query), getMongoBaseQueryDistance(query
-        ));
+        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize(), getMongoBaseQueryOrderBy(query), query);
         for (DBObject o : list) {
             paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
         }
         return paginatedList;
-    }
-
-    //TODO
-    private List<ColumnDistance> getMongoBaseQueryDistance(Query query) {
-        if (query instanceof DefaultBaseQuery) {
-            DefaultBaseQuery normalBaseQuery = (DefaultBaseQuery) query;
-            return normalBaseQuery.getColumnDistanceList();
-        } else {
-            return null;
-        }
     }
 
     private Map<String, Integer> getMongoBaseQueryOrderBy(Query query) {

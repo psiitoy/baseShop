@@ -5,8 +5,6 @@ import com.rise.shop.domain.query.ArtistQuery;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
 import com.rise.shop.persistence.query.Query;
-import com.rise.shop.persistence.query.domain.ColumnDistance;
-import com.rise.shop.persistence.utils.CommonTimeUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -65,12 +63,15 @@ public class TestArtistEnt extends EntityDaoBaseTest<Artist> {
     public void testByTime() throws Exception {
         ArtistQuery baseQuery = new ArtistQuery();
         baseQuery.setPageNo(1);
-        baseQuery.setPageSize(10);
+        baseQuery.setPageSize(100);
+        baseQuery.setAgeIntervalGte(30l);
+        baseQuery.setAgeIntervalLte(100l);
 //        baseQuery.setName("艺术家5");
-//        baseQuery.addColumnDistance(new ColumnDistance("id", 1, 8));
-        baseQuery.addColumnDistance(new ColumnDistance("modified", CommonTimeUtils.getDateFromStr("2016-2-22 16:00:00"), CommonTimeUtils.getDateFromStr("2016-2-22 17:49:22")));
         List<Artist> list = artistDao.findByPage(baseQuery);
         System.out.println("#" + list);
+        for (Artist a : list) {
+            System.out.println(a.getAge());
+        }
         System.out.println("#" + list.size());
     }
 

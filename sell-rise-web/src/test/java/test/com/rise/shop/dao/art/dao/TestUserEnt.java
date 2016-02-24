@@ -5,9 +5,9 @@ import com.rise.shop.domain.enumtype.AuthCodeTypeEnum;
 import com.rise.shop.domain.query.UserQuery;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
+import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.query.domain.OrderByDescEnum;
-import com.rise.shop.persistence.query.Query;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,7 +25,6 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
     @Resource
     EntityDao<User> userEntityDao;
 
-
     @Override
     public EntityDao<User> getEntityDao() {
         return userEntityDao;
@@ -39,6 +38,11 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
     @Override
     public Query getQuery() {
         return new UserQuery();
+    }
+
+    @Test
+    public void testGenerate() throws Exception {
+        System.out.println(generateSqlAndXml());
     }
 
     @Test

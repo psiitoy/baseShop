@@ -3,7 +3,10 @@ package com.rise.shop.persistence.generate;
 import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.page.PaginatedList;
+import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.query.Query;
+import com.rise.shop.persistence.query.domain.ColumnOrder;
+import com.rise.shop.persistence.query.domain.OrderByDescEnum;
 import com.rise.shop.persistence.utils.ReflectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +55,8 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
             logger.info("[DB框架测试]testInsert 成功");
             testQueryPageFirstAndLast(getQuery());
             logger.info("[DB框架测试]testQueryPage 成功");
+            testQueryPageOrderByDescAndAsc();
+            logger.info("[DB框架测试]testQueryPageOrderByDescAndAsc 成功");
             testGetAndUpdate(getDomain());
             logger.info("[DB框架测试]testGetAndUpdate 成功");
         } catch (Exception e) {
@@ -129,7 +134,8 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
         query.setIndex(null);
         query.setPageNo(totalPage);
         pages = getEntityDao().findByPage(query);
-        Assert.isTrue(pages.size() == count % pageSize);
+        int lastPageSize = count % pageSize == 0 ? pageSize : count % pageSize;
+        Assert.isTrue(pages.size() == lastPageSize);
         logger.info("[DB框架测试]第" + query.getPageNo() + "页数据量为" + pages.size() + "[PAGESIZE=" + pageSize + ",count=" + count + "]");
         //最后一页后一页
         query.setIndex(null);
@@ -137,6 +143,25 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
         pages = getEntityDao().findByPage(query);
         Assert.isTrue(pages.size() == 0);
         logger.info("[DB框架测试]第" + query.getPageNo() + "页数据量为" + pages.size() + "[PAGESIZE=" + pageSize + ",count=" + count + "]");
+    }
+
+    public void testQueryPageOrderByDescAndAsc() throws Exception {
+        Query query = getQuery();
+        if (query instanceof DefaultBaseQuery) {
+            DefaultBaseQuery defaultBaseQuery = (DefaultBaseQuery) query;
+            defaultBaseQuery.setPageSize(maxPageSize);
+            defaultBaseQuery.setIndex(null);
+            defaultBaseQuery.setPageNo(Query.FIRST_PAGE);
+            defaultBaseQuery.addOrderBy(new ColumnOrder(OrderByDescEnum.DESC, "id"));
+            List<Domain> pages = getEntityDao().findByPage(defaultBaseQuery);
+            Assert.notEmpty(pages);
+            Long idBuf = pages.get(0).getId();
+            defaultBaseQuery.clearOrderBy();
+            defaultBaseQuery.addOrderBy(new ColumnOrder(OrderByDescEnum.ASC, "id"));
+            pages = getEntityDao().findByPage(defaultBaseQuery);
+            Assert.notEmpty(pages);
+            Assert.isTrue(idBuf.equals(pages.get(pages.size() - 1).getId()));
+        }
     }
 
     public void testDelete(Class<Domain> domainClass, Query query) throws Exception {
@@ -154,8 +179,8 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
         logger.info("[DB框架测试]删除后库中数据量为" + beforeCount);
     }
 
-    public String generateSqlAndXml(){
-        return GenerateSqlAndIbatisXmlTool.generate(getDomain(),getQuery().getClass());
+    public String generateSqlAndXml() {
+        return GenerateSqlAndIbatisXmlTool.generate(getDomain(), getQuery().getClass());
     }
 
 }

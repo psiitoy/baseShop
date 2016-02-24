@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by wangdi on 15-1-9.
@@ -42,6 +43,7 @@ public class TestMongoArtist extends AbstractJUnit4SpringContextTests {
         t.setId(now);
         t.setName("艺术家" + now);
         t.setSex(1);
+        t.setAge(Long.valueOf(new Random().nextInt(100)));
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -56,8 +58,8 @@ public class TestMongoArtist extends AbstractJUnit4SpringContextTests {
         try {
             ArtistQuery query = new ArtistQuery();
             query.setPageSize(10);
-            query.setPageNo(1);
-            query.addOrderBy(OrderByDescEnum.DESC, "name");
+            query.setPageNo(11);
+//            query.addOrderBy(OrderByDescEnum.DESC, "name");
             list = artistService.findByPage(query);
             System.out.println("###" + list.size() + "#" + list);
         } catch (Exception e) {
