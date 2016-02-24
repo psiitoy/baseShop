@@ -9,10 +9,10 @@ import com.rise.shop.persistence.query.DefaultBaseQuery;
 public class ArtistQuery extends DefaultBaseQuery {
     @FieldMeta(name = "姓名", order = 1)
     private String name;    //姓名
-    private Long ageIntervalGt;
-    private Long ageIntervalGte;
-    private Long ageIntervalLt;
-    private Long ageIntervalLte;
+    private Long ageSymbolGt;
+    private Long ageSymbolGte;
+    private Long ageSymbolLt;
+    private Long ageSymbolLte;
 
     public String getName() {
         return name;
@@ -22,35 +22,35 @@ public class ArtistQuery extends DefaultBaseQuery {
         this.name = name;
     }
 
-    public Long getAgeIntervalGt() {
-        return ageIntervalGt;
+    public Long getAgeSymbolGt() {
+        return ageSymbolGt;
     }
 
-    public void setAgeIntervalGt(Long ageIntervalGt) {
-        this.ageIntervalGt = ageIntervalGt;
+    public void setAgeSymbolGt(Long ageSymbolGt) {
+        this.ageSymbolGt = ageSymbolGt;
     }
 
-    public Long getAgeIntervalGte() {
-        return ageIntervalGte;
+    public Long getAgeSymbolGte() {
+        return ageSymbolGte;
     }
 
-    public void setAgeIntervalGte(Long ageIntervalGte) {
-        this.ageIntervalGte = ageIntervalGte;
+    public void setAgeSymbolGte(Long ageSymbolGte) {
+        this.ageSymbolGte = ageSymbolGte;
     }
 
-    public Long getAgeIntervalLt() {
-        return ageIntervalLt;
+    public Long getAgeSymbolLt() {
+        return ageSymbolLt;
     }
 
-    public void setAgeIntervalLt(Long ageIntervalLt) {
-        this.ageIntervalLt = ageIntervalLt;
+    public void setAgeSymbolLt(Long ageSymbolLt) {
+        this.ageSymbolLt = ageSymbolLt;
     }
 
-    public Long getAgeIntervalLte() {
-        return ageIntervalLte;
+    public Long getAgeSymbolLte() {
+        return ageSymbolLte;
     }
 
-    public void setAgeIntervalLte(Long ageIntervalLte) {
-        this.ageIntervalLte = ageIntervalLte;
+    public void setAgeSymbolLte(Long ageSymbolLte) {
+        this.ageSymbolLte = ageSymbolLte;
     }
 }

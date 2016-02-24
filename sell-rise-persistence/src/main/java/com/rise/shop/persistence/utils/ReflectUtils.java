@@ -1,7 +1,5 @@
 package com.rise.shop.persistence.utils;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
@@ -62,9 +60,7 @@ public class ReflectUtils {
     public static <T> Object getFieldValue(T t, String fieldName) throws Exception {
         Object getValue = null;
         Class<? extends Object> clazz = t.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        Field[] superFields = clazz.getSuperclass().getDeclaredFields();
-        fields = (Field[]) ArrayUtils.addAll(fields, superFields);
+        Field[] fields = getAllClassAndSuperClassFields(clazz);
         for (Field field : fields) {
             if (fieldName.equals(field.getName())) {
                 //final不做处理
@@ -91,9 +87,7 @@ public class ReflectUtils {
      */
     public static <T> void setFieldValue(T t, String fieldName, Object value) throws Exception {
         Class<? extends Object> clazz = t.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        Field[] superFields = clazz.getSuperclass().getDeclaredFields();
-        fields = (Field[]) ArrayUtils.addAll(fields, superFields);
+        Field[] fields = getAllClassAndSuperClassFields(clazz);
         for (Field field : fields) {
             if (fieldName.equals(field.getName())) {
                 //final不做处理
@@ -191,9 +185,7 @@ public class ReflectUtils {
      */
     public static <T> T setFieldNullToNullStr(T t) throws Exception {
         Class<? extends Object> clazz = t.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        Field[] superFields = clazz.getSuperclass().getDeclaredFields();
-        fields = (Field[]) ArrayUtils.addAll(fields, superFields);
+        Field[] fields = getAllClassAndSuperClassFields(clazz);
         for (Field field : fields) {
             Object setValue = null;
             if (isArrayList(field.getType())) {

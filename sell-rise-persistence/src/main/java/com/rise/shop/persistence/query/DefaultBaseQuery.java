@@ -5,6 +5,6 @@ package com.rise.shop.persistence.query;
  * 继承排序查找
  * Created by wangdi on 15-1-9.
  */
-public class DefaultBaseQuery extends OrderByBaseQuery {
+public class DefaultBaseQuery extends GreaterLessBaseQuery {
 
 }

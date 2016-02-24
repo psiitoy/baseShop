@@ -8,10 +8,10 @@ import com.rise.shop.persistence.query.DefaultBaseQuery;
 public class UserQuery extends DefaultBaseQuery {
 
     private String email;
-    private Integer authCodeIntervalGt;
-    private Integer authCodeIntervalGte;
-    private Integer authCodeIntervalLt;
-    private Integer authCodeIntervalLte;
+    private Integer authCodeSymbolGt;
+    private Integer authCodeSymbolGte;
+    private Integer authCodeSymbolLt;
+    private Integer authCodeSymbolLte;
 
     public String getEmail() {
         return email;
@@ -21,35 +21,36 @@ public class UserQuery extends DefaultBaseQuery {
         this.email = email;
     }
 
-    public Integer getAuthCodeIntervalGt() {
-        return authCodeIntervalGt;
+    public Integer getAuthCodeSymbolGt() {
+        return authCodeSymbolGt;
     }
 
-    public void setAuthCodeIntervalGt(Integer authCodeIntervalGt) {
-        this.authCodeIntervalGt = authCodeIntervalGt;
+    public void setAuthCodeSymbolGt(Integer authCodeSymbolGt) {
+        this.authCodeSymbolGt = authCodeSymbolGt;
     }
 
-    public Integer getAuthCodeIntervalGte() {
-        return authCodeIntervalGte;
+    public Integer getAuthCodeSymbolGte() {
+        return authCodeSymbolGte;
     }
 
-    public void setAuthCodeIntervalGte(Integer authCodeIntervalGte) {
-        this.authCodeIntervalGte = authCodeIntervalGte;
+    public void setAuthCodeSymbolGte(Integer authCodeSymbolGte) {
+        this.authCodeSymbolGte = authCodeSymbolGte;
     }
 
-    public Integer getAuthCodeIntervalLt() {
-        return authCodeIntervalLt;
+    public Integer getAuthCodeSymbolLt() {
+        return authCodeSymbolLt;
     }
 
-    public void setAuthCodeIntervalLt(Integer authCodeIntervalLt) {
-        this.authCodeIntervalLt = authCodeIntervalLt;
+    public void setAuthCodeSymbolLt(Integer authCodeSymbolLt) {
+        this.authCodeSymbolLt = authCodeSymbolLt;
     }
 
-    public Integer getAuthCodeIntervalLte() {
-        return authCodeIntervalLte;
+    public Integer getAuthCodeSymbolLte() {
+        return authCodeSymbolLte;
     }
 
-    public void setAuthCodeIntervalLte(Integer authCodeIntervalLte) {
-        this.authCodeIntervalLte = authCodeIntervalLte;
+    public void setAuthCodeSymbolLte(Integer authCodeSymbolLte) {
+        this.authCodeSymbolLte = authCodeSymbolLte;
     }
+
 }

@@ -16,23 +16,31 @@
     <!--[domain所有条件] -->
     <sql id="allCondition">
         <dynamic prepend="WHERE">
-            <isNotEmpty prepend=" AND " property="id">ID=#id#</isNotEmpty>
             <isNotEmpty prepend=" AND " property="authCode">AUTH_CODE=#authCode#</isNotEmpty>
-            <isNotEmpty prepend=" AND " property="pwd">PWD=#pwd#</isNotEmpty>
             <isNotEmpty prepend=" AND " property="created">CREATED=#created#</isNotEmpty>
             <isNotEmpty prepend=" AND " property="email">EMAIL=#email#</isNotEmpty>
-            <isNotEmpty prepend=" AND " property="state">STATE=#state#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="id">ID=#id#</isNotEmpty>
             <isNotEmpty prepend=" AND " property="modified">MODIFIED=#modified#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="pwd">PWD=#pwd#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="state">STATE=#state#</isNotEmpty>
         </dynamic>
     </sql>
     <!--[查询条件] -->
     <sql id="queryCondition">
         <dynamic prepend="WHERE">
+            <isNotEmpty prepend=" AND " property="authCodeSymbolGt"><![CDATA[ AUTH_CODE > #authCodeSymbolGt#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="authCodeSymbolGte"><![CDATA[ AUTH_CODE >= #authCodeSymbolGte#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="authCodeSymbolLt"><![CDATA[ AUTH_CODE < #authCodeSymbolLt#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="authCodeSymbolLte"><![CDATA[ AUTH_CODE <= #authCodeSymbolLte#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="createdSymbolGt"><![CDATA[ CREATED > #createdSymbolGt#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="createdSymbolGte"><![CDATA[ CREATED >= #createdSymbolGte#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="createdSymbolLt"><![CDATA[ CREATED < #createdSymbolLt#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="createdSymbolLte"><![CDATA[ CREATED <= #createdSymbolLte#]]></isNotEmpty>
             <isNotEmpty prepend=" AND " property="email">EMAIL=#email#</isNotEmpty>
-            <isNotEmpty prepend=" AND " property="authCodeIntervalLte"><![CDATA[ AUTH_CODE <= #authCodeIntervalLte#]]></isNotEmpty>
-            <isNotEmpty prepend=" AND " property="authCodeIntervalGt"><![CDATA[ AUTH_CODE > #authCodeIntervalGt#]]></isNotEmpty>
-            <isNotEmpty prepend=" AND " property="authCodeIntervalGte"><![CDATA[ AUTH_CODE >= #authCodeIntervalGte#]]></isNotEmpty>
-            <isNotEmpty prepend=" AND " property="authCodeIntervalLt"><![CDATA[ AUTH_CODE < #authCodeIntervalLt#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="modifiedSymbolGt"><![CDATA[ MODIFIED > #modifiedSymbolGt#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="modifiedSymbolGte"><![CDATA[ MODIFIED >= #modifiedSymbolGte#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="modifiedSymbolLt"><![CDATA[ MODIFIED < #modifiedSymbolLt#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="modifiedSymbolLte"><![CDATA[ MODIFIED <= #modifiedSymbolLte#]]></isNotEmpty>
         </dynamic>
     </sql>
     <sql id="Base_Column_List"> ID, AUTH_CODE, PWD, CREATED, EMAIL, STATE, MODIFIED</sql>

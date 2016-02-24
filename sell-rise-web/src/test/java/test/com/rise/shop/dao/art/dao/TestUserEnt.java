@@ -8,6 +8,7 @@ import com.rise.shop.persistence.generate.EntityDaoBaseTest;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.query.domain.OrderByDescEnum;
+import com.rise.shop.persistence.utils.CommonTimeUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -92,8 +93,9 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
 //        query.setEmail("admin");
         query.setPageNo(1);
         query.setPageSize(100);
-        query.setAuthCodeIntervalGte(10);
-        query.setAuthCodeIntervalLt(40);
+        query.setAuthCodeSymbolGte(10);
+        query.setAuthCodeSymbolLt(400);
+        query.setCreatedSymbolGte(CommonTimeUtils.getDateFromStr("2016-2-24 10:24:40"));
 
         query.addOrderBy(new ColumnOrder(OrderByDescEnum.ASC, "email"));
         List<User> list = userEntityDao.findByPage(query);

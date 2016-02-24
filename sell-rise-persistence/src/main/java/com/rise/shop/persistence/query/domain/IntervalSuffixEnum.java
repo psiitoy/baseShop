@@ -7,19 +7,19 @@ public enum IntervalSuffixEnum {
     /**
      * 大于
      */
-    GREATER_THAN("IntervalGt", ">"),
+    GREATER_THAN("SymbolGt", ">"),
     /**
      * 大于等于
      */
-    GREATER_THAN_EQUALS("IntervalGte", ">="),
+    GREATER_THAN_EQUALS("SymbolGte", ">="),
     /**
      * 小于
      */
-    LESS_THAN("IntervalLt", "<"),
+    LESS_THAN("SymbolLt", "<"),
     /**
      * 小于等于
      */
-    LESS_THAN_EQUALS("IntervalLte", "<=");
+    LESS_THAN_EQUALS("SymbolLte", "<=");
 
     private String fieldSuffix;
     private String symbol;

@@ -8,6 +8,10 @@ import com.rise.shop.persistence.utils.ReflectUtils;
 import org.bson.types.ObjectId;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * 根据定义的bean（BasePersistenceBean的子类） 自动生成ibatis的xml工具(可以main方法打印)
@@ -112,8 +116,17 @@ public class EntityDaoIBatisXmlUtil {
     private static <DomainQuery> String getDynamicWhereCloumn(Class<DomainQuery> domainQueryClass) {
         StringBuilder sb = new StringBuilder();
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainQueryClass);
+        List<Field> fieldList = Arrays.asList(fields);
+        Collections.sort(fieldList, new Comparator<Field>() {
+            @Override
+            public int compare(Field o1, Field o2) {
+                String[] names = new String[]{o1.getName(), o2.getName()};
+                Arrays.sort(names);
+                return o1.getName().equals(names[0]) ? -1 : 1;
+            }
+        });
         Field[] pageFields = ReflectUtils.getAllClassAndSuperClassFields(DefaultBaseQuery.class);
-        for (Field field : fields) {
+        for (Field field : fieldList) {
             if (field.getType().isAssignableFrom(ObjectId.class)) {
                 continue;
             }
