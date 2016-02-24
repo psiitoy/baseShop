@@ -2,6 +2,7 @@ package com.rise.shop.persistence.generate;
 
 import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.query.DefaultBaseQuery;
+import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
 import com.rise.shop.persistence.utils.ReflectUtils;
 import org.bson.types.ObjectId;
@@ -116,6 +117,23 @@ public class EntityDaoIBatisXmlUtil {
             if (field.getType().isAssignableFrom(ObjectId.class)) {
                 continue;
             }
+            /**
+             * 除去区间查询字段
+             */
+            IntervalSuffixEnum intervalSuffixEnum = IntervalSuffixEnum.getIntervalSuffixEnumByFieldName(field.getName());
+            if (intervalSuffixEnum != null) {
+                sb.append("<isNotEmpty  prepend=\" AND \" property=\"");
+                sb.append(field.getName());
+                sb.append("\">");
+                sb.append("<![CDATA[");
+                sb.append(" " + EntityNamesUtils.getSQLFieldName(IntervalSuffixEnum.getRealFieldNameWithoutSuffix(field.getName())) + " " + intervalSuffixEnum.getSymbol() + " #" + field.getName() + "#");
+                sb.append("]]>");
+                sb.append("</isNotEmpty>");
+                continue;
+            }
+            /**
+             * 除去分页查询字段
+             */
             boolean isPageFields = false;
             for (Field pf : pageFields) {
                 if (pf.getName().equals(field.getName())) {

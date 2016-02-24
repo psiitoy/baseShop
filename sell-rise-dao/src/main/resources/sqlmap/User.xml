@@ -28,7 +28,11 @@
     <!--[查询条件] -->
     <sql id="queryCondition">
         <dynamic prepend="WHERE">
-            <isNotEmpty prepend=" AND " property="email"> EMAIL=#email#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="email">EMAIL=#email#</isNotEmpty>
+            <isNotEmpty prepend=" AND " property="authCodeIntervalLte"><![CDATA[ AUTH_CODE <= #authCodeIntervalLte#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="authCodeIntervalGt"><![CDATA[ AUTH_CODE > #authCodeIntervalGt#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="authCodeIntervalGte"><![CDATA[ AUTH_CODE >= #authCodeIntervalGte#]]></isNotEmpty>
+            <isNotEmpty prepend=" AND " property="authCodeIntervalLt"><![CDATA[ AUTH_CODE < #authCodeIntervalLt#]]></isNotEmpty>
         </dynamic>
     </sql>
     <sql id="Base_Column_List"> ID, AUTH_CODE, PWD, CREATED, EMAIL, STATE, MODIFIED</sql>

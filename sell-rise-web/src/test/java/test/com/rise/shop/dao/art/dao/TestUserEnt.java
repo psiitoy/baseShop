@@ -14,6 +14,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by wangdi on 15-1-18.
@@ -62,6 +64,19 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
     }
 
     @Test
+    public void testInsertMore() throws Exception {
+        for (int i = 1; i < 100; i++) {
+            User user = new User();
+            user.setId(System.currentTimeMillis());
+            user.setEmail("admin" + i);
+            user.setPwd("admin" + i);
+            user.setState(1);
+            user.setAuthCode(new Random().nextInt(1000));
+            userEntityDao.insert(user);
+        }
+    }
+
+    @Test
     public void testInsert2() throws Exception {
         testInsert(getDomain(), getQuery());
     }
@@ -76,9 +91,17 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
         UserQuery query = new UserQuery();
 //        query.setEmail("admin");
         query.setPageNo(1);
-        query.setPageSize(10);
-        query.addOrderBy(new ColumnOrder(OrderByDescEnum.DESC, "email"));
-        System.out.println("#" + userEntityDao.findByPage(query));
+        query.setPageSize(100);
+        query.setAuthCodeIntervalGte(10);
+        query.setAuthCodeIntervalLt(40);
+
+        query.addOrderBy(new ColumnOrder(OrderByDescEnum.ASC, "email"));
+        List<User> list = userEntityDao.findByPage(query);
+        System.out.println("#" + list);
+        for (User user : list) {
+            System.out.println(user.getAuthCode());
+        }
+        System.out.println("#" + list.size());
     }
 
 }
