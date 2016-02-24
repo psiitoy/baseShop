@@ -60,7 +60,7 @@ public class EntityDaoTableSqlUtil {
 
     private static String getPrimaryKey() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\t\t `");
+        sb.append("\t\t ");
         sb.append("PRIMARY KEY (`ID`)");
         sb.append("\n");
         return sb.toString();
