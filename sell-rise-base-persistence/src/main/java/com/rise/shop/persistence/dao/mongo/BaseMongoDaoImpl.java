@@ -11,6 +11,7 @@ import com.rise.shop.persistence.query.OrderByBaseQuery;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.utils.CopyPropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +39,17 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
         }
     }
 
+    /**
+     * 获取集合名(数据库)
+     *
+     * @return
+     */
     private String getRealCollectionName() {
-        return tablePrefix + "_" + collectionName;
+        if (StringUtils.isEmpty(tablePrefix)) {
+            return collectionName;
+        } else {
+            return tablePrefix + "_" + collectionName;
+        }
     }
 
     /*

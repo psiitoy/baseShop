@@ -2,6 +2,7 @@ package com.rise.shop.persistence.dao.mongo.utils;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
 import com.rise.shop.persistence.utils.ReflectUtils;
@@ -174,4 +175,19 @@ public class MongoUtils {
         dbObject.putAll(refreMap);
         return dbObject;
     }
+
+    public static BasePersistenceBean getDomainFieldIfBasePersistenceBean(Object obj) throws Exception {
+        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(obj.getClass());
+        Field[] bFields = ReflectUtils.getAllClassAndSuperClassFields(BasePersistenceBean.class);
+        BasePersistenceBean basePersistenceBean = new BasePersistenceBean();
+        for (Field field : fields) {
+            for (Field bf : bFields) {
+                if (field.getName().equals(bf.getName())) {
+                    ReflectUtils.setFieldValue(basePersistenceBean, bf.getName(), ReflectUtils.getFieldValue(obj, field.getName()));
+                }
+            }
+        }
+        return basePersistenceBean;
+    }
+
 }

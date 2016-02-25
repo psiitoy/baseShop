@@ -1,9 +1,11 @@
 package test.com.rise.shop.dao.art.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.rise.shop.domain.art.mysql.User;
 import com.rise.shop.domain.enumtype.AuthCodeTypeEnum;
 import com.rise.shop.domain.query.UserQuery;
 import com.rise.shop.persistence.dao.EntityDao;
+import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
@@ -15,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -45,7 +48,7 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
 
     @Test
     public void testGenerate() throws Exception {
-        System.out.println(generateSqlAndXml());
+        System.out.println(generateSqlAndXml("art"));
     }
 
     @Test
@@ -106,4 +109,11 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
         System.out.println("#" + list.size());
     }
 
+    @Test
+    public void testBs() throws Exception {
+        User user = new User();
+        user.setCreated(new Date());
+        user.setId(222l);
+        System.out.println("##" + JSON.toJSONString(MongoUtils.getDomainFieldIfBasePersistenceBean(user)));
+    }
 }

@@ -24,22 +24,26 @@ public class EntityDaoIBatisXmlUtil {
             " * 表名为类的简写名 如 PopUser\n" +
             " * namespace可自行定义 默认为类全路径驼峰格式 如comJdUser\n";
 
-    public static <Domain extends BasePersistenceBean, DomainQuery> String makeXml(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
+    public static <Domain extends BasePersistenceBean, DomainQuery> String makeXml(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append(getNameSpace(domainClass));
         sb.append(getTypeAlias(domainClass, domainQueryClass));
         sb.append(getResultMap(domainClass));
         sb.append(getSqlQuery(domainClass, domainQueryClass));
         sb.append(getSqlBaseColumnList(domainClass));
-        sb.append(getSqlGet(domainClass));
-        sb.append(getSqlFind(domainClass));
-        sb.append(getSqlCount(domainClass));
-        sb.append(getSqlFindByPage(domainClass));
-        sb.append(getSqlInsert(domainClass));
-        sb.append(getSqlUpdate(domainClass));
-        sb.append(getDelete(domainClass));
+        sb.append(getSqlGet(domainClass, tablePrefix));
+        sb.append(getSqlFind(domainClass, tablePrefix));
+        sb.append(getSqlCount(domainClass, tablePrefix));
+        sb.append(getSqlFindByPage(domainClass, tablePrefix));
+        sb.append(getSqlInsert(domainClass, tablePrefix));
+        sb.append(getSqlUpdate(domainClass, tablePrefix));
+        sb.append(getDelete(domainClass, tablePrefix));
         sb.append("\n");
         return sb.toString();
+    }
+
+    public static <Domain extends BasePersistenceBean, DomainQuery> String makeXml(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
+        return makeXml(domainClass, domainQueryClass, null);
     }
 
     private static <Domain extends BasePersistenceBean> String getNameSpace(Class<Domain> domainClass) {
@@ -181,7 +185,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlGet(Class<Domain> domainClass) {
+    private static <Domain extends BasePersistenceBean> String getSqlGet(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--根据主键查单条-->");
         sb.append("<select id=\"Get\" parameterClass=\"long\" resultMap=\"");
@@ -189,13 +193,13 @@ public class EntityDaoIBatisXmlUtil {
         sb.append("\">");
         sb.append(" SELECT");
         sb.append("<include refid=\"Base_Column_List\"/>");
-        sb.append(" FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
+        sb.append(" FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append(" WHERE id=#id:BIGINT#");
         sb.append("</select>");
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlFind(Class<Domain> domainClass) {
+    private static <Domain extends BasePersistenceBean> String getSqlFind(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--根据条件查单条-->");
         sb.append("<select id=\"Find\" parameterClass=\"");
@@ -205,7 +209,7 @@ public class EntityDaoIBatisXmlUtil {
         sb.append("\">");
         sb.append(" SELECT");
         sb.append("<include refid=\"Base_Column_List\"/>");
-        sb.append(" FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
+        sb.append(" FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append("<isParameterPresent>");
         sb.append("<include refid=\"allCondition\"/>");
         sb.append("</isParameterPresent>");
@@ -213,13 +217,13 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlCount(Class<Domain> domainClass) {
+    private static <Domain extends BasePersistenceBean> String getSqlCount(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--根据条件查条数-->");
         sb.append("<select id=\"Count\" parameterClass=\"");
         sb.append(domainClass.getSimpleName());
         sb.append("\" resultClass=\"int\">");
-        sb.append(" SELECT count(1) FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
+        sb.append(" SELECT count(1) FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append("<isParameterPresent>");
         sb.append("<include refid=\"allCondition\"/>");
         sb.append("</isParameterPresent>");
@@ -227,7 +231,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlFindByPage(Class<Domain> domainClass) {
+    private static <Domain extends BasePersistenceBean> String getSqlFindByPage(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--根据条件分页查询-->");
         sb.append("<select id=\"FindByPage\" parameterClass=\"");
@@ -237,7 +241,7 @@ public class EntityDaoIBatisXmlUtil {
         sb.append("\">");
         sb.append(" SELECT");
         sb.append("<include refid=\"Base_Column_List\"/>");
-        sb.append(" FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
+        sb.append(" FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append("<isParameterPresent>");
         sb.append("<include refid=\"queryCondition\"/>");
         sb.append("</isParameterPresent>");
@@ -251,13 +255,13 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlInsert(Class<Domain> domainClass) {
+    private static <Domain extends BasePersistenceBean> String getSqlInsert(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--插入-->");
         sb.append("<insert id=\"Insert\" parameterClass=\"");
         sb.append(domainClass.getSimpleName());
         sb.append("\">");
-        sb.append(" INSERT INTO " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
+        sb.append(" INSERT INTO " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append(" (<include refid=\"Base_Column_List\"/>)");
         sb.append(" VALUES (");
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
@@ -277,13 +281,13 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlUpdate(Class<Domain> domainClass) {
+    private static <Domain extends BasePersistenceBean> String getSqlUpdate(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--更新-->");
         sb.append("<update id=\"Update\" parameterClass=\"");
         sb.append(domainClass.getSimpleName());
         sb.append("\">");
-        sb.append(" UPDATE " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
+        sb.append(" UPDATE " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append(" SET MODIFIED=now()");
         sb.append(" " + getDynamicWhereUpdateCloumn(domainClass));
         sb.append(" WHERE id=#id:BIGINT#");
@@ -318,13 +322,13 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getDelete(Class<Domain> domainClass) {
+    private static <Domain extends BasePersistenceBean> String getDelete(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--删除-->");
         sb.append("<delete id=\"Delete\" parameterClass=\"");
         sb.append(domainClass.getSimpleName());
         sb.append("\">");
-        sb.append(" DELETE FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
+        sb.append(" DELETE FROM " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append(" WHERE id=#id:BIGINT#");
         sb.append("</delete>");
         sb.append("</sqlMap>");

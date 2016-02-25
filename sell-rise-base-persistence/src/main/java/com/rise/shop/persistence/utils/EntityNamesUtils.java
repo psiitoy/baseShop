@@ -1,5 +1,7 @@
 package com.rise.shop.persistence.utils;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Created by wangdi on 16-2-18.
  */
@@ -29,8 +31,11 @@ public class EntityNamesUtils {
      * @param domainName
      * @return
      */
-    public static String getSQLTableName(String domainName) {
+    public static String getSQLTableName(String domainName, String tablePrefix) {
         StringBuilder sqlFieldName = new StringBuilder();
+        if (!StringUtils.isEmpty(tablePrefix)) {
+            sqlFieldName.append(tablePrefix);
+        }
         for (char c : domainName.toCharArray()) {
             if (Character.isLowerCase(c)) {
                 sqlFieldName.append(c);
@@ -38,7 +43,6 @@ public class EntityNamesUtils {
                 sqlFieldName.append("_" + Character.toLowerCase(c));
             }
         }
-        sqlFieldName.deleteCharAt(0);
         return sqlFieldName.toString();
     }
 

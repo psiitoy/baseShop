@@ -183,4 +183,8 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
         return GenerateSqlAndIbatisXmlTool.generate(getDomain(), getQuery().getClass());
     }
 
+    public String generateSqlAndXml(String tablePrefix) {
+        return GenerateSqlAndIbatisXmlTool.generate(getDomain(), getQuery().getClass(), tablePrefix);
+    }
+
 }

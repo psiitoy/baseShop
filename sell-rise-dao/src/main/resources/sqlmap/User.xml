@@ -47,18 +47,18 @@
     <!--根据主键查单条-->
     <select id="Get" parameterClass="long" resultMap="UserResultMap">SELECT
         <include refid="Base_Column_List"/>
-        FROM user WHERE id=#id:BIGINT#
+        FROM art_user WHERE id=#id:BIGINT#
     </select>
     <!--根据条件查单条-->
     <select id="Find" parameterClass="User" resultMap="UserResultMap">SELECT
         <include refid="Base_Column_List"/>
-        FROM user
+        FROM art_user
         <isParameterPresent>
             <include refid="allCondition"/>
         </isParameterPresent>
     </select>
     <!--根据条件查条数-->
-    <select id="Count" parameterClass="User" resultClass="int">SELECT count(1) FROM user
+    <select id="Count" parameterClass="User" resultClass="int">SELECT count(1) FROM art_user
         <isParameterPresent>
             <include refid="allCondition"/>
         </isParameterPresent>
@@ -66,7 +66,7 @@
     <!--根据条件分页查询-->
     <select id="FindByPage" parameterClass="UserQuery" resultMap="UserResultMap">SELECT
         <include refid="Base_Column_List"/>
-        FROM user
+        FROM art_user
         <isParameterPresent>
             <include refid="queryCondition"/>
         </isParameterPresent>
@@ -76,10 +76,10 @@
         limit #index# ,#pageSize#
     </select>
     <!--插入-->
-    <insert id="Insert" parameterClass="User">INSERT INTO user (<include refid="Base_Column_List"/>) VALUES ( #id#, #authCode#, #pwd#, now(), #email#, #state#, now())
+    <insert id="Insert" parameterClass="User">INSERT INTO art_user (<include refid="Base_Column_List"/>) VALUES ( #id#, #authCode#, #pwd#, now(), #email#, #state#, now())
     </insert>
     <!--更新-->
-    <update id="Update" parameterClass="User">UPDATE user SET MODIFIED=now()
+    <update id="Update" parameterClass="User">UPDATE art_user SET MODIFIED=now()
         <isNotEmpty property="authCode">,AUTH_CODE=#authCode#</isNotEmpty>
         <isNotEmpty property="pwd">,PWD=#pwd#</isNotEmpty>
         <isNotEmpty property="email">,EMAIL=#email#</isNotEmpty>
@@ -87,5 +87,5 @@
         WHERE id=#id:BIGINT#
     </update>
     <!--删除-->
-    <delete id="Delete" parameterClass="User"> DELETE FROM user WHERE id=#id:BIGINT#</delete>
+    <delete id="Delete" parameterClass="User"> DELETE FROM art_user WHERE id=#id:BIGINT#</delete>
 </sqlMap>

@@ -18,18 +18,22 @@ public class EntityDaoTableSqlUtil {
             " * 主键默认为id\n";
 
     public static <Domain extends BasePersistenceBean, DomainQuery> String makeSql(Class<Domain> domainClass) {
+        return makeSql(domainClass, null);
+    }
+
+    public static <Domain extends BasePersistenceBean, DomainQuery> String makeSql(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getCreateTableHead(domainClass));
+        sb.append(getCreateTableHead(domainClass, tablePrefix));
         sb.append(getColumnSql(domainClass));
         sb.append(getPrimaryKey());
         sb.append(getCreateTableEnd(domainClass));
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getCreateTableHead(Class<Domain> domainClass) {
+    private static <Domain extends BasePersistenceBean> String getCreateTableHead(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE `");
-        sb.append(EntityNamesUtils.getSQLTableName(domainClass.getSimpleName()));
+        sb.append(EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append("` (\n");
         return sb.toString();
     }
