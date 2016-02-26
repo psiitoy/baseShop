@@ -43,6 +43,9 @@ public class EntityNamesUtils {
                 sqlFieldName.append("_" + Character.toLowerCase(c));
             }
         }
+        if(sqlFieldName.toString().startsWith("_")){
+            sqlFieldName.deleteCharAt(0);
+        }
         return sqlFieldName.toString();
     }
 
