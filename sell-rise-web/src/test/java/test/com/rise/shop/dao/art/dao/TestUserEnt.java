@@ -1,11 +1,9 @@
 package test.com.rise.shop.dao.art.dao;
 
-import com.alibaba.fastjson.JSON;
 import com.rise.shop.domain.art.mysql.User;
 import com.rise.shop.domain.enumtype.AuthCodeTypeEnum;
 import com.rise.shop.domain.query.UserQuery;
 import com.rise.shop.persistence.dao.EntityDao;
-import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
@@ -17,7 +15,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -59,9 +56,8 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
     @Test
     public void testInsert() throws Exception {
         User user = new User();
-        user.setId(2l);
-        user.setEmail("admin");
-        user.setPwd("admin");
+        user.setEmail("adminx");
+        user.setPwd("adminx");
         user.setState(1);
         user.setAuthCode(AuthCodeTypeEnum.AUTH_ALL.getType());
         userEntityDao.insert(user);
@@ -96,9 +92,9 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
 //        query.setEmail("admin");
         query.setPageNo(1);
         query.setPageSize(100);
-        query.setAuthCodeSymbolGte(10);
-        query.setAuthCodeSymbolLt(400);
-        query.setCreatedSymbolGte(CommonTimeUtils.getDateFromStr("2016-2-24 10:24:40"));
+//        query.setAuthCodeSymbolGte(10);
+//        query.setAuthCodeSymbolLt(400);
+        query.setCreatedSymbolGte(CommonTimeUtils.getDateFromStr("2016-2-26 14:15:35"));
 
         query.addOrderBy(new ColumnOrder(OrderByDescEnum.ASC, "email"));
         List<User> list = userEntityDao.findByPage(query);
@@ -109,11 +105,4 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
         System.out.println("#" + list.size());
     }
 
-    @Test
-    public void testBs() throws Exception {
-        User user = new User();
-        user.setCreated(new Date());
-        user.setId(222l);
-        System.out.println("##" + JSON.toJSONString(MongoUtils.getDomainFieldIfBasePersistenceBean(user)));
-    }
 }

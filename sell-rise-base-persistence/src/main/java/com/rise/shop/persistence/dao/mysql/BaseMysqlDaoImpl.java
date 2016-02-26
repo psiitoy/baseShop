@@ -1,13 +1,14 @@
 package com.rise.shop.persistence.dao.mysql;
 
 import com.google.common.base.Preconditions;
-import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.dao.BaseDao;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
+import com.rise.shop.persistence.utils.BasicAttributesUtils;
 import com.rise.shop.persistence.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
+import com.rise.shop.persistence.utils.IdWorker;
 import org.springframework.dao.DataAccessException;
 
 import java.lang.reflect.ParameterizedType;
@@ -27,7 +28,7 @@ import java.util.Map;
  * @author wangdi
  * @see BaseDao, EntityDao
  */
-public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao implements BaseMysqlDao<T> {//implements EntityDao<T> {
+public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//implements EntityDao<T> {
 
     protected static final String POSTFIX_FIND = ".Find";
 
@@ -53,11 +54,19 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
      * 命名空间 (同EntityDaoIBatisXmlUtil 生成的xml配套 建议不要自行赋值)
      */
     private String nameSpace;
+    /**
+     * snowflake Id生成器 begin
+     */
+    //数据中心id
+    private int datacenterId;
+    private IdWorker idWorker;
+    //snowflake end
 
     public BaseMysqlDaoImpl() {
         try {
             entityClass = getSuperClassGenricType(getClass(), 0);
             nameSpace = EntityNamesUtils.getHumpClassNames(entityClass.getName());
+            idWorker = new IdWorker(entityClass.hashCode() % 30, 0);
         } catch (Exception e) {
             logger.error("BaseMysqlDaoImpl error", e);
         }
@@ -168,8 +177,8 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
      *
      */
     public T insert(T t) throws Exception {
-        if (t.getId() == null || t.getId() == 0) {
-            t.setId(System.currentTimeMillis());
+        if (BasicAttributesUtils.getBasicId(t) == null) {
+            BasicAttributesUtils.setBasicId(t, idWorker.nextId());
         }
         insert(nameSpace + POSTFIX_INSERT, t);
         return t;
@@ -204,4 +213,8 @@ public class BaseMysqlDaoImpl<T extends BasePersistenceBean> extends BaseDao imp
         return executeQueryForList(nameSpace + POSTFIX_FIND_BY_PAGE_LIKE, null);
     }
 
+    public void setDatacenterId(int datacenterId) {
+        this.datacenterId = datacenterId;
+        idWorker = new IdWorker(entityClass.hashCode() % 30, datacenterId);
+    }
 }

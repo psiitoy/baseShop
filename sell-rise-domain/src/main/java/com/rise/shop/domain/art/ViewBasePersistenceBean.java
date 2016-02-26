@@ -1,15 +1,18 @@
 package com.rise.shop.domain.art;
 
 import com.rise.shop.domain.ano.FieldMeta;
-import com.rise.shop.persistence.beans.BasePersistenceBean;
+
+import java.util.Date;
 
 /**
  * mysql基本字段
  * Created by wangdi on 15-1-18.
  */
-public class ViewBasePersistenceBean extends BasePersistenceBean {
+public class ViewBasePersistenceBean {
     @FieldMeta(id = true, name = "序列号", order = 100, summary = false, editable = false)
     private Long id;//id
+    private Date created;//创建时间
+    private Date modified;//更改时间
 
     public Long getId() {
         return id;
@@ -19,4 +22,20 @@ public class ViewBasePersistenceBean extends BasePersistenceBean {
         this.id = id;
     }
 
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getModified() {
+        return modified;
+    }
+
+    public void setModified(Date modified) {
+        this.modified = modified;
+    }
 }
+

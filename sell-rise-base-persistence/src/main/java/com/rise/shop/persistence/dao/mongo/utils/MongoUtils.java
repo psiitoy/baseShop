@@ -2,7 +2,7 @@ package com.rise.shop.persistence.dao.mongo.utils;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.rise.shop.persistence.beans.BasePersistenceBean;
+import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
 import com.rise.shop.persistence.utils.ReflectUtils;
@@ -20,10 +20,10 @@ public class MongoUtils {
 
     public static Map<String, Object> bean2QueryId(Object obj) throws Exception {
         Map<String, Object> objMap = bean2Map(obj);
-        if (objMap.containsKey("id")) {
-            Object id = objMap.get("id");
+        if (objMap.containsKey(BasicAttributeEnum.ID.getName())) {
+            Object id = objMap.get(BasicAttributeEnum.ID.getName());
             objMap.clear();
-            objMap.put("id", id);
+            objMap.put(BasicAttributeEnum.ID.getName(), id);
         }
         return objMap;
     }
@@ -174,20 +174,6 @@ public class MongoUtils {
         dbObject.putAll(obj);
         dbObject.putAll(refreMap);
         return dbObject;
-    }
-
-    public static BasePersistenceBean getDomainFieldIfBasePersistenceBean(Object obj) throws Exception {
-        Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(obj.getClass());
-        Field[] bFields = ReflectUtils.getAllClassAndSuperClassFields(BasePersistenceBean.class);
-        BasePersistenceBean basePersistenceBean = new BasePersistenceBean();
-        for (Field field : fields) {
-            for (Field bf : bFields) {
-                if (field.getName().equals(bf.getName())) {
-                    ReflectUtils.setFieldValue(basePersistenceBean, bf.getName(), ReflectUtils.getFieldValue(obj, field.getName()));
-                }
-            }
-        }
-        return basePersistenceBean;
     }
 
 }

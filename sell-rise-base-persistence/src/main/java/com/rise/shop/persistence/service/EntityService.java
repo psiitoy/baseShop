@@ -1,6 +1,5 @@
 package com.rise.shop.persistence.service;
 
-import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
 
@@ -10,7 +9,7 @@ import java.util.Map;
 /**
  * Created by wangdi on 14-12-10.
  */
-public interface EntityService<T extends BasePersistenceBean> {
+public interface EntityService<T> {
 
     /**
      * 依据主键获取记录

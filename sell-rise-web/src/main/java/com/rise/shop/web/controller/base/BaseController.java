@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Preconditions;
 import com.rise.shop.common.util.view.tools.FieldDetailTools;
 import com.rise.shop.domain.ano.info.FieldMetaInfo;
-import com.rise.shop.domain.art.ViewBasePersistenceBean;
 import com.rise.shop.domain.enumtype.AuthCodeTypeEnum;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
@@ -29,7 +28,7 @@ import java.util.*;
 /**
  * Created by wangdi on 14-12-21.
  */
-public abstract class BaseController<T extends ViewBasePersistenceBean, Q extends Query> {
+public abstract class BaseController<T, Q extends Query> {
 
     protected org.slf4j.Logger logger = LoggerFactory.getLogger(getClass());
 

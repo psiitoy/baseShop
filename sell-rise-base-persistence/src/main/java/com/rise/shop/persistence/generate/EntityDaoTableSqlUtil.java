@@ -1,6 +1,5 @@
 package com.rise.shop.persistence.generate;
 
-import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
 import com.rise.shop.persistence.utils.ReflectUtils;
 import org.bson.types.ObjectId;
@@ -17,20 +16,20 @@ public class EntityDaoTableSqlUtil {
             " * 所有注释以及字段默认值和大小、约束需自行设置\n" +
             " * 主键默认为id\n";
 
-    public static <Domain extends BasePersistenceBean, DomainQuery> String makeSql(Class<Domain> domainClass) {
+    public static <Domain> String makeSql(Class<Domain> domainClass) {
         return makeSql(domainClass, null);
     }
 
-    public static <Domain extends BasePersistenceBean, DomainQuery> String makeSql(Class<Domain> domainClass, String tablePrefix) {
+    public static <Domain> String makeSql(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append(getCreateTableHead(domainClass, tablePrefix));
         sb.append(getColumnSql(domainClass));
         sb.append(getPrimaryKey());
-        sb.append(getCreateTableEnd(domainClass));
+        sb.append(getCreateTableEnd());
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getCreateTableHead(Class<Domain> domainClass, String tablePrefix) {
+    private static <Domain> String getCreateTableHead(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE `");
         sb.append(EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
@@ -38,13 +37,13 @@ public class EntityDaoTableSqlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getCreateTableEnd(Class<Domain> domainClass) {
+    private static <Domain> String getCreateTableEnd() {
         StringBuilder sb = new StringBuilder();
         sb.append(" ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='所有注释以及字段默认值和大小需自行设置' \n");
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getColumnSql(Class<Domain> domainClass) {
+    private static <Domain> String getColumnSql(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {

@@ -1,6 +1,6 @@
 package com.rise.shop.persistence.generate;
 
-import com.rise.shop.persistence.beans.BasePersistenceBean;
+import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
@@ -24,7 +24,7 @@ public class EntityDaoIBatisXmlUtil {
             " * 表名为类的简写名 如 PopUser\n" +
             " * namespace可自行定义 默认为类全路径驼峰格式 如comJdUser\n";
 
-    public static <Domain extends BasePersistenceBean, DomainQuery> String makeXml(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass, String tablePrefix) {
+    public static <Domain, DomainQuery> String makeXml(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append(getNameSpace(domainClass));
         sb.append(getTypeAlias(domainClass, domainQueryClass));
@@ -42,11 +42,11 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    public static <Domain extends BasePersistenceBean, DomainQuery> String makeXml(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
+    public static <Domain, DomainQuery> String makeXml(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
         return makeXml(domainClass, domainQueryClass, null);
     }
 
-    private static <Domain extends BasePersistenceBean> String getNameSpace(Class<Domain> domainClass) {
+    private static <Domain> String getNameSpace(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<!DOCTYPE sqlMap PUBLIC \"-//ibatis.apache.org//DTD SQL Map 2.0//EN\" \"http://ibatis.apache.org/dtd/sql-map-2.dtd\">\n" +
@@ -56,7 +56,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean, DomainQuery> String getTypeAlias(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
+    private static <Domain, DomainQuery> String getTypeAlias(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
         StringBuilder sb = new StringBuilder();
         sb.append("<typeAlias alias=\"");
         sb.append(domainClass.getSimpleName());
@@ -71,7 +71,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getResultMap(Class<Domain> domainClass) {
+    private static <Domain> String getResultMap(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!-- 返回结果集类型 -->");
         sb.append("<resultMap id=\"");
@@ -84,7 +84,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getResultMapColumn(Class<Domain> domainClass) {
+    private static <Domain> String getResultMapColumn(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
         for (Field field : fields) {
@@ -100,7 +100,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean, DomainQuery> String getSqlQuery(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
+    private static <Domain, DomainQuery> String getSqlQuery(Class<Domain> domainClass, Class<DomainQuery> domainQueryClass) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--[domain所有条件] -->");
         sb.append("<sql id=\"allCondition\">");
@@ -170,7 +170,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlBaseColumnList(Class<Domain> domainClass) {
+    private static <Domain> String getSqlBaseColumnList(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
         sb.append("<sql id=\"Base_Column_List\">");
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
@@ -185,7 +185,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlGet(Class<Domain> domainClass, String tablePrefix) {
+    private static <Domain> String getSqlGet(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--根据主键查单条-->");
         sb.append("<select id=\"Get\" parameterClass=\"long\" resultMap=\"");
@@ -199,7 +199,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlFind(Class<Domain> domainClass, String tablePrefix) {
+    private static <Domain> String getSqlFind(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--根据条件查单条-->");
         sb.append("<select id=\"Find\" parameterClass=\"");
@@ -217,7 +217,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlCount(Class<Domain> domainClass, String tablePrefix) {
+    private static <Domain> String getSqlCount(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--根据条件查条数-->");
         sb.append("<select id=\"Count\" parameterClass=\"");
@@ -231,7 +231,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlFindByPage(Class<Domain> domainClass, String tablePrefix) {
+    private static <Domain> String getSqlFindByPage(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--根据条件分页查询-->");
         sb.append("<select id=\"FindByPage\" parameterClass=\"");
@@ -255,7 +255,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlInsert(Class<Domain> domainClass, String tablePrefix) {
+    private static <Domain> String getSqlInsert(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--插入-->");
         sb.append("<insert id=\"Insert\" parameterClass=\"");
@@ -269,7 +269,7 @@ public class EntityDaoIBatisXmlUtil {
             if (field.getType().isAssignableFrom(ObjectId.class)) {
                 continue;
             }
-            if ("created".equals(field.getName()) || "modified".equals(field.getName())) {
+            if (BasicAttributeEnum.CREATED.getName().equals(field.getName()) || BasicAttributeEnum.MODIFIED.getName().equals(field.getName())) {
                 sb.append(" now(),");
             } else {
                 sb.append(" #" + field.getName() + "#,");
@@ -281,7 +281,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getSqlUpdate(Class<Domain> domainClass, String tablePrefix) {
+    private static <Domain> String getSqlUpdate(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--更新-->");
         sb.append("<update id=\"Update\" parameterClass=\"");
@@ -295,17 +295,17 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getDynamicWhereUpdateCloumn(Class<Domain> domainClass) {
+    private static <Domain> String getDynamicWhereUpdateCloumn(Class<Domain> domainClass) {
         StringBuilder sb = new StringBuilder();
         Field[] fields = ReflectUtils.getAllClassAndSuperClassFields(domainClass);
-        Field[] basePersistenceFields = ReflectUtils.getAllClassAndSuperClassFields(BasePersistenceBean.class);
+        String[] spFieldsName = BasicAttributeEnum.getAllBasicAttributes();
         for (Field field : fields) {
             if (field.getType().isAssignableFrom(ObjectId.class)) {
                 continue;
             }
             boolean isBase = false;
-            for (Field bf : basePersistenceFields) {
-                if (bf.getName().equalsIgnoreCase(field.getName())) {
+            for (String bf : spFieldsName) {
+                if (bf.equalsIgnoreCase(field.getName())) {
                     isBase = true;
                     break;
                 }
@@ -322,7 +322,7 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain extends BasePersistenceBean> String getDelete(Class<Domain> domainClass, String tablePrefix) {
+    private static <Domain> String getDelete(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--删除-->");
         sb.append("<delete id=\"Delete\" parameterClass=\"");

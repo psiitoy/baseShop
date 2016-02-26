@@ -2,7 +2,7 @@ package com.rise.shop.persistence.dao.mongo;
 
 import com.google.common.base.Preconditions;
 import com.mongodb.DBObject;
-import com.rise.shop.persistence.beans.BasePersistenceBean;
+import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.dao.mongo.utils.MongoDBManager;
 import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
 import com.rise.shop.persistence.page.PaginatedArrayList;
@@ -10,30 +10,43 @@ import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.OrderByBaseQuery;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
+import com.rise.shop.persistence.utils.BasicAttributesUtils;
 import com.rise.shop.persistence.utils.CopyPropertyUtils;
+import com.rise.shop.persistence.utils.IdWorker;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wangdi on 15-1-8.
  */
-public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMongoDao<T> {
+public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
     protected String tablePrefix;
     protected String collectionName;
     protected MongoDBManager mongoDBManager;
     protected Class<T> entityClass;
+    /**
+     * snowflake Id生成器 begin
+     */
+    //数据中心id
+    private int datacenterId;
+    private IdWorker idWorker;
+    //snowflake end
 
     public BaseMongoDaoImpl() {
         try {
             entityClass = getSuperClassGenricType(getClass(), 0);
             collectionName = entityClass.getSimpleName();
+            idWorker = new IdWorker(entityClass.hashCode() % 30, 0);
         } catch (Exception e) {
             logger.error("BaseMongoDaoImpl error", e);
         }
@@ -77,7 +90,7 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
     @Override
     public T get(final long ID) throws Exception {
         List<DBObject> list = mongoDBManager.find(getRealCollectionName(), new HashMap<String, Object>() {{
-            put("id", ID);
+            put(BasicAttributeEnum.ID.getName(), ID);
         }});
         if (list != null && list.size() == 1) {
             return (T) MongoUtils.DB2Bean(list.get(0), entityClass.getName());
@@ -88,12 +101,12 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
 
     @Override
     public T insert(T t) throws Exception {
-        Date nowtime = Calendar.getInstance().getTime();
-        t.setCreated(nowtime);
-        t.setModified(nowtime);
-        if (t.getId() == null || t.getId() == 0) {
-            t.setId(System.currentTimeMillis());
+
+        if (BasicAttributesUtils.getBasicId(t) == null) {
+            BasicAttributesUtils.setBasicId(t, idWorker.nextId());
         }
+        BasicAttributesUtils.setBasicCreated(t);
+        BasicAttributesUtils.setBasicModify(t);
         Map<String, Object> map = MongoUtils.bean2Map(t);
         mongoDBManager.insert(getRealCollectionName(), map);
         return t;
@@ -102,8 +115,9 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
     @Override
     public int update(T t) throws Exception {
 //        mongoDBManager.update(collectionName, MongoUtils.bean2Map(t), MongoUtils.bean2QueryId(t));
-        t.setModified(Calendar.getInstance().getTime());
-        return mongoDBManager.update(getRealCollectionName(), MongoUtils.bean2Map(t));
+        BasicAttributesUtils.setBasicModify(t);
+        Map<String, Object> map = MongoUtils.bean2Map(t);
+        return mongoDBManager.update(getRealCollectionName(), map);
     }
 
     @Override
@@ -204,8 +218,12 @@ public class BaseMongoDaoImpl<T extends BasePersistenceBean> implements BaseMong
         this.mongoDBManager = mongoDBManager;
     }
 
-    //    @Required
     public void setTablePrefix(String tablePrefix) {
         this.tablePrefix = tablePrefix;
+    }
+
+    public void setDatacenterId(int datacenterId) {
+        this.datacenterId = datacenterId;
+        idWorker = new IdWorker(entityClass.hashCode() % 30, datacenterId);
     }
 }

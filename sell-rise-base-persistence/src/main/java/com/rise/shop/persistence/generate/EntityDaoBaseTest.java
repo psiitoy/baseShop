@@ -1,12 +1,13 @@
 package com.rise.shop.persistence.generate;
 
-import com.rise.shop.persistence.beans.BasePersistenceBean;
+import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.query.domain.OrderByDescEnum;
+import com.rise.shop.persistence.utils.BasicAttributesUtils;
 import com.rise.shop.persistence.utils.ReflectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ import java.util.Random;
 /**
  * Created by wangdi on 15-7-17.
  */
-public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
+public abstract class EntityDaoBaseTest<Domain> {
 
     public final static Logger logger = LoggerFactory.getLogger(EntityDaoBaseTest.class);
 
@@ -76,8 +77,9 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
         for (int i = 0; i < insertObjCount; i++) {
             Domain t = domainClass.newInstance();
             t = ReflectUtils.setFieldNullToRandomValue(t);
-            t.setId(System.currentTimeMillis());
-            tempIdList.add(t.getId());
+            Long id = System.currentTimeMillis();
+            BasicAttributesUtils.setBasicId(t, id);
+            tempIdList.add(BasicAttributesUtils.getBasicId(t));
             getEntityDao().insert(t);
         }
         logger.info("[DB框架测试]插入" + insertObjCount + "条测试数据");
@@ -92,13 +94,13 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
 
     public void testGetAndUpdate(Class<Domain> domainClass) throws Exception {
         Domain queryT = domainClass.newInstance();
-        queryT.setId(tempIdList.get(new Random().nextInt(tempIdList.size())));
+        BasicAttributesUtils.setBasicId(queryT, tempIdList.get(new Random().nextInt(tempIdList.size())));
         Domain t = getEntityDao().findBySingle(queryT);
         Assert.notNull(t);
-        logger.info("[DB框架测试]更新前[id=" + t.getId() + ",created=" + t.getCreated() + ",modify=" + t.getModified() + "]");
+        logger.info("[DB框架测试]更新前[id=" + BasicAttributesUtils.getBasicId(queryT) + ",created=" + BasicAttributesUtils.getCreated(queryT) + ",modify=" + BasicAttributesUtils.getModify(queryT) + "]");
         Assert.isTrue(getEntityDao().update(t) > 0);
         t = getEntityDao().findBySingle(queryT);
-        logger.info("[DB框架测试]更新后[id=" + t.getId() + ",created=" + t.getCreated() + ",modify=" + t.getModified() + "]");
+        logger.info("[DB框架测试]更新后[id=" + BasicAttributesUtils.getBasicId(queryT) + ",created=" + BasicAttributesUtils.getCreated(queryT) + ",modify=" + BasicAttributesUtils.getModify(queryT) + "]");
     }
 
     public int testQueryTotalPage(Query query) throws Exception {
@@ -124,12 +126,12 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
         List<Domain> pages = getEntityDao().findByPage(query);
         Assert.isTrue(pages.size() == pageSize);
         logger.info("[DB框架测试]第" + query.getPageNo() + "页数据量为" + pages.size() + "[PAGESIZE=" + pageSize + ",count=" + count + "]");
-        tempIdIndex1 = pages.get(1).getId();
+        tempIdIndex1 = BasicAttributesUtils.getBasicId(pages.get(1));
         //第一页 从index 1开始 同第一次查询的第二个id
         query.setIndex(1);
         query.setPageNo(Query.FIRST_PAGE);
         pages = getEntityDao().findByPage(query);
-        Assert.isTrue(pages.get(0).getId().equals(tempIdIndex1));
+        Assert.isTrue(BasicAttributesUtils.getBasicId(pages.get(0)).equals(tempIdIndex1));
         //最后一页
         query.setIndex(null);
         query.setPageNo(totalPage);
@@ -152,22 +154,22 @@ public abstract class EntityDaoBaseTest<Domain extends BasePersistenceBean> {
             defaultBaseQuery.setPageSize(maxPageSize);
             defaultBaseQuery.setIndex(null);
             defaultBaseQuery.setPageNo(Query.FIRST_PAGE);
-            defaultBaseQuery.addOrderBy(new ColumnOrder(OrderByDescEnum.DESC, "id"));
+            defaultBaseQuery.addOrderBy(new ColumnOrder(OrderByDescEnum.DESC, BasicAttributeEnum.ID.getName()));
             List<Domain> pages = getEntityDao().findByPage(defaultBaseQuery);
             Assert.notEmpty(pages);
-            Long idBuf = pages.get(0).getId();
+            Long idBuf = BasicAttributesUtils.getBasicId(pages.get(0));
             defaultBaseQuery.clearOrderBy();
-            defaultBaseQuery.addOrderBy(new ColumnOrder(OrderByDescEnum.ASC, "id"));
+            defaultBaseQuery.addOrderBy(new ColumnOrder(OrderByDescEnum.ASC, BasicAttributeEnum.ID.getName()));
             pages = getEntityDao().findByPage(defaultBaseQuery);
             Assert.notEmpty(pages);
-            Assert.isTrue(idBuf.equals(pages.get(pages.size() - 1).getId()));
+            Assert.isTrue(idBuf.equals(BasicAttributesUtils.getBasicId(pages.get(pages.size() - 1))));
         }
     }
 
     public void testDelete(Class<Domain> domainClass, Query query) throws Exception {
         for (Long id : tempIdList) {
             Domain t = domainClass.newInstance();
-            t.setId(id);
+            BasicAttributesUtils.setBasicId(t, id);
             getEntityDao().delete(t);
         }
         logger.info("[DB框架测试]删除" + tempIdList.size() + "条数据");

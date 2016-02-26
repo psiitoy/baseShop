@@ -1,6 +1,7 @@
 package com.rise.shop.persistence.dao.mongo.utils;
 
 import com.mongodb.*;
+import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
 import com.rise.shop.persistence.utils.ReflectUtils;
@@ -222,7 +223,7 @@ public class MongoDBManager {
 //        getCollection(collection).update(q, o);
         try {
             List<DBObject> q = find(collection, new HashMap<String, Object>() {{
-                put("id", setFields.get("id"));
+                put(BasicAttributeEnum.ID.getName(), setFields.get(BasicAttributeEnum.ID.getName()));
             }});
             if (!q.isEmpty()) {
                 DBObject o = map2Obj(setFields);

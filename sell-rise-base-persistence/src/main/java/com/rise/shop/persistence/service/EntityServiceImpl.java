@@ -1,6 +1,5 @@
 package com.rise.shop.persistence.service;
 
-import com.rise.shop.persistence.beans.BasePersistenceBean;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
@@ -14,7 +13,7 @@ import java.util.Map;
 /**
  * Created by wangdi on 14-12-10.
  */
-public abstract class EntityServiceImpl<T extends BasePersistenceBean> implements EntityService<T> {
+public abstract class EntityServiceImpl<T> implements EntityService<T> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
     protected EntityDao<T> entityDao;
