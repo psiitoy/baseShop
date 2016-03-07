@@ -3,7 +3,7 @@ package com.rise.shop.web.controller;
 import com.rise.shop.domain.art.mysql.User;
 import com.rise.shop.domain.query.UserQuery;
 import com.rise.shop.service.art.UserService;
-import com.rise.shop.web.controller.base.BaseController;
+import com.rise.shop.view.controller.BaseController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

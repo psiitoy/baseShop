@@ -3,7 +3,7 @@ package com.rise.shop.web.controller;
 import com.rise.shop.domain.art.mongo.ImageInfo;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.service.art.ImageInfoService;
-import com.rise.shop.web.controller.base.BaseController;
+import com.rise.shop.view.controller.BaseController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 

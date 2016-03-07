@@ -3,7 +3,7 @@ package com.rise.shop.persistence.generate;
 import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
-import com.rise.shop.persistence.utils.ReflectUtils;
+import com.rise.shop.common.utils.ReflectUtils;
 
 import java.lang.reflect.Field;
 

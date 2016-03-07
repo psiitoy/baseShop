@@ -6,7 +6,7 @@ import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.utils.BasicAttributesUtils;
-import com.rise.shop.persistence.utils.CopyPropertyUtils;
+import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
 import com.rise.shop.persistence.utils.IdWorker;
 import org.springframework.dao.DataAccessException;

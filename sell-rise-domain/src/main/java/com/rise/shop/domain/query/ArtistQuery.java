@@ -1,13 +1,13 @@
 package com.rise.shop.domain.query;
 
-import com.rise.shop.domain.ano.FieldMeta;
+import com.rise.shop.common.ano.ViewMeta;
 import com.rise.shop.persistence.query.DefaultBaseQuery;
 
 /**
  * Created by wangdi on 15-1-9.
  */
 public class ArtistQuery extends DefaultBaseQuery {
-    @FieldMeta(name = "姓名", order = 1)
+    @ViewMeta(name = "姓名", order = 1)
     private String name;    //姓名
     private Long ageSymbolGt;
     private Long ageSymbolGte;

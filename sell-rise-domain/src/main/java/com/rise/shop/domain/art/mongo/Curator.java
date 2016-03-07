@@ -1,8 +1,8 @@
 package com.rise.shop.domain.art.mongo;
 
-import com.rise.shop.domain.ano.FieldMeta;
-import com.rise.shop.domain.art.ViewBasePersistenceBean;
-import com.rise.shop.domain.constant.FieldTypeConstant;
+import com.rise.shop.common.ano.ViewMeta;
+import com.rise.shop.common.beans.ViewBasePersistenceBean;
+import com.rise.shop.common.constants.FieldTypeConstant;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -12,23 +12,23 @@ import java.util.List;
  */
 public class Curator extends ViewBasePersistenceBean {
     private ObjectId _id;   //mongoId
-    @FieldMeta(name = "姓名", order = 2)
+    @ViewMeta(name = "姓名", order = 2)
     private String name; //姓名
-    @FieldMeta(name = "性别", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 3)
+    @ViewMeta(name = "性别", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 3)
     private int sex;    //性别
-    @FieldMeta(name = "头像", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 4)
+    @ViewMeta(name = "头像", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 4)
     private List<Long> headImg; //头像
-    @FieldMeta(name = "国家", order = 5)
+    @ViewMeta(name = "国家", order = 5)
     private String country; //国家
-    @FieldMeta(name = "学校", order = 6)
+    @ViewMeta(name = "学校", order = 6)
     private String school; //学校
-    @FieldMeta(name = "文字介绍", order = 7)
+    @ViewMeta(name = "文字介绍", order = 7)
     private String desc;    //文字介绍
-    @FieldMeta(name = "文章", order = 8)
+    @ViewMeta(name = "文章", order = 8)
     private String book;    //文章
-    @FieldMeta(name = "视频链接", order = 9)
+    @ViewMeta(name = "视频链接", order = 9)
     private List<String> videoUrls;    //视频链接 多个
-    @FieldMeta(name = "关键词", order = 10, summary = false)
+    @ViewMeta(name = "关键词", order = 10, summary = false)
     private List<String> keyWords; //关键词
 
     @Override

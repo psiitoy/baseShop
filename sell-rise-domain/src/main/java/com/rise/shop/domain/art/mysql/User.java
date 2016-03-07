@@ -1,19 +1,19 @@
 package com.rise.shop.domain.art.mysql;
 
-import com.rise.shop.domain.ano.FieldMeta;
-import com.rise.shop.domain.art.ViewBasePersistenceBean;
-import com.rise.shop.domain.constant.FieldTypeConstant;
+import com.rise.shop.common.ano.ViewMeta;
+import com.rise.shop.common.beans.ViewBasePersistenceBean;
+import com.rise.shop.common.constants.FieldTypeConstant;
 
 /**
  * Created by wangdi on 15-1-18.
  */
 public class User extends ViewBasePersistenceBean {
-    @FieldMeta(name = "用户名", order = 1, editable = false, notnull = true)
+    @ViewMeta(name = "用户名", order = 1, editable = false, notnull = true)
     private String email;
-    @FieldMeta(name = "密码", order = 2, notnull = true)
+    @ViewMeta(name = "密码", order = 2, notnull = true)
     private String pwd;
     private Integer state;
-    @FieldMeta(name = "权限", order = 3, type = FieldTypeConstant.FIELD_TYPE_RATIO, notnull = true)
+    @ViewMeta(name = "权限", order = 3, type = FieldTypeConstant.FIELD_TYPE_RATIO, notnull = true)
     private Integer authCode;
 
     @Override

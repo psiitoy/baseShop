@@ -1,7 +1,7 @@
 package com.rise.shop.persistence.generate;
 
 import com.rise.shop.persistence.utils.EntityNamesUtils;
-import com.rise.shop.persistence.utils.ReflectUtils;
+import com.rise.shop.common.utils.ReflectUtils;
 import org.bson.types.ObjectId;
 
 import java.lang.reflect.Field;

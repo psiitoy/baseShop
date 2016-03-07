@@ -1,8 +1,8 @@
 package com.rise.shop.domain.art.mongo;
 
-import com.rise.shop.domain.ano.FieldMeta;
-import com.rise.shop.domain.art.ViewBasePersistenceBean;
-import com.rise.shop.domain.constant.FieldTypeConstant;
+import com.rise.shop.common.ano.ViewMeta;
+import com.rise.shop.common.beans.ViewBasePersistenceBean;
+import com.rise.shop.common.constants.FieldTypeConstant;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -12,43 +12,43 @@ import java.util.List;
  */
 public class Organization extends ViewBasePersistenceBean {
     private ObjectId _id;   //mongoId
-    @FieldMeta(name = "机构名称", order = 2, summary = true)
+    @ViewMeta(name = "机构名称", order = 2, summary = true)
     private String name;    //机构名称
-    @FieldMeta(name = "机构标志", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 3, summary = true)
+    @ViewMeta(name = "机构标志", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 3, summary = true)
     private List<Long> headImg; //头像图片
-    @FieldMeta(name = "类别", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 4, summary = true)
+    @ViewMeta(name = "类别", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 4, summary = true)
     private Integer orgType;   //类别（画廊，拍卖行，协会，学院）
-    @FieldMeta(name = "盈利机构标识", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 5, summary = true)
+    @ViewMeta(name = "盈利机构标识", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 5, summary = true)
     private Integer gainType;   //盈利非盈利机构
-    @FieldMeta(name = "地址", order = 6, summary = true)
+    @ViewMeta(name = "地址", order = 6, summary = true)
     private String address; //地址
-    @FieldMeta(name = "电话", order = 7, summary = true)
+    @ViewMeta(name = "电话", order = 7, summary = true)
     private String phone;   //电话
-    @FieldMeta(name = "邮编", order = 8, summary = true)
+    @ViewMeta(name = "邮编", order = 8, summary = true)
     private String postcode;    //邮编
-    @FieldMeta(name = "国家", order = 9, summary = true)
+    @ViewMeta(name = "国家", order = 9, summary = true)
     private String country; //国家
-    @FieldMeta(name = "坐标", order = 10, summary = true)
+    @ViewMeta(name = "坐标", order = 10, summary = true)
     private String coordinate;  //坐标
-    @FieldMeta(name = "展厅面积", order = 11, summary = false)
+    @ViewMeta(name = "展厅面积", order = 11, summary = false)
     private String area;
-    @FieldMeta(name = "负责人", order = 12, summary = true)
+    @ViewMeta(name = "负责人", order = 12, summary = true)
     private String leader;  //负责人
-    @FieldMeta(name = "简介", order = 13, summary = true)
+    @ViewMeta(name = "简介", order = 13, summary = true)
     private String desc;    //简介
-    @FieldMeta(name = "简介图片", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 14, summary = true)
+    @ViewMeta(name = "简介图片", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 14, summary = true)
     private List<Long> descImg; //简介图片
-    @FieldMeta(name = "简介图片备注", order = 15, summary = false)
+    @ViewMeta(name = "简介图片备注", order = 15, summary = false)
     private String descImgRemark;
-    @FieldMeta(name = "官网地址", order = 16, summary = false)
+    @ViewMeta(name = "官网地址", order = 16, summary = false)
     private String orgUrl;
-    @FieldMeta(name = "官方邮箱", order = 17, summary = false)
+    @ViewMeta(name = "官方邮箱", order = 17, summary = false)
     private String orgEmail;
-    @FieldMeta(name = "官方微博", order = 18, summary = false)
+    @ViewMeta(name = "官方微博", order = 18, summary = false)
     private String orgWeiBo;
-    @FieldMeta(name = "官方微信", order = 19, summary = false)
+    @ViewMeta(name = "官方微信", order = 19, summary = false)
     private String orgWeiXin;
-    @FieldMeta(name = "关键词", order = 20, summary = false)
+    @ViewMeta(name = "关键词", order = 20, summary = false)
     private List<String> keyWords; //关键词
 
     @Override

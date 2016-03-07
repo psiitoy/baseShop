@@ -1,8 +1,8 @@
 package com.rise.shop.domain.art.mongo;
 
-import com.rise.shop.domain.ano.FieldMeta;
-import com.rise.shop.domain.art.ViewBasePersistenceBean;
-import com.rise.shop.domain.constant.FieldTypeConstant;
+import com.rise.shop.common.ano.ViewMeta;
+import com.rise.shop.common.beans.ViewBasePersistenceBean;
+import com.rise.shop.common.constants.FieldTypeConstant;
 import org.bson.types.ObjectId;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -14,37 +14,37 @@ import java.util.List;
 @Document(indexName = "artist", type = "artist", shards = 2, replicas = 0)
 public class Artist extends ViewBasePersistenceBean {
     private ObjectId _id;   //mongoId
-    @FieldMeta(name = "姓名", order = 2, notnull = true)
+    @ViewMeta(name = "姓名", order = 2, notnull = true)
     private String name;    //姓名
-    @FieldMeta(name = "头像", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 3)
+    @ViewMeta(name = "头像", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 3)
     private List<Long> headImg; //头像
-    @FieldMeta(name = "籍贯", order = 4)
+    @ViewMeta(name = "籍贯", order = 4)
     private String nativePlace; //籍贯
-    @FieldMeta(name = "性别", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 5)
+    @ViewMeta(name = "性别", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 5)
     private Integer sex;    //性别
-    @FieldMeta(name = "生日", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 6)
+    @ViewMeta(name = "生日", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 6)
     private Long birth; //生日
-    @FieldMeta(name = "年龄", order = 7, summary = false, reffield = "birth", save = false)
+    @ViewMeta(name = "年龄", order = 7, summary = false, reffield = "birth", save = false)
     private Long age; //生日
-    @FieldMeta(name = "死亡年", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, summary = false, order = 8)
+    @ViewMeta(name = "死亡年", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, summary = false, order = 8)
     private Long death; //死亡年
-    @FieldMeta(name = "艺术类别", order = 9, summary = false)
+    @ViewMeta(name = "艺术类别", order = 9, summary = false)
     private List<String> artTypes;  //艺术类别
-    @FieldMeta(name = "毕业院校", order = 10, summary = false)
+    @ViewMeta(name = "毕业院校", order = 10, summary = false)
     private String school;  //毕业院校
-    @FieldMeta(refid = true, name = "所属协会ID", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 11, summary = false)
+    @ViewMeta(refid = true, name = "所属协会ID", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 11, summary = false)
     private List<Long> orgIds;    //所属协会
-    @FieldMeta(reffield = "orgIds", name = "所属协会", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, order = 12, summary = false)
+    @ViewMeta(reffield = "orgIds", name = "所属协会", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, order = 12, summary = false)
     private List<String> orgNames;    //所属协会
-    @FieldMeta(name = "启示年", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 13)
+    @ViewMeta(name = "启示年", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 13)
     private Long artTime; //启示年
-    @FieldMeta(name = "获奖", order = 14, summary = false)
+    @ViewMeta(name = "获奖", order = 14, summary = false)
     private List<String> awardNames; //获奖
-    @FieldMeta(name = "图片报道", order = 15, summary = false)
+    @ViewMeta(name = "图片报道", order = 15, summary = false)
     private String newsImg;   //图片报道
-    @FieldMeta(name = "视频链接", order = 16, summary = false)
+    @ViewMeta(name = "视频链接", order = 16, summary = false)
     private String videoUrl;    //视频链接
-    @FieldMeta(name = "关键词", order = 17, summary = false)
+    @ViewMeta(name = "关键词", order = 17, summary = false)
     private List<String> keyWords; //关键词
 
     @Override

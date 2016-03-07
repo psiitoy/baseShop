@@ -53,13 +53,13 @@
             <map>
                 <!--Velocity Escape Tool-->
                 <entry key="extDateTools">
-                    <bean class="com.rise.shop.common.util.view.tools.ExtDateTools"/>
+                    <bean class="com.rise.shop.view.utils.ExtDateTools"/>
                 </entry>
                 <entry key="fieldDetailTools">
-                    <bean class="com.rise.shop.common.util.view.tools.FieldDetailTools"/>
+                    <bean class="com.rise.shop.view.utils.FieldDetailTools"/>
                 </entry>
                 <entry key="enumTools">
-                    <bean class="com.rise.shop.common.util.view.tools.EnumTools"/>
+                    <bean class="com.rise.shop.web.tools.EnumTools"/>
                 </entry>
             </map>
         </property>

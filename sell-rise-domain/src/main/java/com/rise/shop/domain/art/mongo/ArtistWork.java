@@ -1,8 +1,8 @@
 package com.rise.shop.domain.art.mongo;
 
-import com.rise.shop.domain.ano.FieldMeta;
-import com.rise.shop.domain.art.ViewBasePersistenceBean;
-import com.rise.shop.domain.constant.FieldTypeConstant;
+import com.rise.shop.common.ano.ViewMeta;
+import com.rise.shop.common.beans.ViewBasePersistenceBean;
+import com.rise.shop.common.constants.FieldTypeConstant;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -12,39 +12,39 @@ import java.util.List;
  */
 public class ArtistWork extends ViewBasePersistenceBean {
     private ObjectId _id;   //mongoId
-    @FieldMeta(refid = true, name = "作者ID", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 1, summary = false, editable = false, notnull = true)
+    @ViewMeta(refid = true, name = "作者ID", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 1, summary = false, editable = false, notnull = true)
     private Long artistId;  //作者
-    @FieldMeta(reffield = "artistId", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, name = "作者姓名", order = 2, editable = false, notnull = true)
+    @ViewMeta(reffield = "artistId", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, name = "作者姓名", order = 2, editable = false, notnull = true)
     private String artistName;  //作者
-    @FieldMeta(name = "作品图片", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 3)
+    @ViewMeta(name = "作品图片", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 3)
     private List<Long> workImage;   //作品
-    @FieldMeta(name = "作品图片备注", order = 4, summary = false)
+    @ViewMeta(name = "作品图片备注", order = 4, summary = false)
     private String workImageRemark;
-    @FieldMeta(name = "作品名", order = 5, notnull = true)
+    @ViewMeta(name = "作品名", order = 5, notnull = true)
     private String workName;    //作品名
-    @FieldMeta(name = "尺寸", order = 6)
+    @ViewMeta(name = "尺寸", order = 6)
     private String size;    //尺寸
-    @FieldMeta(name = "创作时间", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 7)
+    @ViewMeta(name = "创作时间", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 7)
     private Long time;  //作品年代
-    @FieldMeta(name = "版次", order = 8, summary = false)
+    @ViewMeta(name = "版次", order = 8, summary = false)
     private String rev; //版次
-    @FieldMeta(name = "系列", order = 9, summary = false)
+    @ViewMeta(name = "系列", order = 9, summary = false)
     private String series;  //系列
-    @FieldMeta(name = "销售总量", order = 10)
+    @ViewMeta(name = "销售总量", order = 10)
     private Integer sellNum;    //销售总量
-    @FieldMeta(name = "拍卖记录", order = 11)
+    @ViewMeta(name = "拍卖记录", order = 11)
     private String auctionRecord;   //拍卖记录
-    @FieldMeta(name = "标价", order = 12)
+    @ViewMeta(name = "标价", order = 12)
     private Double price;    //标价
-    @FieldMeta(name = "成交价", order = 13)
+    @ViewMeta(name = "成交价", order = 13)
     private Double cost;    //成交价
-    @FieldMeta(refid = true, name = "销售渠道(机构ID)", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 14, summary = false)
+    @ViewMeta(refid = true, name = "销售渠道(机构ID)", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 14, summary = false)
     private List<Long> orgIds;  //销售渠道
-    @FieldMeta(reffield = "orgIds", name = "销售渠道(机构名称)", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, order = 15, summary = false)
+    @ViewMeta(reffield = "orgIds", name = "销售渠道(机构名称)", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, order = 15, summary = false)
     private List<String> orgNames;  //销售渠道
-    @FieldMeta(name = "收藏机构或个人", order = 16, notnull = true)
+    @ViewMeta(name = "收藏机构或个人", order = 16, notnull = true)
     private String owner;   //收藏机构或个人
-    @FieldMeta(name = "关键词", order = 17, summary = false)
+    @ViewMeta(name = "关键词", order = 17, summary = false)
     private List<String> keyWords; //关键词
 
     @Override

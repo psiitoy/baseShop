@@ -1,14 +1,14 @@
 package test.com.rise.shop.dao.art.dao;
 
 import com.rise.shop.domain.art.mysql.User;
-import com.rise.shop.domain.enumtype.AuthCodeTypeEnum;
+import com.rise.shop.view.enumtype.viewtype.AuthCodeTypeEnum;
 import com.rise.shop.domain.query.UserQuery;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.query.domain.OrderByDescEnum;
-import com.rise.shop.persistence.utils.CommonTimeUtils;
+import com.rise.shop.common.utils.CommonTimeUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

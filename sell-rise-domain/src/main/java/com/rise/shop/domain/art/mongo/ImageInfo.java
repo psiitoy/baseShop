@@ -1,6 +1,6 @@
 package com.rise.shop.domain.art.mongo;
 
-import com.rise.shop.domain.art.ViewBasePersistenceBean;
+import com.rise.shop.common.beans.ViewBasePersistenceBean;
 import org.bson.types.ObjectId;
 
 /**

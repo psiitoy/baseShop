@@ -1,5 +1,6 @@
 package com.rise.shop.persistence.utils;
 
+import com.rise.shop.common.utils.ReflectUtils;
 import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 
 import java.util.Date;

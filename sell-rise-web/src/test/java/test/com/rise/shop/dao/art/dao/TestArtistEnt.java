@@ -5,7 +5,7 @@ import com.rise.shop.domain.query.ArtistQuery;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
 import com.rise.shop.persistence.query.Query;
-import com.rise.shop.persistence.utils.CommonTimeUtils;
+import com.rise.shop.common.utils.CommonTimeUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

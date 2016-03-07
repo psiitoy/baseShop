@@ -1,8 +1,8 @@
 package com.rise.shop.domain.art.mongo;
 
-import com.rise.shop.domain.ano.FieldMeta;
-import com.rise.shop.domain.art.ViewBasePersistenceBean;
-import com.rise.shop.domain.constant.FieldTypeConstant;
+import com.rise.shop.common.ano.ViewMeta;
+import com.rise.shop.common.beans.ViewBasePersistenceBean;
+import com.rise.shop.common.constants.FieldTypeConstant;
 
 import java.util.List;
 
@@ -10,35 +10,35 @@ import java.util.List;
  * Created by wangdi on 15-1-8.
  */
 public class Exhibition extends ViewBasePersistenceBean {
-    @FieldMeta(name = "展览名", order = 1, notnull = true)
+    @ViewMeta(name = "展览名", order = 1, notnull = true)
     private String name;    //展览名
-    @FieldMeta(name = "开始时间", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 2)
+    @ViewMeta(name = "开始时间", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 2)
     private Long beginTime; //开始时间
-    @FieldMeta(name = "结束时间", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 3)
+    @ViewMeta(name = "结束时间", type = FieldTypeConstant.FIELD_TYPE_TIMESTAMP, order = 3)
     private Long endTime;   //结束时间
-    @FieldMeta(name = "是否在展", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 4, notnull = true)
+    @ViewMeta(name = "是否在展", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 4, notnull = true)
     private Integer isShow;//是否在展
-    @FieldMeta(name = "艺术类别", order = 5, summary = false)
+    @ViewMeta(name = "艺术类别", order = 5, summary = false)
     private List<String> artTypes;  //艺术类别
-    @FieldMeta(name = "艺术类别", order = 6, summary = false)
+    @ViewMeta(name = "艺术类别", order = 6, summary = false)
     private List<String> exhiTypes;  //艺术类别
-    @FieldMeta(name = "国家", order = 7, notnull = true)
+    @ViewMeta(name = "国家", order = 7, notnull = true)
     private String country;//国际
-    @FieldMeta(name = "展出地点", order = 8, notnull = true)
+    @ViewMeta(name = "展出地点", order = 8, notnull = true)
     private String address;//展出地点
-    @FieldMeta(refid = true, name = "艺术家ID", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 9, summary = false)
+    @ViewMeta(refid = true, name = "艺术家ID", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 9, summary = false)
     private List<Long> artistIds;    //艺术家ID
-    @FieldMeta(reffield = "artistIds", name = "艺术家名称", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, order = 10, summary = false)
+    @ViewMeta(reffield = "artistIds", name = "艺术家名称", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, order = 10, summary = false)
     private List<String> artistNames;    //艺术家名称
-    @FieldMeta(refid = true, name = "策展人ID", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 11, summary = false, notnull = true)
+    @ViewMeta(refid = true, name = "策展人ID", type = FieldTypeConstant.FIELD_TYPE_SEARCH_ID, order = 11, summary = false, notnull = true)
     private Long curatorId;  //策展人ID
-    @FieldMeta(reffield = "curatorId", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, name = "策展人姓名", order = 12, notnull = true)
+    @ViewMeta(reffield = "curatorId", type = FieldTypeConstant.FIELD_TYPE_SEARCH_NAME, name = "策展人姓名", order = 12, notnull = true)
     private String curatorName;  //策展人姓名
-    @FieldMeta(name = "视频链接", order = 13, summary = false)
+    @ViewMeta(name = "视频链接", order = 13, summary = false)
     private String videoUrl;    //视频链接
-    @FieldMeta(name = "展览作品", order = 14, summary = false)
+    @ViewMeta(name = "展览作品", order = 14, summary = false)
     private List<String> artistWorks;  //展览作品
-    @FieldMeta(name = "关键词", order = 15, summary = false)
+    @ViewMeta(name = "关键词", order = 15, summary = false)
     private List<String> keyWords; //关键词
 
     @Override

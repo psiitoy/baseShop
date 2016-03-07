@@ -8,7 +8,7 @@ import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.query.domain.OrderByDescEnum;
 import com.rise.shop.persistence.utils.BasicAttributesUtils;
-import com.rise.shop.persistence.utils.ReflectUtils;
+import com.rise.shop.common.utils.ReflectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;

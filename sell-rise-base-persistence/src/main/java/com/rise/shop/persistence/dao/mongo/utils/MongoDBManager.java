@@ -4,7 +4,7 @@ import com.mongodb.*;
 import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
-import com.rise.shop.persistence.utils.ReflectUtils;
+import com.rise.shop.common.utils.ReflectUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
