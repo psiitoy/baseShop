@@ -73,7 +73,7 @@ public @interface ViewMeta {
     String type() default "";
 
     /**
-     * 是否取外键关联
+     * 是否是数据源读取
      *
      * @return
      */

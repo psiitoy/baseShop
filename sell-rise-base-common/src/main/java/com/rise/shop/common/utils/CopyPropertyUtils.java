@@ -23,6 +23,9 @@ public class CopyPropertyUtils {
 
     public static <T> T copyPropertiesAndInstance(Object orig, Class<T> toClz) {
         try {
+            if (orig == null) {
+                return null;
+            }
             T t = toClz.newInstance();
             copyProperties(t, orig);
             return t;

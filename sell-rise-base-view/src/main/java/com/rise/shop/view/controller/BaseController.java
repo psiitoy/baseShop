@@ -3,11 +3,12 @@ package com.rise.shop.view.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Preconditions;
+import com.rise.shop.common.ano.info.ViewMetaInfo;
+import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.service.EntityService;
-import com.rise.shop.common.ano.info.ViewMetaInfo;
 import com.rise.shop.view.enumtype.viewtype.AuthCodeTypeEnum;
 import com.rise.shop.view.utils.FieldDetailTools;
 import com.rise.shop.view.validator.BaseValidator;
@@ -29,12 +30,13 @@ import java.util.*;
 /**
  * Created by wangdi on 14-12-21.
  */
-public abstract class BaseController<T, Q extends Query> {
+public abstract class BaseController<D, T, Q extends Query> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     protected EntityService<T> baseService;
-    protected T t;
+    protected D domainD;
+    protected T domainT;
     protected String namespace;
     protected String chineseName;
     protected Validator validator;
@@ -47,8 +49,8 @@ public abstract class BaseController<T, Q extends Query> {
     }
 
     @ModelAttribute("domain")
-    public T getDomain() {
-        return t;
+    public D getDomain() {
+        return domainD;
     }
 
     @RequestMapping(value = {"/index"}, method = {RequestMethod.GET, RequestMethod.POST})
@@ -59,7 +61,7 @@ public abstract class BaseController<T, Q extends Query> {
     }
 
     @RequestMapping(value = {"/addsave"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView addsave(T obj, Errors errors) {
+    public ModelAndView addsave(D obj, Errors errors) {
         ModelAndView mv = new ModelAndView("redirect:/" + namespace + "/index");
         try {
             if (validator != null) {
@@ -71,7 +73,7 @@ public abstract class BaseController<T, Q extends Query> {
                     return mv;
                 }
             }
-            baseService.insert(obj);
+            baseService.insert(convertDtoT(obj));
             return mv;
         } catch (Exception e) {
             logger.error("addsave", e);
@@ -81,27 +83,31 @@ public abstract class BaseController<T, Q extends Query> {
     }
 
     @RequestMapping(value = {"/editsave"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public String editsave(T obj, Errors errors) {
+    public ModelAndView editsave(D obj, Errors errors) {
+        ModelAndView mv = new ModelAndView("redirect:/" + namespace + "/index");
         try {
             if (validator != null) {
                 validator.validate(obj, errors);  //1 调用UserModelValidator的validate方法进行验证
                 if (errors.hasErrors()) { //2如果有错误再回到表单展示页面
                     logger.warn(errors.getAllErrors().toString());
-                    return "/validatorerror";
+                    mv.addObject("msg", toErrorMsg(errors));
+                    mv.setViewName("/validatorerror");
+                    return mv;
                 }
             }
-            baseService.update(obj);
-            return "redirect:/" + namespace + "/index";
+            baseService.update(convertDtoT(obj));
+            return mv;
         } catch (Exception e) {
             logger.error("editsave error", e);
-            return "/error";
+            mv.setViewName("error");
+            return mv;
         }
     }
 
     @RequestMapping(value = {"/add"}, method = RequestMethod.GET)
     public ModelAndView add() {
         ModelAndView mv = new ModelAndView("pages/add");
-        mv.addObject("domain", FieldDetailTools.bean2FieldMetaInfoList(t, false));
+        mv.addObject("domain", FieldDetailTools.bean2FieldMetaInfoList(domainD, false));
         mv.addObject("isAdd", true);
         mv.addObject("saveUrl", "/" + namespace + "/addsave");
         return mv;
@@ -120,7 +126,7 @@ public abstract class BaseController<T, Q extends Query> {
         try {
             T t = baseService.get(id);
             if (t != null) {
-                mv.addObject("domain", FieldDetailTools.bean2FieldMetaInfoList(t, true));
+                mv.addObject("domain", FieldDetailTools.bean2FieldMetaInfoList(convertTtoD(t), true));
                 mv.addObject("isAdd", false);
                 mv.addObject("saveUrl", "/" + namespace + "/editsave");
             }
@@ -140,8 +146,8 @@ public abstract class BaseController<T, Q extends Query> {
                 q.setPageNo(1);
             }
             q.setPageSize(PAGE_SIZE);
-            mv.addObject("list", baseService.findByPage(q));
-            mv.addObject("domains", FieldDetailTools.bean2FieldMetaInfoList(t, false));
+            mv.addObject("list", convertTListtoDList(baseService.findByPage(q)));
+            mv.addObject("domains", FieldDetailTools.bean2FieldMetaInfoList(domainD, false));
             mv.addObject("queryDomains", FieldDetailTools.bean2FieldMetaInfoList(q, true));
         } catch (Exception e) {
             logger.error("list error", e);
@@ -152,7 +158,7 @@ public abstract class BaseController<T, Q extends Query> {
     @RequestMapping(value = "/domain", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public List<ViewMetaInfo> domain() {
-        return FieldDetailTools.bean2FieldMetaInfoList(t, false);
+        return FieldDetailTools.bean2FieldMetaInfoList(domainD, false);
     }
 
     @RequestMapping(value = "/delete/{id}", method = {RequestMethod.GET, RequestMethod.POST})
@@ -181,7 +187,7 @@ public abstract class BaseController<T, Q extends Query> {
         try {
             T t = baseService.get(id);
             if (t != null) {
-                mv.addObject("domain", FieldDetailTools.bean2FieldMetaInfoList(t, true));
+                mv.addObject("domain", FieldDetailTools.bean2FieldMetaInfoList(convertTtoD(t), true));
             }
             return mv;
         } catch (Exception e) {
@@ -191,22 +197,11 @@ public abstract class BaseController<T, Q extends Query> {
         }
     }
 
-    @RequestMapping(value = "/listall", method = {RequestMethod.GET, RequestMethod.POST})
-    @ResponseBody
-    public List<T> listall() {
-        try {
-            return baseService.findBy(null);
-        } catch (Exception e) {
-            logger.error("listall error", e);
-            return null;
-        }
-    }
-
     @RequestMapping(value = "/getAjax/{id}", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public T getAjax(@PathVariable("id") long id) {
+    public D getAjax(@PathVariable("id") long id) {
         try {
-            return baseService.get(id);
+            return convertTtoD(baseService.get(id));
         } catch (Exception e) {
             logger.error("getAjax error", e);
             return null;
@@ -221,15 +216,15 @@ public abstract class BaseController<T, Q extends Query> {
      */
     @RequestMapping(value = "/queryByIds", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public List<T> queryByIdsAjax(String ids) {
+    public List<D> queryByIdsAjax(String ids) {
         try {
             logger.info("queryByIdsAjax ids=" + ids);
-            List<T> objList = new ArrayList<T>();
+            List<D> objList = new ArrayList<D>();
             JSONArray jsonArray = JSONArray.parseArray(ids);
             for (int i = 0; i < jsonArray.size(); i++) {
                 Long id = jsonArray.getObject(i, Long.class);
                 T t = baseService.get(id);
-                objList.add(t);
+                objList.add(convertTtoD(t));
             }
             return objList;
         } catch (Exception e) {
@@ -246,14 +241,14 @@ public abstract class BaseController<T, Q extends Query> {
      */
     @RequestMapping(value = "/likeQueryByName", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public List<T> likeQueryByNames(String jsonParams) {
+    public List<D> likeQueryByNames(String jsonParams) {
         try {
             PaginatedList<T> list = new PaginatedArrayList();
             list.setIndex(1);
             list.setPageSize(PAGE_SIZE);
             Map<String, String> map = new HashMap<String, String>();
             map = JSONObject.parseObject(jsonParams, map.getClass());
-            return baseService.findByPageLike(list, map);
+            return convertTListtoDList(baseService.findByPageLike(list, map));
         } catch (Exception e) {
             logger.error("queryByIds error", e);
             return null;
@@ -281,16 +276,38 @@ public abstract class BaseController<T, Q extends Query> {
      * tools
      */
 
-    public String toErrorMsg(Errors errors) {
+    private String toErrorMsg(Errors errors) {
         if (errors != null) {
             StringBuilder sb = new StringBuilder();
             for (ObjectError error : errors.getAllErrors()) {
-                sb.append(error.getDefaultMessage() + ",");
+                sb.append(error.getCode() + ",");
             }
             return sb.toString();
         } else {
             return "";
         }
+    }
+
+    private T convertDtoT(D d) {
+        if (d == null) {
+            return null;
+        }
+        return (T) CopyPropertyUtils.copyPropertiesAndInstance(d, domainT.getClass());
+    }
+
+    private D convertTtoD(T t) {
+        return (D) CopyPropertyUtils.copyPropertiesAndInstance(t, domainD.getClass());
+    }
+
+    private PaginatedList<D> convertTListtoDList(PaginatedList<T> ts) {
+        PaginatedList<D> list = new PaginatedArrayList<D>();
+        for (T t : ts) {
+            list.add((D) CopyPropertyUtils.copyPropertiesAndInstance(t, domainD.getClass()));
+        }
+        list.setTotalItem(ts.getTotalItem());
+        list.setPageSize(ts.getPageSize());
+        list.setIndex(ts.getIndex());
+        return list;
     }
 
 }
