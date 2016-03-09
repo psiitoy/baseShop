@@ -4,6 +4,7 @@ import com.rise.shop.domain.art.mongo.ImageInfo;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.service.art.ImageInfoService;
 import com.rise.shop.view.controller.BaseController;
+import com.rise.shop.web.controller.domain.ImageInfoView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Controller
 @RequestMapping("/imageInfo")
-public class ImageInfoController extends BaseController<ImageInfo, Query> {
+public class ImageInfoController extends BaseController<ImageInfoView, ImageInfo, Query> {
 
     @Resource
     private ImageInfoService imageInfoService;
@@ -26,7 +27,8 @@ public class ImageInfoController extends BaseController<ImageInfo, Query> {
 
     @Override
     protected void setBaseEntity() {
-        this.t = new ImageInfo();
+        this.domainT = new ImageInfo();
+        this.domainD = new ImageInfoView();
     }
 
     @Override

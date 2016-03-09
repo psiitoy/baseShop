@@ -1,6 +1,8 @@
-package com.rise.shop.domain.art.mongo;
+package com.rise.shop.web.controller.domain;
 
+import com.rise.shop.common.ano.ViewMeta;
 import com.rise.shop.common.beans.ViewBasePersistenceBean;
+import com.rise.shop.common.constants.FieldTypeConstant;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -8,16 +10,25 @@ import java.util.List;
 /**
  * Created by wangdi on 15-1-8.
  */
-public class Curator extends ViewBasePersistenceBean {
+public class CuratorView extends ViewBasePersistenceBean {
     private ObjectId _id;   //mongoId
+    @ViewMeta(name = "姓名", order = 2)
     private String name; //姓名
+    @ViewMeta(name = "性别", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 3)
     private int sex;    //性别
+    @ViewMeta(name = "头像", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 4)
     private List<Long> headImg; //头像
+    @ViewMeta(name = "国家", order = 5)
     private String country; //国家
+    @ViewMeta(name = "学校", order = 6)
     private String school; //学校
+    @ViewMeta(name = "文字介绍", order = 7)
     private String desc;    //文字介绍
+    @ViewMeta(name = "文章", order = 8)
     private String book;    //文章
+    @ViewMeta(name = "视频链接", order = 9)
     private List<String> videoUrls;    //视频链接 多个
+    @ViewMeta(name = "关键词", order = 10, summary = false)
     private List<String> keyWords; //关键词
 
     @Override

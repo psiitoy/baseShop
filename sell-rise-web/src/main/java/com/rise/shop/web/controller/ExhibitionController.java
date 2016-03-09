@@ -4,6 +4,7 @@ import com.rise.shop.domain.art.mongo.Exhibition;
 import com.rise.shop.persistence.query.BaseQuery;
 import com.rise.shop.service.art.ExhibitionService;
 import com.rise.shop.view.controller.BaseController;
+import com.rise.shop.web.controller.domain.ExhibitionView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Controller
 @RequestMapping("/exhibition")
-public class ExhibitionController extends BaseController<Exhibition, BaseQuery> {
+public class ExhibitionController extends BaseController<ExhibitionView, Exhibition, BaseQuery> {
 
     @Resource
     private ExhibitionService exhibitionService;
@@ -26,7 +27,8 @@ public class ExhibitionController extends BaseController<Exhibition, BaseQuery> 
 
     @Override
     protected void setBaseEntity() {
-        this.t = new Exhibition();
+        this.domainT = new Exhibition();
+        this.domainD = new ExhibitionView();
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.rise.shop.domain.art.mysql.User;
 import com.rise.shop.domain.query.UserQuery;
 import com.rise.shop.service.art.UserService;
 import com.rise.shop.view.controller.BaseController;
+import com.rise.shop.web.controller.domain.UserView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,7 +16,7 @@ import javax.annotation.Resource;
  */
 @Controller
 @RequestMapping("/user")
-public class UserController extends BaseController<User, UserQuery> {
+public class UserController extends BaseController<UserView, User, UserQuery> {
     @Resource
     UserService userService;
 
@@ -26,7 +27,8 @@ public class UserController extends BaseController<User, UserQuery> {
 
     @Override
     protected void setBaseEntity() {
-        this.t = new User();
+        this.domainT = new User();
+        this.domainD = new UserView();
     }
 
     @Override

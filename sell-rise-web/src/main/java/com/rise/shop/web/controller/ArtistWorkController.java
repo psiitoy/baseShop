@@ -4,6 +4,7 @@ import com.rise.shop.domain.art.mongo.ArtistWork;
 import com.rise.shop.domain.query.ArtistWorkQuery;
 import com.rise.shop.service.art.ArtistWorkService;
 import com.rise.shop.view.controller.BaseController;
+import com.rise.shop.web.controller.domain.ArtistWorkView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Controller
 @RequestMapping("/artistWork")
-public class ArtistWorkController extends BaseController<ArtistWork, ArtistWorkQuery> {
+public class ArtistWorkController extends BaseController<ArtistWorkView, ArtistWork, ArtistWorkQuery> {
 
     @Resource
     private ArtistWorkService artistWorkService;
@@ -26,7 +27,8 @@ public class ArtistWorkController extends BaseController<ArtistWork, ArtistWorkQ
 
     @Override
     protected void setBaseEntity() {
-        this.t = new ArtistWork();
+        this.domainT = new ArtistWork();
+        this.domainD = new ArtistWorkView();
     }
 
     @Override

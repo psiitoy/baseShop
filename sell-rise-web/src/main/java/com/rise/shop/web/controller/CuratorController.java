@@ -4,6 +4,7 @@ import com.rise.shop.domain.art.mongo.Curator;
 import com.rise.shop.domain.query.CuratorQuery;
 import com.rise.shop.service.art.CuratorService;
 import com.rise.shop.view.controller.BaseController;
+import com.rise.shop.web.controller.domain.CuratorView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Controller
 @RequestMapping("/curator")
-public class CuratorController extends BaseController<Curator, CuratorQuery> {
+public class CuratorController extends BaseController<CuratorView, Curator, CuratorQuery> {
 
     @Resource
     private CuratorService curatorService;
@@ -26,7 +27,8 @@ public class CuratorController extends BaseController<Curator, CuratorQuery> {
 
     @Override
     protected void setBaseEntity() {
-        this.t = new Curator();
+        this.domainT = new Curator();
+        this.domainD = new CuratorView();
     }
 
     @Override

@@ -1,6 +1,8 @@
-package com.rise.shop.domain.art.mongo;
+package com.rise.shop.web.controller.domain;
 
+import com.rise.shop.common.ano.ViewMeta;
 import com.rise.shop.common.beans.ViewBasePersistenceBean;
+import com.rise.shop.common.constants.FieldTypeConstant;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -8,26 +10,45 @@ import java.util.List;
 /**
  * Created by wangdi on 15-1-8.
  */
-public class Organization extends ViewBasePersistenceBean {
+public class OrganizationView extends ViewBasePersistenceBean {
     private ObjectId _id;   //mongoId
+    @ViewMeta(name = "机构名称", order = 2, summary = true)
     private String name;    //机构名称
+    @ViewMeta(name = "机构标志", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 3, summary = true)
     private List<Long> headImg; //头像图片
+    @ViewMeta(name = "类别", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 4, summary = true)
     private Integer orgType;   //类别（画廊，拍卖行，协会，学院）
+    @ViewMeta(name = "盈利机构标识", type = FieldTypeConstant.FIELD_TYPE_RATIO, order = 5, summary = true)
     private Integer gainType;   //盈利非盈利机构
+    @ViewMeta(name = "地址", order = 6, summary = true)
     private String address; //地址
+    @ViewMeta(name = "电话", order = 7, summary = true)
     private String phone;   //电话
+    @ViewMeta(name = "邮编", order = 8, summary = true)
     private String postcode;    //邮编
+    @ViewMeta(name = "国家", order = 9, summary = true)
     private String country; //国家
+    @ViewMeta(name = "坐标", order = 10, summary = true)
     private String coordinate;  //坐标
+    @ViewMeta(name = "展厅面积", order = 11, summary = false)
     private String area;
+    @ViewMeta(name = "负责人", order = 12, summary = true)
     private String leader;  //负责人
+    @ViewMeta(name = "简介", order = 13, summary = true)
     private String desc;    //简介
+    @ViewMeta(name = "简介图片", type = FieldTypeConstant.FIELD_TYPE_IMG, order = 14, summary = true)
     private List<Long> descImg; //简介图片
+    @ViewMeta(name = "简介图片备注", order = 15, summary = false)
     private String descImgRemark;
+    @ViewMeta(name = "官网地址", order = 16, summary = false)
     private String orgUrl;
+    @ViewMeta(name = "官方邮箱", order = 17, summary = false)
     private String orgEmail;
+    @ViewMeta(name = "官方微博", order = 18, summary = false)
     private String orgWeiBo;
+    @ViewMeta(name = "官方微信", order = 19, summary = false)
     private String orgWeiXin;
+    @ViewMeta(name = "关键词", order = 20, summary = false)
     private List<String> keyWords; //关键词
 
     @Override

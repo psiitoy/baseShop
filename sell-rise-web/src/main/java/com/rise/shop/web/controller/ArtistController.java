@@ -4,6 +4,7 @@ import com.rise.shop.domain.art.mongo.Artist;
 import com.rise.shop.domain.query.ArtistQuery;
 import com.rise.shop.service.art.ArtistService;
 import com.rise.shop.view.controller.BaseController;
+import com.rise.shop.web.controller.domain.ArtistView;
 import com.rise.shop.web.validator.ArtistValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,7 @@ import javax.annotation.Resource;
  */
 @Controller
 @RequestMapping("/artist")
-public class ArtistController extends BaseController<Artist, ArtistQuery> {
+public class ArtistController extends BaseController<ArtistView, Artist, ArtistQuery> {
 
     @Resource
     private ArtistService artistService;
@@ -27,7 +28,8 @@ public class ArtistController extends BaseController<Artist, ArtistQuery> {
 
     @Override
     protected void setBaseEntity() {
-        this.t = new Artist();
+        this.domainT = new Artist();
+        this.domainD = new ArtistView();
     }
 
     @Override
