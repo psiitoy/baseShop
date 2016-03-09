@@ -27,8 +27,8 @@ public class ExhibitionController extends BaseController<ExhibitionView, Exhibit
 
     @Override
     protected void setBaseEntity() {
-        this.domainT = new Exhibition();
-        this.domainD = new ExhibitionView();
+        this.domainPersistence = new Exhibition();
+        this.domainView = new ExhibitionView();
     }
 
     @Override

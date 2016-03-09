@@ -27,8 +27,8 @@ public class UserController extends BaseController<UserView, User, UserQuery> {
 
     @Override
     protected void setBaseEntity() {
-        this.domainT = new User();
-        this.domainD = new UserView();
+        this.domainPersistence = new User();
+        this.domainView = new UserView();
     }
 
     @Override

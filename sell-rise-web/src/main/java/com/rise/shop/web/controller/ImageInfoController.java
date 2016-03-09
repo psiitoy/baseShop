@@ -27,8 +27,8 @@ public class ImageInfoController extends BaseController<ImageInfoView, ImageInfo
 
     @Override
     protected void setBaseEntity() {
-        this.domainT = new ImageInfo();
-        this.domainD = new ImageInfoView();
+        this.domainPersistence = new ImageInfo();
+        this.domainView = new ImageInfoView();
     }
 
     @Override

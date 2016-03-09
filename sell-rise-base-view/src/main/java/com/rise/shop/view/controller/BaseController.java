@@ -35,8 +35,8 @@ public abstract class BaseController<D, T, Q extends Query> {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     protected EntityService<T> baseService;
-    protected D domainD;
-    protected T domainT;
+    protected D domainView;
+    protected T domainPersistence;
     protected String namespace;
     protected String chineseName;
     protected Validator validator;
@@ -50,7 +50,7 @@ public abstract class BaseController<D, T, Q extends Query> {
 
     @ModelAttribute("domain")
     public D getDomain() {
-        return domainD;
+        return domainView;
     }
 
     @RequestMapping(value = {"/index"}, method = {RequestMethod.GET, RequestMethod.POST})
@@ -107,7 +107,7 @@ public abstract class BaseController<D, T, Q extends Query> {
     @RequestMapping(value = {"/add"}, method = RequestMethod.GET)
     public ModelAndView add() {
         ModelAndView mv = new ModelAndView("pages/add");
-        mv.addObject("domain", FieldDetailTools.bean2FieldMetaInfoList(domainD, false));
+        mv.addObject("domain", FieldDetailTools.bean2FieldMetaInfoList(domainView, false));
         mv.addObject("isAdd", true);
         mv.addObject("saveUrl", "/" + namespace + "/addsave");
         return mv;
@@ -147,7 +147,7 @@ public abstract class BaseController<D, T, Q extends Query> {
             }
             q.setPageSize(PAGE_SIZE);
             mv.addObject("list", convertTListtoDList(baseService.findByPage(q)));
-            mv.addObject("domains", FieldDetailTools.bean2FieldMetaInfoList(domainD, false));
+            mv.addObject("domains", FieldDetailTools.bean2FieldMetaInfoList(domainView, false));
             mv.addObject("queryDomains", FieldDetailTools.bean2FieldMetaInfoList(q, true));
         } catch (Exception e) {
             logger.error("list error", e);
@@ -158,7 +158,7 @@ public abstract class BaseController<D, T, Q extends Query> {
     @RequestMapping(value = "/domain", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public List<ViewMetaInfo> domain() {
-        return FieldDetailTools.bean2FieldMetaInfoList(domainD, false);
+        return FieldDetailTools.bean2FieldMetaInfoList(domainView, false);
     }
 
     @RequestMapping(value = "/delete/{id}", method = {RequestMethod.GET, RequestMethod.POST})
@@ -292,17 +292,17 @@ public abstract class BaseController<D, T, Q extends Query> {
         if (d == null) {
             return null;
         }
-        return (T) CopyPropertyUtils.copyPropertiesAndInstance(d, domainT.getClass());
+        return (T) CopyPropertyUtils.copyPropertiesAndInstance(d, domainPersistence.getClass());
     }
 
     private D convertTtoD(T t) {
-        return (D) CopyPropertyUtils.copyPropertiesAndInstance(t, domainD.getClass());
+        return (D) CopyPropertyUtils.copyPropertiesAndInstance(t, domainView.getClass());
     }
 
     private PaginatedList<D> convertTListtoDList(PaginatedList<T> ts) {
         PaginatedList<D> list = new PaginatedArrayList<D>();
         for (T t : ts) {
-            list.add((D) CopyPropertyUtils.copyPropertiesAndInstance(t, domainD.getClass()));
+            list.add((D) CopyPropertyUtils.copyPropertiesAndInstance(t, domainView.getClass()));
         }
         list.setTotalItem(ts.getTotalItem());
         list.setPageSize(ts.getPageSize());

@@ -27,8 +27,8 @@ public class OrganizationController extends BaseController<OrganizationView, Org
 
     @Override
     protected void setBaseEntity() {
-        this.domainT = new Organization();
-        this.domainD = new OrganizationView();
+        this.domainPersistence = new Organization();
+        this.domainView = new OrganizationView();
     }
 
     @Override

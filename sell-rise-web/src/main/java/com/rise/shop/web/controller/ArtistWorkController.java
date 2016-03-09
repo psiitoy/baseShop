@@ -27,8 +27,8 @@ public class ArtistWorkController extends BaseController<ArtistWorkView, ArtistW
 
     @Override
     protected void setBaseEntity() {
-        this.domainT = new ArtistWork();
-        this.domainD = new ArtistWorkView();
+        this.domainPersistence = new ArtistWork();
+        this.domainView = new ArtistWorkView();
     }
 
     @Override

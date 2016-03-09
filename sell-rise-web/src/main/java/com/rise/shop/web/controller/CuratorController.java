@@ -27,8 +27,8 @@ public class CuratorController extends BaseController<CuratorView, Curator, Cura
 
     @Override
     protected void setBaseEntity() {
-        this.domainT = new Curator();
-        this.domainD = new CuratorView();
+        this.domainPersistence = new Curator();
+        this.domainView = new CuratorView();
     }
 
     @Override
