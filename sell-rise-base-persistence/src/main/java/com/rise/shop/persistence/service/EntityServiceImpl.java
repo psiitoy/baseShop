@@ -16,7 +16,7 @@ import java.util.Map;
 public abstract class EntityServiceImpl<T> implements EntityService<T> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    protected EntityDao<T> entityAdapterService;
+    protected EntityService<T> entityAdapterService;
     protected EntityDao<T> entityDao;
 
     @PostConstruct
@@ -91,7 +91,7 @@ public abstract class EntityServiceImpl<T> implements EntityService<T> {
     @Override
     public PaginatedList findByPageLike(PaginatedList paginatedList, Map<String, String> queryMap) throws Exception {
         if (entityAdapterService != null) {
-            return entityAdapterService.findByPageLike(queryMap);
+            return entityAdapterService.findByPageLike(paginatedList, queryMap);
         } else {
             return entityDao.findByPageLike(queryMap);
         }
