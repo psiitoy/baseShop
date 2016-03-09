@@ -21,4 +21,9 @@ public class ExhibitionServiceImpl extends EntityServiceImpl<Exhibition> impleme
     public void setEntityDao() {
         this.entityDao = exhibitionDao;
     }
+
+    @Override
+    public void setEntityAdapterService() {
+
+    }
 }

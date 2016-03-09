@@ -21,4 +21,9 @@ public class UserServiceImpl extends EntityServiceImpl<User> implements UserServ
     public void setEntityDao() {
         this.entityDao = userDao;
     }
+
+    @Override
+    public void setEntityAdapterService() {
+
+    }
 }

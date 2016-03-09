@@ -21,4 +21,9 @@ public class CuratorServiceImpl extends EntityServiceImpl<Curator> implements Cu
     public void setEntityDao() {
         this.entityDao = curatorDao;
     }
+
+    @Override
+    public void setEntityAdapterService() {
+
+    }
 }

@@ -21,4 +21,9 @@ public class ArtistServiceImpl extends EntityServiceImpl<Artist> implements Arti
     public void setEntityDao() {
         this.entityDao = artistDao;
     }
+
+    @Override
+    public void setEntityAdapterService() {
+
+    }
 }

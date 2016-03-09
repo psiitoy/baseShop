@@ -21,4 +21,9 @@ public class ImageInfoServiceImpl extends EntityServiceImpl<ImageInfo> implement
     public void setEntityDao() {
         this.entityDao = imageInfoDao;
     }
+
+    @Override
+    public void setEntityAdapterService() {
+
+    }
 }

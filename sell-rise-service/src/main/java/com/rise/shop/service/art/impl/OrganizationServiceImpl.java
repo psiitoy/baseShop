@@ -61,6 +61,11 @@ public class OrganizationServiceImpl extends EntityServiceImpl<Organization> imp
     }
 
     @Override
+    public void setEntityAdapterService() {
+
+    }
+
+    @Override
     public Organization queryCacheOrganizationById(long id) throws Exception {
         return organizationMapCache.getUnchecked(id);
     }
