@@ -2,6 +2,7 @@ package com.rise.shop.persistence.dao.mongo;
 
 import com.google.common.base.Preconditions;
 import com.mongodb.DBObject;
+import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.dao.mongo.utils.MongoDBManager;
 import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
@@ -11,7 +12,6 @@ import com.rise.shop.persistence.query.OrderByBaseQuery;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.utils.BasicAttributesUtils;
-import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.utils.IdWorker;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

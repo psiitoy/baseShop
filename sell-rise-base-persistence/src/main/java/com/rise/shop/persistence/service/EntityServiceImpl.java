@@ -16,7 +16,6 @@ import java.util.Map;
 public abstract class EntityServiceImpl<T> implements EntityService<T> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    protected EntityService<T> entityAdapterService;
     protected EntityDao<T> entityDao;
 
     @PostConstruct
@@ -27,73 +26,41 @@ public abstract class EntityServiceImpl<T> implements EntityService<T> {
 
     @Override
     public T get(long ID) throws Exception {
-        if (entityAdapterService != null) {
-            return entityAdapterService.get(ID);
-        } else {
-            return entityDao.get(ID);
-        }
+        return entityDao.get(ID);
     }
 
     @Override
     public T insert(T t) throws Exception {
-        if (entityAdapterService != null) {
-            return entityAdapterService.insert(t);
-        } else {
-            return entityDao.insert(t);
-        }
+        return entityDao.insert(t);
     }
 
     @Override
     public int update(T t) throws Exception {
-        if (entityAdapterService != null) {
-            return entityAdapterService.update(t);
-        } else {
-            return entityDao.update(t);
-        }
+        return entityDao.update(t);
     }
 
     @Override
     public int delete(T t) throws Exception {
-        if (entityAdapterService != null) {
-            return entityAdapterService.delete(t);
-        } else {
-            return entityDao.delete(t);
-        }
+        return entityDao.delete(t);
     }
 
     @Override
     public List<T> findBy(T t) throws Exception {
-        if (entityAdapterService != null) {
-            return entityAdapterService.findBy(t);
-        } else {
-            return entityDao.findBy(t);
-        }
+        return entityDao.findBy(t);
     }
 
     @Override
     public PaginatedList findByPage(Query query) throws Exception {
-        if (entityAdapterService != null) {
-            return entityAdapterService.findByPage(query);
-        } else {
-            return entityDao.findByPage(query);
-        }
+        return entityDao.findByPage(query);
     }
 
     @Override
     public int count(T t) throws Exception {
-        if (entityAdapterService != null) {
-            return entityAdapterService.count(t);
-        } else {
-            return entityDao.count(t);
-        }
+        return entityDao.count(t);
     }
 
     @Override
     public PaginatedList findByPageLike(PaginatedList paginatedList, Map<String, String> queryMap) throws Exception {
-        if (entityAdapterService != null) {
-            return entityAdapterService.findByPageLike(paginatedList, queryMap);
-        } else {
-            return entityDao.findByPageLike(queryMap);
-        }
+        return entityDao.findByPageLike(queryMap);
     }
 }

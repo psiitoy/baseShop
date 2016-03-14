@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Created by wangdi on 15-1-8.
  */
-@Repository
+@Repository("artistDao")
 public class ArtistDaoImpl extends BaseMongoDaoImpl<Artist> implements ArtistDao {
 
 }

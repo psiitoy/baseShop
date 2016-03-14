@@ -1,5 +1,7 @@
 package com.rise.shop.persistence.generate;
 
+import com.google.common.reflect.TypeToken;
+import com.rise.shop.common.utils.ReflectUtils;
 import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.page.PaginatedList;
@@ -8,7 +10,6 @@ import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.query.domain.OrderByDescEnum;
 import com.rise.shop.persistence.utils.BasicAttributesUtils;
-import com.rise.shop.common.utils.ReflectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -21,7 +22,7 @@ import java.util.Random;
 /**
  * Created by wangdi on 15-7-17.
  */
-public abstract class EntityDaoBaseTest<Domain> {
+public abstract class EntityDaoBaseTest<Domain, DomainQuery extends Query> {
 
     public final static Logger logger = LoggerFactory.getLogger(EntityDaoBaseTest.class);
 
@@ -31,15 +32,14 @@ public abstract class EntityDaoBaseTest<Domain> {
 
     public abstract EntityDao<Domain> getEntityDao();
 
-    public abstract Class<Domain> getDomain();
-
-    public abstract Query getQuery();
-
     //测试数据id列表
     private List<Long> tempIdList;
     //数据库中原来的数据
     private int beforeCount;
-    private Domain domain;
+    TypeToken<Domain> typeTokenDomain = new TypeToken<Domain>(getClass()) {
+    };
+    TypeToken<DomainQuery> typeTokenDomainQuery = new TypeToken<DomainQuery>(getClass()) {
+    };
 
     @PostConstruct
     public void initBefore() {
@@ -48,34 +48,41 @@ public abstract class EntityDaoBaseTest<Domain> {
 
     public void execute() throws Exception {
         try {
-            domain = getDomain().newInstance();
-            beforeCount = testCount(domain);
+            beforeCount = testCountDomain();
             logger.info("[DB框架测试]系统中存在" + beforeCount + "条数据");
             logger.info("[DB框架测试]testCount 成功");
-            testInsert(getDomain(), getQuery());
+            testInsertDomain();
             logger.info("[DB框架测试]testInsert 成功");
-            testQueryPageFirstAndLast(getQuery());
+            testQueryPageFirstAndLastDomain();
             logger.info("[DB框架测试]testQueryPage 成功");
-            testQueryPageOrderByDescAndAsc();
+            testQueryPageOrderByDescAndAscDomain();
             logger.info("[DB框架测试]testQueryPageOrderByDescAndAsc 成功");
-            testGetAndUpdate(getDomain());
+            testGetAndUpdateDomain();
             logger.info("[DB框架测试]testGetAndUpdate 成功");
         } catch (Exception e) {
             logger.error("[DB框架测试]execute error", e);
         } finally {
-            testDelete(getDomain(), getQuery());
+            testDeleteDomain();
             logger.info("[DB框架测试]testDelete 成功 [finish]");
         }
     }
 
-    public int testCount(Domain t) throws Exception {
-        return getEntityDao().count(t);
+    private Domain newInstanceDomain() throws Exception {
+        return (Domain) typeTokenDomain.getRawType().newInstance();
     }
 
-    public void testInsert(Class<Domain> domainClass, Query query) throws Exception {
-        int count = testCount(domain);
+    private DomainQuery newInstanceDomainQuery() throws Exception {
+        return (DomainQuery) typeTokenDomainQuery.getRawType().newInstance();
+    }
+
+    public int testCountDomain() throws Exception {
+        return getEntityDao().count(newInstanceDomain());
+    }
+
+    public void testInsertDomain() throws Exception {
+        int count = testCountDomain();
         for (int i = 0; i < insertObjCount; i++) {
-            Domain t = domainClass.newInstance();
+            Domain t = newInstanceDomain();
             t = ReflectUtils.setFieldNullToRandomValue(t);
             Long id = System.currentTimeMillis();
             BasicAttributesUtils.setBasicId(t, id);
@@ -85,15 +92,16 @@ public abstract class EntityDaoBaseTest<Domain> {
         logger.info("[DB框架测试]插入" + insertObjCount + "条测试数据");
         int nowCount = (insertObjCount + count);
         logger.info("[DB框架测试]当前数据数量为" + nowCount);
-        Assert.isTrue(getEntityDao().count(domain) == nowCount);
-        Assert.isTrue(getEntityDao().findBy(domainClass.newInstance()).size() == nowCount);
+        Assert.isTrue(getEntityDao().count(newInstanceDomain()) == nowCount);
+        Assert.isTrue(getEntityDao().findBy(newInstanceDomain()).size() == nowCount);
+        Query query = newInstanceDomainQuery();
         query.setPageNo(Query.FIRST_PAGE);
         query.setPageSize(maxPageSize);
         Assert.isTrue(getEntityDao().findByPage(query).size() == nowCount);
     }
 
-    public void testGetAndUpdate(Class<Domain> domainClass) throws Exception {
-        Domain queryT = domainClass.newInstance();
+    public void testGetAndUpdateDomain() throws Exception {
+        Domain queryT = newInstanceDomain();
         BasicAttributesUtils.setBasicId(queryT, tempIdList.get(new Random().nextInt(tempIdList.size())));
         Domain t = getEntityDao().findBySingle(queryT);
         Assert.notNull(t);
@@ -103,8 +111,9 @@ public abstract class EntityDaoBaseTest<Domain> {
         logger.info("[DB框架测试]更新后[id=" + BasicAttributesUtils.getBasicId(queryT) + ",created=" + BasicAttributesUtils.getCreated(queryT) + ",modify=" + BasicAttributesUtils.getModify(queryT) + "]");
     }
 
-    public int testQueryTotalPage(Query query) throws Exception {
-        int count = testCount(domain);
+    public int testQueryTotalPageDomain() throws Exception {
+        int count = testCountDomain();
+        Query query = newInstanceDomainQuery();
         query.setPageSize(pageSize);
         query.setIndex(null);
         query.setPageNo(Query.FIRST_PAGE);
@@ -115,9 +124,10 @@ public abstract class EntityDaoBaseTest<Domain> {
         return pages.getTotalPage();
     }
 
-    public void testQueryPageFirstAndLast(Query query) throws Exception {
-        int count = testCount(domain);
-        int totalPage = testQueryTotalPage(query);
+    public void testQueryPageFirstAndLastDomain() throws Exception {
+        int count = testCountDomain();
+        int totalPage = testQueryTotalPageDomain();
+        Query query = newInstanceDomainQuery();
         //第一页 从index 0开始
         query.setPageSize(pageSize);
         query.setIndex(null);
@@ -147,8 +157,8 @@ public abstract class EntityDaoBaseTest<Domain> {
         logger.info("[DB框架测试]第" + query.getPageNo() + "页数据量为" + pages.size() + "[PAGESIZE=" + pageSize + ",count=" + count + "]");
     }
 
-    public void testQueryPageOrderByDescAndAsc() throws Exception {
-        Query query = getQuery();
+    public void testQueryPageOrderByDescAndAscDomain() throws Exception {
+        Query query = newInstanceDomainQuery();
         if (query instanceof DefaultBaseQuery) {
             DefaultBaseQuery defaultBaseQuery = (DefaultBaseQuery) query;
             defaultBaseQuery.setPageSize(maxPageSize);
@@ -166,27 +176,28 @@ public abstract class EntityDaoBaseTest<Domain> {
         }
     }
 
-    public void testDelete(Class<Domain> domainClass, Query query) throws Exception {
+    public void testDeleteDomain() throws Exception {
         for (Long id : tempIdList) {
-            Domain t = domainClass.newInstance();
+            Domain t = newInstanceDomain();
             BasicAttributesUtils.setBasicId(t, id);
             getEntityDao().delete(t);
         }
         logger.info("[DB框架测试]删除" + tempIdList.size() + "条数据");
+        Query query = newInstanceDomainQuery();
         query.setPageSize(maxPageSize);
         query.setPageNo(Query.FIRST_PAGE);
-        Assert.isTrue(getEntityDao().count(domain) == beforeCount);
+        Assert.isTrue(getEntityDao().count(newInstanceDomain()) == beforeCount);
         Assert.isTrue(getEntityDao().findByPage(query).size() == beforeCount);
-        Assert.isTrue(getEntityDao().findBy(domainClass.newInstance()).size() == beforeCount);
+        Assert.isTrue(getEntityDao().findBy(newInstanceDomain()).size() == beforeCount);
         logger.info("[DB框架测试]删除后库中数据量为" + beforeCount);
     }
 
     public String generateSqlAndXml() {
-        return GenerateSqlAndIbatisXmlTool.generate(getDomain(), getQuery().getClass());
+        return GenerateSqlAndIbatisXmlTool.generate(typeTokenDomain.getRawType(), typeTokenDomainQuery.getRawType());
     }
 
     public String generateSqlAndXml(String tablePrefix) {
-        return GenerateSqlAndIbatisXmlTool.generate(getDomain(), getQuery().getClass(), tablePrefix);
+        return GenerateSqlAndIbatisXmlTool.generate(typeTokenDomain.getRawType(), typeTokenDomainQuery.getRawType(), tablePrefix);
     }
 
 }

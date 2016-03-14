@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>rise-common</groupId>
-            <artifactId>sell-rise-common</artifactId>
+            <artifactId>sell-rise-base-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

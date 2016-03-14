@@ -27,28 +27,28 @@
         <!--</entry>-->
     </util:map>
 
-    <bean id="artistDao" class="com.rise.shop.dao.art.impl.ArtistDaoImpl">
-        <property name="tablePrefix" value="art"/>
-    </bean>
+    <!--<bean id="artistDao" class="com.rise.shop.dao.art.impl.ArtistDaoImpl">-->
+        <!--<property name="tablePrefix" value="art"/>-->
+    <!--</bean>-->
 
-    <bean id="artistWorkDao" class="com.rise.shop.dao.art.impl.ArtistWorkDaoImpl">
-        <property name="tablePrefix" value="art"/>
-    </bean>
+    <!--<bean id="artistWorkDao" class="com.rise.shop.dao.art.impl.ArtistWorkDaoImpl">-->
+        <!--<property name="tablePrefix" value="art"/>-->
+    <!--</bean>-->
 
-    <bean id="curatorDao" class="com.rise.shop.dao.art.impl.CuratorDaoImpl">
-        <property name="tablePrefix" value="art"/>
-    </bean>
+    <!--<bean id="curatorDao" class="com.rise.shop.dao.art.impl.CuratorDaoImpl">-->
+        <!--<property name="tablePrefix" value="art"/>-->
+    <!--</bean>-->
 
-    <bean id="organizationDao" class="com.rise.shop.dao.art.impl.OrganizationDaoImpl">
-        <property name="tablePrefix" value="art"/>
-    </bean>
+    <!--<bean id="organizationDao" class="com.rise.shop.dao.art.impl.OrganizationDaoImpl">-->
+        <!--<property name="tablePrefix" value="art"/>-->
+    <!--</bean>-->
 
-    <bean id="imageInfoDao" class="com.rise.shop.dao.art.impl.ImageInfoDaoImpl">
-        <property name="tablePrefix" value="art"/>
-    </bean>
+    <!--<bean id="imageInfoDao" class="com.rise.shop.dao.art.impl.ImageInfoDaoImpl">-->
+        <!--<property name="tablePrefix" value="art"/>-->
+    <!--</bean>-->
 
-    <bean id="exhibitionDao" class="com.rise.shop.dao.art.impl.ExhibitionDaoImpl">
-        <property name="tablePrefix" value="art"/>
-    </bean>
+    <!--<bean id="exhibitionDao" class="com.rise.shop.dao.art.impl.ExhibitionDaoImpl">-->
+        <!--<property name="tablePrefix" value="art"/>-->
+    <!--</bean>-->
 
 </beans>

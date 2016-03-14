@@ -1,14 +1,13 @@
 package test.com.rise.shop.dao.art.dao;
 
+import com.rise.shop.common.utils.CommonTimeUtils;
 import com.rise.shop.domain.art.mysql.User;
-import com.rise.shop.view.enumtype.viewtype.AuthCodeTypeEnum;
 import com.rise.shop.domain.query.UserQuery;
 import com.rise.shop.persistence.dao.EntityDao;
 import com.rise.shop.persistence.generate.EntityDaoBaseTest;
-import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.query.domain.ColumnOrder;
 import com.rise.shop.persistence.query.domain.OrderByDescEnum;
-import com.rise.shop.common.utils.CommonTimeUtils;
+import com.rise.shop.view.enumtype.viewtype.AuthCodeTypeEnum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,7 +22,7 @@ import java.util.Random;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/spring-config-dao.xml"})
-public class TestUserEnt extends EntityDaoBaseTest<User> {
+public class TestUserEnt extends EntityDaoBaseTest<User, UserQuery> {
 
     @Resource
     EntityDao<User> userEntityDao;
@@ -31,16 +30,6 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
     @Override
     public EntityDao<User> getEntityDao() {
         return userEntityDao;
-    }
-
-    @Override
-    public Class<User> getDomain() {
-        return User.class;
-    }
-
-    @Override
-    public Query getQuery() {
-        return new UserQuery();
     }
 
     @Test
@@ -54,7 +43,7 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
     }
 
     @Test
-    public void testInsert() throws Exception {
+    public void testInsert22() throws Exception {
         User user = new User();
         user.setEmail("adminx");
         user.setPwd("adminx");
@@ -77,17 +66,7 @@ public class TestUserEnt extends EntityDaoBaseTest<User> {
     }
 
     @Test
-    public void testInsert2() throws Exception {
-        testInsert(getDomain(), getQuery());
-    }
-
-    @Test
-    public void testCount() throws Exception {
-        System.out.println("##" + testCount(new User()));
-    }
-
-    @Test
-    public void testQuery() throws Exception {
+    public void testQuery2222() throws Exception {
         UserQuery query = new UserQuery();
 //        query.setEmail("admin");
         query.setPageNo(1);
