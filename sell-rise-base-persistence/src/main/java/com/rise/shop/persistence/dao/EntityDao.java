@@ -41,6 +41,15 @@ public interface EntityDao<T> {
     public int update(T t) throws Exception;
 
     /**
+     * update增加cas校验
+     *
+     * @param t
+     * @return
+     * @throws Exception
+     */
+    public int updateCasByModified(T t) throws Exception;
+
+    /**
      * 删除实体
      *
      * @param t

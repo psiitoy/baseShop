@@ -86,6 +86,14 @@
         <isNotEmpty property="state">,STATE=#state#</isNotEmpty>
         WHERE id=#id:BIGINT#
     </update>
+    <!--cas更新-->
+    <update id="UpdateCas" parameterClass="User">UPDATE art_user SET MODIFIED=now()
+        <isNotEmpty property="authCode">,AUTH_CODE=#authCode#</isNotEmpty>
+        <isNotEmpty property="pwd">,PWD=#pwd#</isNotEmpty>
+        <isNotEmpty property="email">,EMAIL=#email#</isNotEmpty>
+        <isNotEmpty property="state">,STATE=#state#</isNotEmpty>
+        WHERE id=#id:BIGINT# and MODIFIED=#modified#
+    </update>
     <!--删除-->
     <delete id="Delete" parameterClass="User"> DELETE FROM art_user WHERE id=#id:BIGINT#</delete>
 </sqlMap>

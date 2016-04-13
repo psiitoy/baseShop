@@ -84,4 +84,13 @@ public class TestUserEnt extends EntityDaoBaseTest<User, UserQuery> {
         System.out.println("#" + list.size());
     }
 
+    @Test
+    public void testUpdate() throws Exception {
+        User user = new User();
+        user.setId(1460549334026l);
+        user.setEmail("ttttte1");
+        user.setModified(CommonTimeUtils.getDateFromStr("2016-04-13 20:10:48"));
+        System.out.println("##" + userEntityDao.updateCasByModified(user));
+
+    }
 }

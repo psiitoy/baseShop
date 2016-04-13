@@ -1,10 +1,10 @@
 package com.rise.shop.persistence.generate;
 
+import com.rise.shop.common.utils.ReflectUtils;
 import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.query.DefaultBaseQuery;
 import com.rise.shop.persistence.query.domain.IntervalSuffixEnum;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
-import com.rise.shop.common.utils.ReflectUtils;
 import org.bson.types.ObjectId;
 
 import java.lang.reflect.Field;
@@ -37,6 +37,7 @@ public class EntityDaoIBatisXmlUtil {
         sb.append(getSqlFindByPage(domainClass, tablePrefix));
         sb.append(getSqlInsert(domainClass, tablePrefix));
         sb.append(getSqlUpdate(domainClass, tablePrefix));
+        sb.append(getSqlUpdateCas(domainClass, tablePrefix));
         sb.append(getDelete(domainClass, tablePrefix));
         sb.append("\n");
         return sb.toString();
@@ -291,6 +292,20 @@ public class EntityDaoIBatisXmlUtil {
         sb.append(" SET MODIFIED=now()");
         sb.append(" " + getDynamicWhereUpdateCloumn(domainClass));
         sb.append(" WHERE id=#id:BIGINT#");
+        sb.append("</update>");
+        return sb.toString();
+    }
+
+    private static <Domain> String getSqlUpdateCas(Class<Domain> domainClass, String tablePrefix) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<!--cas更新-->");
+        sb.append("<update id=\"UpdateCas\" parameterClass=\"");
+        sb.append(domainClass.getSimpleName());
+        sb.append("\">");
+        sb.append(" UPDATE " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
+        sb.append(" SET MODIFIED=now()");
+        sb.append(" " + getDynamicWhereUpdateCloumn(domainClass));
+        sb.append(" WHERE id=#id:BIGINT# and MODIFIED=#modified#");
         sb.append("</update>");
         return sb.toString();
     }

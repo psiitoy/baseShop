@@ -1,12 +1,12 @@
 package com.rise.shop.persistence.dao.mysql;
 
 import com.google.common.base.Preconditions;
+import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.dao.BaseDao;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
 import com.rise.shop.persistence.utils.BasicAttributesUtils;
-import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.utils.EntityNamesUtils;
 import com.rise.shop.persistence.utils.IdWorker;
 import org.springframework.dao.DataAccessException;
@@ -43,6 +43,8 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
     protected static final String POSTFIX_INSERT = ".Insert";
 
     protected static final String POSTFIX_UPDATE = ".Update";
+
+    protected static final String POSTFIX_UPDATE_CAS = ".UpdateCas";
 
     protected static final String POSTFIX_DELETE = ".Delete";
 
@@ -197,6 +199,11 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
      */
     public int update(T t) throws Exception {
         return update(nameSpace + POSTFIX_UPDATE, t);
+    }
+
+    @Override
+    public int updateCasByModified(T t) throws Exception {
+        return update(nameSpace + POSTFIX_UPDATE_CAS, t);
     }
 
     public int count(T t) throws Exception {
