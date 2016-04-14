@@ -1,5 +1,6 @@
 package test.com.rise.shop.dao.art.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.rise.shop.common.utils.CommonTimeUtils;
 import com.rise.shop.domain.art.mysql.User;
 import com.rise.shop.domain.query.UserQuery;
@@ -91,6 +92,21 @@ public class TestUserEnt extends EntityDaoBaseTest<User, UserQuery> {
         user.setEmail("ttttte1");
         user.setModified(CommonTimeUtils.getDateFromStr("2016-04-13 20:10:48"));
         System.out.println("##" + userEntityDao.updateCasByModified(user));
+    }
+
+    @Test
+    public void testInsert() throws Exception {
+        User user = new User();
+        user.setId(1460549334028l);
+        user.setEmail("ttttte1");
+        user.setModified(CommonTimeUtils.getDateFromStr("2016-04-13 20:10:48"));
+        JSON.toJSONString(user);
+
+    }
+
+    @Test
+    public void testGetDomain() throws Exception {
+        System.out.println("##" + getEntityDao().getDomainClass());
 
     }
 }

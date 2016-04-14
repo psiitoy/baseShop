@@ -1,6 +1,7 @@
 package com.rise.shop.persistence.dao.mongo;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import com.mongodb.DBObject;
 import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.attribute.BasicAttributeEnum;
@@ -41,6 +42,8 @@ public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
     private int datacenterId;
     private IdWorker idWorker;
     //snowflake end
+    TypeToken<T> typeTokenDomain = new TypeToken<T>(getClass()) {
+    };
 
     public BaseMongoDaoImpl() {
         try {
@@ -212,6 +215,11 @@ public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
     @Override
     public int count(T t) throws Exception {
         return (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2Map(t));
+    }
+
+    @Override
+    public Class getDomainClass() {
+        return typeTokenDomain.getRawType();
     }
 
     public void setCollectionName(String collectionName) {

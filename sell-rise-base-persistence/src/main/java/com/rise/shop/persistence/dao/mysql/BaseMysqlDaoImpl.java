@@ -1,6 +1,7 @@
 package com.rise.shop.persistence.dao.mysql;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.dao.BaseDao;
 import com.rise.shop.persistence.page.PaginatedArrayList;
@@ -63,6 +64,8 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
     private int datacenterId;
     private IdWorker idWorker;
     //snowflake end
+    TypeToken<T> typeTokenDomain = new TypeToken<T>(getClass()) {
+    };
 
     public BaseMysqlDaoImpl() {
         try {
@@ -223,5 +226,10 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
     public void setDatacenterId(int datacenterId) {
         this.datacenterId = datacenterId;
         idWorker = new IdWorker(entityClass.hashCode() % 30, datacenterId);
+    }
+
+    @Override
+    public Class getDomainClass() {
+        return typeTokenDomain.getRawType();
     }
 }

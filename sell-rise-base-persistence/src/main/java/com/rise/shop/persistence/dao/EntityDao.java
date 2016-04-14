@@ -107,4 +107,5 @@ public interface EntityDao<T> {
      */
     public PaginatedList<T> findByPageLike(Map<String, String> queryMap) throws Exception;
 
+    public Class getDomainClass();
 }
