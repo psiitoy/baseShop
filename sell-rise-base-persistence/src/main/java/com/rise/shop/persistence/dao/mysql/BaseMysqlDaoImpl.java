@@ -45,7 +45,9 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
 
     protected static final String POSTFIX_UPDATE = ".Update";
 
-    protected static final String POSTFIX_UPDATE_CAS = ".UpdateCas";
+    protected static final String POSTFIX_UPDATE_CAS_MODIFY = ".UpdateCasModify";
+
+    protected static final String POSTFIX_UPDATE_CAS_CREATED = ".UpdateCasCreated";
 
     protected static final String POSTFIX_DELETE = ".Delete";
 
@@ -206,7 +208,12 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
 
     @Override
     public int updateCasByModified(T t) throws Exception {
-        return update(nameSpace + POSTFIX_UPDATE_CAS, t);
+        return update(nameSpace + POSTFIX_UPDATE_CAS_MODIFY, t);
+    }
+
+    @Override
+    public int updateCasByCreated(T t) throws Exception {
+        return update(nameSpace + POSTFIX_UPDATE_CAS_CREATED, t);
     }
 
     public int count(T t) throws Exception {

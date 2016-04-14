@@ -37,7 +37,8 @@ public class EntityDaoIBatisXmlUtil {
         sb.append(getSqlFindByPage(domainClass, tablePrefix));
         sb.append(getSqlInsert(domainClass, tablePrefix));
         sb.append(getSqlUpdate(domainClass, tablePrefix));
-        sb.append(getSqlUpdateCas(domainClass, tablePrefix));
+        sb.append(getSqlUpdateCasModify(domainClass, tablePrefix));
+        sb.append(getSqlUpdateCasCreated(domainClass, tablePrefix));
         sb.append(getDelete(domainClass, tablePrefix));
         sb.append("\n");
         return sb.toString();
@@ -296,16 +297,30 @@ public class EntityDaoIBatisXmlUtil {
         return sb.toString();
     }
 
-    private static <Domain> String getSqlUpdateCas(Class<Domain> domainClass, String tablePrefix) {
+    private static <Domain> String getSqlUpdateCasModify(Class<Domain> domainClass, String tablePrefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("<!--cas更新-->");
-        sb.append("<update id=\"UpdateCas\" parameterClass=\"");
+        sb.append("<update id=\"UpdateCasModify\" parameterClass=\"");
         sb.append(domainClass.getSimpleName());
         sb.append("\">");
         sb.append(" UPDATE " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append(" SET MODIFIED=now()");
         sb.append(" " + getDynamicWhereUpdateCloumn(domainClass));
         sb.append(" WHERE id=#id:BIGINT# and MODIFIED=#modified#");
+        sb.append("</update>");
+        return sb.toString();
+    }
+
+    private static <Domain> String getSqlUpdateCasCreated(Class<Domain> domainClass, String tablePrefix) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<!--cas更新-->");
+        sb.append("<update id=\"UpdateCasCreated\" parameterClass=\"");
+        sb.append(domainClass.getSimpleName());
+        sb.append("\">");
+        sb.append(" UPDATE " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
+        sb.append(" SET MODIFIED=now()");
+        sb.append(" " + getDynamicWhereUpdateCloumn(domainClass));
+        sb.append(" WHERE id=#id:BIGINT# and CREATED=#created#");
         sb.append("</update>");
         return sb.toString();
     }
