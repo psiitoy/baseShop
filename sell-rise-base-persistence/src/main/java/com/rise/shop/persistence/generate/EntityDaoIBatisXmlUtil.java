@@ -38,7 +38,6 @@ public class EntityDaoIBatisXmlUtil {
         sb.append(getSqlInsert(domainClass, tablePrefix));
         sb.append(getSqlUpdate(domainClass, tablePrefix));
         sb.append(getSqlUpdateCasModify(domainClass, tablePrefix));
-        sb.append(getSqlUpdateCasCreated(domainClass, tablePrefix));
         sb.append(getDelete(domainClass, tablePrefix));
         sb.append("\n");
         return sb.toString();
@@ -306,21 +305,8 @@ public class EntityDaoIBatisXmlUtil {
         sb.append(" UPDATE " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
         sb.append(" SET MODIFIED=now()");
         sb.append(" " + getDynamicWhereUpdateCloumn(domainClass));
-        sb.append(" WHERE id=#id:BIGINT# and MODIFIED=#modified#");
-        sb.append("</update>");
-        return sb.toString();
-    }
-
-    private static <Domain> String getSqlUpdateCasCreated(Class<Domain> domainClass, String tablePrefix) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<!--cas更新-->");
-        sb.append("<update id=\"UpdateCasCreated\" parameterClass=\"");
-        sb.append(domainClass.getSimpleName());
-        sb.append("\">");
-        sb.append(" UPDATE " + EntityNamesUtils.getSQLTableName(domainClass.getSimpleName(), tablePrefix));
-        sb.append(" SET MODIFIED=now()");
-        sb.append(" " + getDynamicWhereUpdateCloumn(domainClass));
-        sb.append(" WHERE id=#id:BIGINT# and CREATED=#created#");
+        sb.append(" WHERE id=#id:BIGINT# and ");
+        sb.append("  <![CDATA[  unix_timestamp(MODIFIED)  < unix_timestamp(#modified#)]]>");
         sb.append("</update>");
         return sb.toString();
     }

@@ -50,15 +50,6 @@ public interface EntityDao<T> {
     public int updateCasByModified(T t) throws Exception;
 
     /**
-     * update增加cas校验 created
-     *
-     * @param t
-     * @return
-     * @throws Exception
-     */
-    public int updateCasByCreated(T t) throws Exception;
-
-    /**
      * 删除实体
      *
      * @param t

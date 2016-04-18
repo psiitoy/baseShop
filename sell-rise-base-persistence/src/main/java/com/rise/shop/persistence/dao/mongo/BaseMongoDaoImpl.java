@@ -129,11 +129,6 @@ public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
     }
 
     @Override
-    public int updateCasByCreated(T t) throws Exception {
-        return update(t);
-    }
-
-    @Override
     public int delete(T t) throws Exception {
         mongoDBManager.delete(getRealCollectionName(), MongoUtils.bean2Map(t));
         return 0;
