@@ -8,8 +8,6 @@ import com.rise.shop.hbaseaccess.hbase.annotation.Table;
 import com.rise.shop.hbaseaccess.hbase.model.RltState;
 import com.rise.shop.hbaseaccess.hbase.serial.impl.KryoByteFieldConverter;
 import com.rise.shop.hbaseaccess.util.ClassUtils;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Test;
@@ -18,14 +16,12 @@ import java.util.List;
 
 public class BasicTest {
 
-    static Configuration conf = new Configuration();
     static HyBaseOpsTemplate hyBaseTemplate = null;
 
     static {
 //        conf.set("hbase.zookeeper.quorum", "192.168.178.91,192.168.178.92,192.168.178.93");
 //        conf.set("zookeeper.znode.parent", "/hbase_lions");
 //		hyBaseTemplate = new HyBaseOpsTemplate(conf);
-        conf = HBaseConfiguration.create();
         HyBase.addSerial("kryo", KryoByteFieldConverter.class);
 
     }
@@ -52,7 +48,7 @@ public class BasicTest {
 
         HyBase.loadModelType(Entity.class);
 
-        hyBaseTemplate = new HyBaseOpsTemplate(conf);
+        hyBaseTemplate = new HyBaseOpsTemplate();
 
         Entity entity = new Entity();
         entity.key = "helloworld2";
@@ -67,7 +63,7 @@ public class BasicTest {
 
         HyBase.loadModelType(Entity.class);
 
-        hyBaseTemplate = new HyBaseOpsTemplate(conf);
+        hyBaseTemplate = new HyBaseOpsTemplate();
 
         Entity entity = new Entity();
         entity.key = "helloworld";
@@ -90,7 +86,7 @@ public class BasicTest {
 
         HyBase.loadModelType(Entity.class);
 
-        hyBaseTemplate = new HyBaseOpsTemplate(conf);
+        hyBaseTemplate = new HyBaseOpsTemplate();
 
         List<Entity> entities = hyBaseTemplate.batchFetch(new Scan(), Entity.class);
 
@@ -102,7 +98,7 @@ public class BasicTest {
 
         HyBase.loadModelType(Entity.class);
 
-        hyBaseTemplate = new HyBaseOpsTemplate(conf);
+        hyBaseTemplate = new HyBaseOpsTemplate();
 
         Entity entity = new Entity();
         entity.key = "helloworld2";
@@ -140,7 +136,7 @@ public class BasicTest {
 
         HyBase.loadModelType(Entity.class);
 
-        hyBaseTemplate = new HyBaseOpsTemplate(conf);
+        hyBaseTemplate = new HyBaseOpsTemplate();
 
         EntityKryo entity = new EntityKryo();
         entity.key = "helloworld";
@@ -155,7 +151,7 @@ public class BasicTest {
 
         HyBase.loadModelType(Entity.class);
 
-        hyBaseTemplate = new HyBaseOpsTemplate(conf);
+        hyBaseTemplate = new HyBaseOpsTemplate();
 
         EntityKryo entity = new EntityKryo();
         entity.key = "helloworld";
@@ -178,7 +174,7 @@ public class BasicTest {
 
         HyBase.loadModelType(Entity.class);
 
-        hyBaseTemplate = new HyBaseOpsTemplate(conf);
+        hyBaseTemplate = new HyBaseOpsTemplate();
 
         List<EntityKryo> entities = hyBaseTemplate.batchFetch(new Scan(), EntityKryo.class);
 
@@ -190,7 +186,7 @@ public class BasicTest {
 
         HyBase.loadModelType(Entity.class);
 
-        hyBaseTemplate = new HyBaseOpsTemplate(conf);
+        hyBaseTemplate = new HyBaseOpsTemplate();
 
         EntityKryo entity = new EntityKryo();
         entity.key = "helloworld2";
