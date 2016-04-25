@@ -17,6 +17,7 @@
         <module>sell-rise-base-common</module>
         <module>sell-rise-base-persistence</module>
         <module>sell-rise-base-view</module>
+        <module>sell-rise-base-hbaseaccess</module>
     </modules>
 
     <properties>
