@@ -1,13 +1,13 @@
 package test.com.rise.shop.dao.art.dao.hbase;
 
-import com.rise.shop.hbase.client.hbase.HyBase;
-import com.rise.shop.hbase.client.hbase.HyBaseOpsTemplate;
-import com.rise.shop.hbase.client.hbase.annotation.Column;
-import com.rise.shop.hbase.client.hbase.annotation.Family;
-import com.rise.shop.hbase.client.hbase.annotation.Table;
-import com.rise.shop.hbase.client.hbase.model.RltState;
-import com.rise.shop.hbase.client.hbase.serial.impl.KryoByteFieldConverter;
-import com.rise.shop.hbase.client.util.ClassUtils;
+import com.rise.shop.hbaseaccess.hbase.HyBase;
+import com.rise.shop.hbaseaccess.hbase.HyBaseOpsTemplate;
+import com.rise.shop.hbaseaccess.hbase.annotation.Column;
+import com.rise.shop.hbaseaccess.hbase.annotation.Family;
+import com.rise.shop.hbaseaccess.hbase.annotation.Table;
+import com.rise.shop.hbaseaccess.hbase.model.RltState;
+import com.rise.shop.hbaseaccess.hbase.serial.impl.KryoByteFieldConverter;
+import com.rise.shop.hbaseaccess.util.ClassUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Scan;
