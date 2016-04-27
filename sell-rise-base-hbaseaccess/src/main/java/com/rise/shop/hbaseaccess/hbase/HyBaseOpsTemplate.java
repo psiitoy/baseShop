@@ -11,6 +11,7 @@ import com.rise.shop.hbaseaccess.hbase.reflect.HyBaseReflectUtil;
 import com.rise.shop.hbaseaccess.util.ClassUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -23,7 +24,7 @@ import java.util.*;
  */
 public class HyBaseOpsTemplate {
 
-    private HConnection conn;
+    private Connection conn;
 
     private Configuration conf;
 
@@ -36,7 +37,7 @@ public class HyBaseOpsTemplate {
             Closeables.closeQuietly(conn);
         }
         try {
-            conn = HConnectionManager.createConnection(conf);
+            conn = ConnectionFactory.createConnection(conf);
         } catch (IOException e) {
             throw new IllegalStateException("cannot create connection to hbase, please check your configuration.", e);
         }
@@ -55,9 +56,9 @@ public class HyBaseOpsTemplate {
 
     private final static long MAX_TS = Long.MAX_VALUE;
 
-    private HTableInterface getHTable(ObjectMeta objectMeta) {
+    private Table getHTable(ObjectMeta objectMeta) {
         try {
-            return conn.getTable(objectMeta.getTableName());
+            return conn.getTable(TableName.valueOf(objectMeta.getTableName()));
         } catch (IOException e) {
             throw new IllegalStateException("get HTableInterface failed.", e);
         }
@@ -71,7 +72,7 @@ public class HyBaseOpsTemplate {
         byte[] rowkey = objectMeta.getRowKey(t);
         Put put = new Put(rowkey);
 
-        HTableInterface htable = getHTable(objectMeta);
+        Table htable = getHTable(objectMeta);
 
         for (String fieldName : fieldNames) {
             FieldSetting fieldSetting = objectMeta.getFieldSetting(fieldName);
@@ -94,7 +95,7 @@ public class HyBaseOpsTemplate {
         ObjectMeta objectMeta = HyBase.createIfAbsent(t.getClass());
         Preconditions.checkNotNull(objectMeta);
 
-        HTableInterface htable = getHTable(objectMeta);
+        Table htable = getHTable(objectMeta);
 
         List<FieldSetting> fieldSettings = objectMeta.toFieldSettingList();
 
@@ -131,7 +132,7 @@ public class HyBaseOpsTemplate {
     public <T> List<RltState> batchFetchWithCondition(List<T> tList, Get condition) {
         Class<T> clazz = (Class<T>) tList.get(0).getClass();
         ObjectMeta meta = HyBase.createIfAbsent(clazz);
-        HTableInterface htable = getHTable(meta);
+        Table htable = getHTable(meta);
         List<Get> getBatch = Lists.newArrayList();
         Map<byte[], List<Integer>> tIndex = Maps.newHashMap();
         int index = 0;
@@ -223,7 +224,7 @@ public class HyBaseOpsTemplate {
      */
     public <T> List<T> batchFetch(Scan qScan, Class<T> clazz) {
         ObjectMeta meta = HyBase.createIfAbsent(clazz);
-        HTableInterface htable = getHTable(meta);
+        Table htable = getHTable(meta);
 
         Scan scan = null;
         if (qScan == null) {
@@ -263,7 +264,7 @@ public class HyBaseOpsTemplate {
                                 byte[] endRowKey, Class<T> clazz) {
 
         ObjectMeta meta = HyBase.createIfAbsent(clazz);
-        HTableInterface htableInterface = getHTable(meta);
+        Table htableInterface = getHTable(meta);
         //缓存50
         final int deleteBatch = 50;
         byte[] nextStartRowkey = Arrays.copyOf(startRowKey, startRowKey.length);
