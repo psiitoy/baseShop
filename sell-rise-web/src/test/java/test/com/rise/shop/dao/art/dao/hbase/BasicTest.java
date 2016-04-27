@@ -176,7 +176,9 @@ public class BasicTest {
 
         hyBaseTemplate = new HyBaseOpsTemplate();
 
-        List<EntityKryo> entities = hyBaseTemplate.batchFetch(new Scan(), EntityKryo.class);
+        Scan scan = new Scan();
+//        scan.setMaxResultSize(10);
+        List<EntityKryo> entities = hyBaseTemplate.batchFetch(scan, EntityKryo.class);
 
         System.out.println(entities.size());
     }

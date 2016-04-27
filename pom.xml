@@ -55,7 +55,7 @@
         <velocity-tools.version>2.0</velocity-tools.version>
         <commons-codec.version>1.2</commons-codec.version>
         <hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
-        <slf4j.version>1.6.4</slf4j.version>
+        <slf4j.version>1.7.9</slf4j.version>
         <mockito-core.version>1.9.5</mockito-core.version>
         <fastjson-version>1.1.41</fastjson-version>
         <guava.version>14.0-rc2</guava.version>

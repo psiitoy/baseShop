@@ -16,10 +16,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
+import java.util.*;
 
 /**
  * like JdbcTemplate
@@ -261,4 +258,70 @@ public class HyBaseOpsTemplate {
             Closeables.closeQuietly(htable);
         }
     }
+
+    public <T> void deleteRange(byte[] startRowKey,
+                                byte[] endRowKey, Class<T> clazz) {
+
+        ObjectMeta meta = HyBase.createIfAbsent(clazz);
+        HTableInterface htableInterface = getHTable(meta);
+        //缓存50
+        final int deleteBatch = 50;
+        byte[] nextStartRowkey = Arrays.copyOf(startRowKey, startRowKey.length);
+        while (true) {
+            Scan temScan = new Scan();
+            temScan.setStartRow(nextStartRowkey);
+            temScan.setStopRow(endRowKey);
+//            scan.setCaching(20);
+
+            List<Delete> deletes = new LinkedList<Delete>();
+
+            ResultScanner resultScanner = null;
+            try {
+                resultScanner = htableInterface.getScanner(temScan);
+                Result result = null;
+                while ((result = resultScanner.next()) != null) {
+
+                    Delete delete = new Delete(result.getRow());
+                    nextStartRowkey = result.getRow();
+
+                    deletes.add(delete);
+
+                    if (deletes.size() >= deleteBatch) {
+                        break;
+                    }
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException("delete_internal. scan = "
+                        + temScan, e);
+            } finally {
+                Closeables.closeQuietly(htableInterface);
+            }
+
+            final int deleteListSize = deletes.size();
+            if (deleteListSize == 0) {
+                return;
+            }
+
+            try {
+                htableInterface.delete(deletes);
+            } catch (IOException e) {
+                throw new RuntimeException("delete_internal. scan = "
+                        + temScan, e);
+            } finally {
+                Closeables.closeQuietly(htableInterface);
+            }
+
+            //successful delete will clear the items of deletes list.
+            if (deletes.size() > 0) {
+                throw new RuntimeException("delete_internal fail. deletes="
+                        + deletes);
+            }
+
+            if (deleteListSize < deleteBatch) {
+                return;
+            }
+        }
+    }
+
 }
