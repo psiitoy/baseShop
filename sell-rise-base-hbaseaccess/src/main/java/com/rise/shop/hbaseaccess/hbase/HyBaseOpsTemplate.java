@@ -47,7 +47,7 @@ public class HyBaseOpsTemplate {
         this.conf = HBaseConfiguration.create();
         if (conn == null) {
             try {
-                conn = HConnectionManager.createConnection(conf);
+                conn = ConnectionFactory.createConnection(conf);
             } catch (IOException e) {
                 throw new IllegalStateException("cannot create connection to hbase, please check your configuration.", e);
             }
@@ -77,9 +77,9 @@ public class HyBaseOpsTemplate {
         for (String fieldName : fieldNames) {
             FieldSetting fieldSetting = objectMeta.getFieldSetting(fieldName);
             Preconditions.checkNotNull(fieldSetting);
-            put.add(fieldSetting.resolveCF(),
+            put.addColumn(fieldSetting.resolveCF(),
                     Bytes.toBytes(fieldSetting.getColumn()), MAX_TS, fieldSetting.get(t));
-            put.add(fieldSetting.resolveCF(),
+            put.addColumn(fieldSetting.resolveCF(),
                     Bytes.toBytes(fieldSetting.getColumn()), MAX_TS, fieldSetting.get(t));
         }
         try {
