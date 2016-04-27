@@ -1,7 +1,5 @@
 package test.com.rise.shop.dao.art.utils;
 
-import com.rise.shop.domain.art.mongo.Artist;
-import com.rise.shop.domain.art.mysql.User;
 import com.rise.shop.persistence.utils.IdWorker;
 import org.junit.Test;
 
@@ -45,28 +43,21 @@ public class TestUtils {
         }
     }
 
-//    public static void main(String[] args) {
-//        Set<Long> set = new HashSet<Long>();
-//        final IdWorker idWorker1 = new IdWorker(0, 0);
-//        final IdWorker idWorker2 = new IdWorker(1, 0);
-//        Thread t1 = new Thread(new IdWorkThread(set, idWorker1));
-//        Thread t2 = new Thread(new IdWorkThread(set, idWorker2));
-//        t1.setDaemon(true);
-//        t2.setDaemon(true);
-//        t1.start();
-//        t2.start();
-//        try {
-//            Thread.sleep(30000);
-//            System.out.println("ids finish ##" + set.size());
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     public static void main(String[] args) {
-        for (int i=0;i<10;i++) {
-            IdWorker idWorker = new IdWorker(0,0);
-            System.out.println(idWorker.nextId());
+        Set<Long> set = new HashSet<Long>();
+        final IdWorker idWorker1 = new IdWorker(0, 0);
+        final IdWorker idWorker2 = new IdWorker(1, 0);
+        Thread t1 = new Thread(new IdWorkThread(set, idWorker1));
+        Thread t2 = new Thread(new IdWorkThread(set, idWorker2));
+        t1.setDaemon(true);
+        t2.setDaemon(true);
+        t1.start();
+        t2.start();
+        try {
+            Thread.sleep(30000);
+            System.out.println("ids finish ##" + set.size());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

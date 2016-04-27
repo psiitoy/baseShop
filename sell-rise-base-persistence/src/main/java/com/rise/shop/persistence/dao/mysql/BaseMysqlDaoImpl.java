@@ -60,8 +60,6 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
     /**
      * snowflake Id生成器 begin
      */
-    //数据中心id
-    private int datacenterId;
     private IdWorker idWorker;
     //snowflake end
     TypeToken<T> typeTokenDomain = new TypeToken<T>(getClass()) {
@@ -71,7 +69,6 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
         try {
             entityClass = getSuperClassGenricType(getClass(), 0);
             nameSpace = EntityNamesUtils.getHumpClassNames(entityClass.getName());
-            idWorker = new IdWorker(entityClass.hashCode() % 30, 0);
         } catch (Exception e) {
             logger.error("BaseMysqlDaoImpl error", e);
         }
@@ -183,7 +180,11 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
      */
     public T insert(T t) throws Exception {
         if (BasicAttributesUtils.getBasicId(t) == null) {
-            BasicAttributesUtils.setBasicId(t, idWorker.nextId());
+            if (idWorker != null) {
+                BasicAttributesUtils.setBasicId(t, idWorker.nextId());
+            } else {
+                BasicAttributesUtils.setBasicId(t, System.currentTimeMillis());
+            }
         }
         insert(nameSpace + POSTFIX_INSERT, t);
         return t;
@@ -223,13 +224,12 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
         return executeQueryForList(nameSpace + POSTFIX_FIND_BY_PAGE_LIKE, null);
     }
 
-    public void setDatacenterId(int datacenterId) {
-        this.datacenterId = datacenterId;
-        idWorker = new IdWorker(entityClass.hashCode() % 30, datacenterId);
-    }
-
     @Override
     public Class getDomainClass() {
         return typeTokenDomain.getRawType();
+    }
+
+    public void setIdWorker(IdWorker idWorker) {
+        this.idWorker = idWorker;
     }
 }
