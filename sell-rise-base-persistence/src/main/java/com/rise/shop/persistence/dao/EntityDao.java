@@ -1,5 +1,6 @@
 package com.rise.shop.persistence.dao;
 
+import com.rise.shop.persistence.exception.EntityDaoException;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
 
@@ -20,9 +21,9 @@ public interface EntityDao<T> {
      *
      * @param ID
      * @return
-     * @throws Exception
+     * @throws EntityDaoException
      */
-    public T get(long ID) throws Exception;
+    public T get(long ID) throws EntityDaoException;
 
     /**
      * 保存实体
@@ -30,7 +31,7 @@ public interface EntityDao<T> {
      * @param t
      * @throws org.springframework.dao.DataAccessException
      */
-    public T insert(T t) throws Exception;
+    public T insert(T t) throws EntityDaoException;
 
     /**
      * 更新实体
@@ -38,16 +39,16 @@ public interface EntityDao<T> {
      * @param t
      * @throws org.springframework.dao.DataAccessException
      */
-    public int update(T t) throws Exception;
+    public int update(T t) throws EntityDaoException;
 
     /**
      * update增加cas校验 modify
      *
      * @param t
      * @return
-     * @throws Exception
+     * @throws EntityDaoException
      */
-    public int updateCasByModified(T t) throws Exception;
+    public int updateCasByModified(T t) throws EntityDaoException;
 
     /**
      * 删除实体
@@ -55,7 +56,7 @@ public interface EntityDao<T> {
      * @param t
      * @throws org.springframework.dao.DataAccessException
      */
-    public int delete(T t) throws Exception;
+    public int delete(T t) throws EntityDaoException;
 
     /**
      * 根据指定的条件查询记录
@@ -64,7 +65,7 @@ public interface EntityDao<T> {
      * @return
      * @throws org.springframework.dao.DataAccessException
      */
-    public List<T> findBy(T t) throws Exception;
+    public List<T> findBy(T t) throws EntityDaoException;
 
     /**
      * 根据指定的条件查单个 查出多个则抛异常
@@ -72,7 +73,7 @@ public interface EntityDao<T> {
      * @param t
      * @throws org.springframework.dao.DataAccessException
      */
-    public T findBySingle(T t) throws Exception;
+    public T findBySingle(T t) throws EntityDaoException;
 
     /**
      * 根据指定的条件分页查询记录
@@ -80,7 +81,7 @@ public interface EntityDao<T> {
      * @param query
      * @throws org.springframework.dao.DataAccessException
      */
-    public PaginatedList<T> findByPage(Query query) throws Exception;
+    public PaginatedList<T> findByPage(Query query) throws EntityDaoException;
 
     /**
      * 根据指定的条件分页查询记录
@@ -88,16 +89,16 @@ public interface EntityDao<T> {
      * @param sqlID sqlmap 中的ID
      * @throws org.springframework.dao.DataAccessException
      */
-    public PaginatedList<T> findByPage(String sqlID, Query query) throws Exception;
+    public PaginatedList<T> findByPage(String sqlID, Query query) throws EntityDaoException;
 
     /**
      * count (查所有满足条件的个数)
      *
      * @param t
      * @return
-     * @throws Exception
+     * @throws EntityDaoException
      */
-    public int count(T t) throws Exception;
+    public int count(T t) throws EntityDaoException;
 
     /**
      * 根据指定的条件分页查询记录 模糊查询
@@ -105,7 +106,13 @@ public interface EntityDao<T> {
      * @param queryMap
      * @throws org.springframework.dao.DataAccessException
      */
-    public PaginatedList<T> findByPageLike(Map<String, String> queryMap) throws Exception;
+    public PaginatedList<T> findByPageLike(Map<String, String> queryMap) throws EntityDaoException;
 
     public Class getDomainClass();
+
+    /**
+     * 定义描述信息
+     * @return
+     */
+    public String getAbout();
 }

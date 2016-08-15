@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.dao.BaseDao;
+import com.rise.shop.persistence.exception.EntityDaoException;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.Query;
@@ -49,6 +50,8 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
 
     protected static final String POSTFIX_DELETE = ".Delete";
 
+    TypeToken<T> typeTokenDomain = new TypeToken<T>(getClass()) {
+    };
     /**
      * DAO所管理的Entity类型.
      */
@@ -62,8 +65,6 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
      */
     private IdWorker idWorker;
     //snowflake end
-    TypeToken<T> typeTokenDomain = new TypeToken<T>(getClass()) {
-    };
 
     public BaseMysqlDaoImpl() {
         try {
@@ -99,7 +100,7 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
     /**
      * 根据主键获得单个对象
      */
-    public T get(long ID) throws Exception {
+    public T get(long ID) throws EntityDaoException {
         return (T) queryForObject(nameSpace + POSTFIX_SELECT_PRIAMARYKEY, ID);
     }
 
@@ -107,12 +108,12 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
      * 根据条件查询对象（无分页）
      *
      */
-    public List<T> findBy(T t) throws Exception {
+    public List<T> findBy(T t) throws EntityDaoException {
         return queryForList(nameSpace + POSTFIX_FIND, t);
     }
 
     @Override
-    public T findBySingle(T t) throws Exception {
+    public T findBySingle(T t) throws EntityDaoException {
         return (T) queryForObject(nameSpace + POSTFIX_FIND, t);
     }
 
@@ -120,7 +121,7 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
          * 根据条件查询对象（有分页）
          *
          */
-    public PaginatedList<T> findByPage(Query query) throws Exception {
+    public PaginatedList<T> findByPage(Query query) throws EntityDaoException {
         return executeQueryForList(nameSpace + POSTFIX_FIND_BY_PAGE, query);
     }
 
@@ -130,16 +131,16 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
      * @param sqlID
      * @param query 包含所有字段查询条件
      * @return
-     * @throws Exception
+     * @throws EntityDaoException
      */
-    public PaginatedList<T> findByPage(String sqlID, Query query) throws Exception {
+    public PaginatedList<T> findByPage(String sqlID, Query query) throws EntityDaoException {
         return this.executeQueryForList(sqlID, query);
     }
 
     /**
      * 带查询条件的分页
      */
-    private PaginatedList<T> executeQueryForList(String selStmName, Query query) throws Exception {
+    private PaginatedList<T> executeQueryForList(String selStmName, Query query) throws EntityDaoException {
         Preconditions.checkNotNull(selStmName, "selStmName必须赋值");
         Preconditions.checkNotNull(query, "query必须赋值");
         Preconditions.checkNotNull(query.getPageNo(), "query的pageNo和pageSize必须赋值,pageNo从1起(0同1)");
@@ -168,7 +169,7 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
                 paginatedList.addAll(queryForList(selStmName, query));
             }
         } catch (DataAccessException e) {
-            throw new Exception(e);
+            throw new EntityDaoException(e);
         }
 
         return paginatedList;
@@ -178,22 +179,28 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
      * 保存对象
      *
      */
-    public T insert(T t) throws Exception {
-        if (BasicAttributesUtils.getBasicId(t) == null) {
-            if (idWorker != null) {
-                BasicAttributesUtils.setBasicId(t, idWorker.nextId());
-            } else {
-                BasicAttributesUtils.setBasicId(t, System.currentTimeMillis());
+    public T insert(T t) throws EntityDaoException {
+        try {
+            if (BasicAttributesUtils.getBasicId(t) == null) {
+                //snowflake配置了(构造需要 机器编号+数据中心编号)则使用
+                if (idWorker != null) {
+                    BasicAttributesUtils.setBasicId(t, idWorker.nextId());
+                    //否则使用时间戳
+                } else {
+                    BasicAttributesUtils.setBasicId(t, System.currentTimeMillis());
+                }
             }
+            insert(nameSpace + POSTFIX_INSERT, t);
+            return t;
+        } catch (Exception e) {
+            throw new EntityDaoException(e);
         }
-        insert(nameSpace + POSTFIX_INSERT, t);
-        return t;
     }
 
     /*
      * 删除对象
      */
-    public int delete(T t) throws Exception {
+    public int delete(T t) throws EntityDaoException {
         return update(nameSpace + POSTFIX_DELETE, t);
     }
 
@@ -201,16 +208,16 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
      * 更新对象
      *
      */
-    public int update(T t) throws Exception {
+    public int update(T t) throws EntityDaoException {
         return update(nameSpace + POSTFIX_UPDATE, t);
     }
 
     @Override
-    public int updateCasByModified(T t) throws Exception {
+    public int updateCasByModified(T t) throws EntityDaoException {
         return update(nameSpace + POSTFIX_UPDATE_CAS_MODIFY, t);
     }
 
-    public int count(T t) throws Exception {
+    public int count(T t) throws EntityDaoException {
         Integer countNumber = (Integer) queryForObject(nameSpace + POSTFIX_COUNT, t);
         if (countNumber == null) {
             return 0;
@@ -219,14 +226,19 @@ public class BaseMysqlDaoImpl<T> extends BaseDao implements BaseMysqlDao<T> {//i
         }
     }
 
-    public PaginatedList findByPageLike(Map<String, String> queryMap) throws Exception {
+    @Override
+    public Class getDomainClass() {
+        return typeTokenDomain.getRawType();
+    }
+
+    public PaginatedList findByPageLike(Map<String, String> queryMap) throws EntityDaoException {
         //TODO 模糊查询
         return executeQueryForList(nameSpace + POSTFIX_FIND_BY_PAGE_LIKE, null);
     }
 
     @Override
-    public Class getDomainClass() {
-        return typeTokenDomain.getRawType();
+    public String getAbout() {
+        return "DB[mysql]-Class[" + getDomainClass() + "]-TableName[" + EntityNamesUtils.getSQLTableName(typeTokenDomain.getRawType().getSimpleName(), null) + "]";
     }
 
     public void setIdWorker(IdWorker idWorker) {

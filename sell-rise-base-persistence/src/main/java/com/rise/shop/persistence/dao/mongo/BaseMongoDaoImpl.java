@@ -7,6 +7,7 @@ import com.rise.shop.common.utils.CopyPropertyUtils;
 import com.rise.shop.persistence.attribute.BasicAttributeEnum;
 import com.rise.shop.persistence.dao.mongo.utils.MongoDBManager;
 import com.rise.shop.persistence.dao.mongo.utils.MongoUtils;
+import com.rise.shop.persistence.exception.EntityDaoException;
 import com.rise.shop.persistence.page.PaginatedArrayList;
 import com.rise.shop.persistence.page.PaginatedList;
 import com.rise.shop.persistence.query.OrderByBaseQuery;
@@ -50,7 +51,7 @@ public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
             entityClass = getSuperClassGenricType(getClass(), 0);
             collectionName = entityClass.getSimpleName();
             idWorker = new IdWorker(entityClass.hashCode() % 30, 0);
-        } catch (Exception e) {
+        } catch (EntityDaoException e) {
             logger.error("BaseMongoDaoImpl error", e);
         }
     }
@@ -91,61 +92,80 @@ public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
     }
 
     @Override
-    public T get(final long ID) throws Exception {
-        List<DBObject> list = mongoDBManager.find(getRealCollectionName(), new HashMap<String, Object>() {{
-            put(BasicAttributeEnum.ID.getName(), ID);
-        }});
-        if (list != null && list.size() == 1) {
-            return (T) MongoUtils.DB2Bean(list.get(0), entityClass.getName());
-        } else {
-            return null;
+    public T get(final long ID) throws EntityDaoException {
+        try {
+            List<DBObject> list = mongoDBManager.find(getRealCollectionName(), new HashMap<String, Object>() {{
+                put(BasicAttributeEnum.ID.getName(), ID);
+            }});
+            if (list != null && list.size() == 1) {
+                return (T) MongoUtils.DB2Bean(list.get(0), entityClass.getName());
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            throw new EntityDaoException(e);
         }
     }
 
     @Override
-    public T insert(T t) throws Exception {
-
-        if (BasicAttributesUtils.getBasicId(t) == null) {
-            BasicAttributesUtils.setBasicId(t, idWorker.nextId());
+    public T insert(T t) throws EntityDaoException {
+        try {
+            if (BasicAttributesUtils.getBasicId(t) == null) {
+                BasicAttributesUtils.setBasicId(t, idWorker.nextId());
+            }
+            BasicAttributesUtils.setBasicCreated(t);
+            BasicAttributesUtils.setBasicModify(t);
+            Map<String, Object> map = MongoUtils.bean2Map(t);
+            mongoDBManager.insert(getRealCollectionName(), map);
+            return t;
+        } catch (Exception e) {
+            throw new EntityDaoException(e);
         }
-        BasicAttributesUtils.setBasicCreated(t);
-        BasicAttributesUtils.setBasicModify(t);
-        Map<String, Object> map = MongoUtils.bean2Map(t);
-        mongoDBManager.insert(getRealCollectionName(), map);
-        return t;
     }
 
     @Override
-    public int update(T t) throws Exception {
+    public int update(T t) throws EntityDaoException {
 //        mongoDBManager.update(collectionName, MongoUtils.bean2Map(t), MongoUtils.bean2QueryId(t));
-        BasicAttributesUtils.setBasicModify(t);
-        Map<String, Object> map = MongoUtils.bean2Map(t);
-        return mongoDBManager.update(getRealCollectionName(), map);
+        try {
+            BasicAttributesUtils.setBasicModify(t);
+            Map<String, Object> map = MongoUtils.bean2Map(t);
+            return mongoDBManager.update(getRealCollectionName(), map);
+        } catch (Exception e) {
+            throw new EntityDaoException(e);
+        }
     }
 
     @Override
-    public int updateCasByModified(T t) throws Exception {
+    public int updateCasByModified(T t) throws EntityDaoException {
         return update(t);
     }
 
     @Override
-    public int delete(T t) throws Exception {
-        mongoDBManager.delete(getRealCollectionName(), MongoUtils.bean2Map(t));
-        return 0;
-    }
-
-    @Override
-    public List<T> findBy(T t) throws Exception {
-        List<DBObject> list = mongoDBManager.find(getRealCollectionName(), MongoUtils.bean2Map(t));
-        List<T> tlist = new ArrayList<T>();
-        for (DBObject o : list) {
-            tlist.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
+    public int delete(T t) throws EntityDaoException {
+        try {
+            mongoDBManager.delete(getRealCollectionName(), MongoUtils.bean2Map(t));
+            return 0;
+        } catch (Exception e) {
+            throw new EntityDaoException(e);
         }
-        return tlist;
     }
 
     @Override
-    public T findBySingle(T t) throws Exception {
+    public List<T> findBy(T t) throws EntityDaoException {
+        try {
+            List<DBObject> list = mongoDBManager.find(getRealCollectionName(), MongoUtils.bean2Map(t));
+            List<T> tlist = new ArrayList<T>();
+            for (DBObject o : list) {
+                tlist.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
+            }
+            return tlist;
+        } catch (Exception e) {
+            throw new EntityDaoException(e);
+        }
+    }
+
+    @Override
+    public T findBySingle(T t) throws EntityDaoException {
         List<T> ts = findBy(t);
         if (ts.size() == 1) {
             return ts.get(0);
@@ -155,28 +175,32 @@ public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
     }
 
     @Override
-    public PaginatedList<T> findByPage(Query query) throws Exception {
-        Preconditions.checkNotNull(query, "query必须赋值");
-        Preconditions.checkNotNull(query.getPageNo(), "query的pageNo和pageSize必须赋值,pageNo从1起(0同1)");
-        Preconditions.checkNotNull(query.getPageSize(), "query的pageNo和pageSize必须赋值,pageNo从1起(0同1)");
-        PaginatedList<T> paginatedList = new PaginatedArrayList<T>();
-        int count = count(CopyPropertyUtils.copyPropertiesAndInstance(query, entityClass));
-        paginatedList.setPageSize(query.getPageSize());
-        paginatedList.setTotalItem(count);
-        if (query.getIndex() == null) {
-            if (query.getPageNo() < 1) {
-                //page从1开始
-                query.setPageNo(1);
+    public PaginatedList<T> findByPage(Query query) throws EntityDaoException {
+        try {
+            Preconditions.checkNotNull(query, "query必须赋值");
+            Preconditions.checkNotNull(query.getPageNo(), "query的pageNo和pageSize必须赋值,pageNo从1起(0同1)");
+            Preconditions.checkNotNull(query.getPageSize(), "query的pageNo和pageSize必须赋值,pageNo从1起(0同1)");
+            PaginatedList<T> paginatedList = new PaginatedArrayList<T>();
+            int count = count(CopyPropertyUtils.copyPropertiesAndInstance(query, entityClass));
+            paginatedList.setPageSize(query.getPageSize());
+            paginatedList.setTotalItem(count);
+            if (query.getIndex() == null) {
+                if (query.getPageNo() < 1) {
+                    //page从1开始
+                    query.setPageNo(1);
+                }
+                query.setIndex((query.getPageNo() - 1) * query.getPageSize());
             }
-            query.setIndex((query.getPageNo() - 1) * query.getPageSize());
+            //设置当前页
+            paginatedList.setIndex(query.getPageNo());
+            List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize(), getMongoBaseQueryOrderBy(query), query);
+            for (DBObject o : list) {
+                paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
+            }
+            return paginatedList;
+        } catch (Exception e) {
+            throw new EntityDaoException(e);
         }
-        //设置当前页
-        paginatedList.setIndex(query.getPageNo());
-        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2Map(query), query.getIndex(), query.getPageSize(), getMongoBaseQueryOrderBy(query), query);
-        for (DBObject o : list) {
-            paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
-        }
-        return paginatedList;
     }
 
     private Map<String, Integer> getMongoBaseQueryOrderBy(Query query) {
@@ -195,26 +219,34 @@ public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
     }
 
     @Override
-    public PaginatedList<T> findByPage(String sqlID, Query query) throws Exception {
+    public PaginatedList<T> findByPage(String sqlID, Query query) throws EntityDaoException {
         return findByPage(query);
     }
 
     //TODO
     @Override
-    public PaginatedList<T> findByPageLike(Map<String, String> queryMap) throws Exception {
-        PaginatedList<T> paginatedList = new PaginatedArrayList<T>();
-        int count = (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap));
-        paginatedList.setTotalItem(count);
-        List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap), 0, 100, null, null);
-        for (DBObject o : list) {
-            paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
+    public PaginatedList<T> findByPageLike(Map<String, String> queryMap) throws EntityDaoException {
+        try {
+            PaginatedList<T> paginatedList = new PaginatedArrayList<T>();
+            int count = (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap));
+            paginatedList.setTotalItem(count);
+            List<DBObject> list = mongoDBManager.findByPage(getRealCollectionName(), MongoUtils.bean2LikeMap(queryMap), 0, 100, null, null);
+            for (DBObject o : list) {
+                paginatedList.add((T) MongoUtils.DB2Bean(o, entityClass.getName()));
+            }
+            return paginatedList;
+        } catch (Exception e) {
+            throw new EntityDaoException(e);
         }
-        return paginatedList;
     }
 
     @Override
-    public int count(T t) throws Exception {
-        return (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2Map(t));
+    public int count(T t) throws EntityDaoException {
+        try {
+            return (int) mongoDBManager.getCount(getRealCollectionName(), MongoUtils.bean2Map(t));
+        } catch (Exception e) {
+            throw new EntityDaoException(e);
+        }
     }
 
     @Override
@@ -238,5 +270,10 @@ public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
     public void setDatacenterId(int datacenterId) {
         this.datacenterId = datacenterId;
         idWorker = new IdWorker(entityClass.hashCode() % 30, datacenterId);
+    }
+
+    @Override
+    public String getAbout() {
+        return "DB[mongo]-Class[" + getDomainClass() + "]-CollectionName[" + getRealCollectionName() + "]";
     }
 }
