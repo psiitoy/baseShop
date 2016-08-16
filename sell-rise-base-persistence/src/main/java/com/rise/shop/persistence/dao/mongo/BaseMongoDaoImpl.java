@@ -276,4 +276,8 @@ public class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
     public String getAbout() {
         return "DB[mongo]-Class[" + getDomainClass() + "]-CollectionName[" + getRealCollectionName() + "]";
     }
+
+    public void setIdWorker(IdWorker idWorker) {
+        this.idWorker = idWorker;
+    }
 }
